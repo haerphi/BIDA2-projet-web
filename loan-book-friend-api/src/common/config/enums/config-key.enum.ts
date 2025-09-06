@@ -1,0 +1,25 @@
+export enum ConfigKey {
+    // DATABASE ENV
+    DB_TYPE = 'DB_TYPE',
+    DB_HOST = 'DB_HOST',
+    DB_PORT = 'DB_PORT',
+    DB_USER = 'DB_USER',
+    DB_PASSWORD = 'DB_PASSWORD',
+    DB_DATABASE = 'DB_DATABASE',
+    DB_MIGRATIONS = 'DB_MIGRATIONS',
+    DB_SYNC = 'DB_SYNC',
+
+    // GLOBAL ENV
+    APP_PORT = 'APP_PORT',
+    APP_MODE = 'APP_MODE',
+    APP_BASE_URL = 'APP_BASE_URL',
+
+    // JWT KEY
+    JWT_TOKEN_SECRET = 'JWT_TOKEN_SECRET',
+    JWT_TOKEN_EXPIRE_IN = 'JWT_TOKEN_EXPIRE_IN',
+    JWT_REFRESH_TOKEN_SECRET = 'JWT_REFRESH_TOKEN_SECRET',
+    JWT_REFRESH_TOKEN_EXPIRE_IN = 'JWT_REFRESH_TOKEN_EXPIRE_IN',
+}
+export const configMinimalKeys: ConfigKey[] = Object.keys(
+    ConfigKey,
+) as ConfigKey[];
