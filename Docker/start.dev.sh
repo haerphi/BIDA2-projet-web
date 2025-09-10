@@ -1,0 +1,1 @@
+docker-compose -f .\docker-compose-dev.yml -p bida2_projet_web up -d
