@@ -1,19 +1,41 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import {
+    Column,
+    CreateDateColumn,
+    Entity,
+    JoinColumn,
+    OneToOne,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn,
+} from 'typeorm';
+import { User } from 'user/models/user.entity';
 
 @Entity('credential')
 export class Credential {
-    @PrimaryColumn('uuid')
+    @PrimaryGeneratedColumn('uuid')
     credential_id: string;
 
-    @Column({ nullable: false, unique: true })
-    name: string;
-
-    @Column({ nullable: false, unique: true })
-    email: string;
+    @OneToOne(() => User, (user) => user.credential, {
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+        eager: false,
+    })
+    @JoinColumn({ name: 'user_id', referencedColumnName: 'user_id' })
+    user!: User;
 
     @Column({ nullable: false })
     password: string;
 
-    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-    created_at: Date;
+    @CreateDateColumn({
+        name: 'created_at',
+        type: 'timestamptz',
+        default: () => 'CURRENT_TIMESTAMP',
+    })
+    createdAt: Date;
+
+    @UpdateDateColumn({
+        name: 'updated_at',
+        type: 'timestamptz',
+        default: () => 'CURRENT_TIMESTAMP',
+    })
+    updatedAt: Date;
 }

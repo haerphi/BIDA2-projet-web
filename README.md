@@ -65,3 +65,8 @@
 - Modifier un review existant (formulaire, PUT/PATCH)
 - Supprimer un review (avec confirmation)
 - Afficher les details d'un review (fiche individuelle)
+
+## Todo:
+
+- Ajouter des transactions
+  - lors du signUp (pour créer le `User` et puis le `Credential`)
