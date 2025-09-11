@@ -1,8 +1,8 @@
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
-import { ApiCodeResponse, ApiException } from '@common/api';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AppControllerHelloWorld } from './app.swagger';
+import { EmailAlreadyExistException } from '@common/exceptions/user.exceptions';
 
 @ApiTags('Route de base')
 @Controller()
@@ -21,6 +21,6 @@ export class AppController {
     })
     @Get('error')
     getError(): string {
-        throw new ApiException(ApiCodeResponse.TEST, 400);
+        throw new EmailAlreadyExistException();
     }
 }
