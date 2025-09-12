@@ -7,20 +7,20 @@ import {
     PrimaryGeneratedColumn,
     UpdateDateColumn,
 } from 'typeorm';
-import { User } from 'user/models/user.entity';
+import { UserEntity } from 'user/models/user.entity';
 
 @Entity('credential')
-export class Credential {
+export class CredentialEntity {
     @PrimaryGeneratedColumn('uuid')
     credential_id: string;
 
-    @OneToOne(() => User, (user) => user.credential, {
+    @OneToOne(() => UserEntity, (user) => user.credential, {
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
-        eager: false,
+        eager: true,
     })
     @JoinColumn({ name: 'user_id', referencedColumnName: 'user_id' })
-    user!: User;
+    user!: UserEntity;
 
     @Column({ nullable: false })
     password: string;

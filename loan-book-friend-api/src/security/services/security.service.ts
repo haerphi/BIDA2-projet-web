@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Credential, Token } from '@security/models';
+import { CredentialEntity, TokenEntity } from '@security/models';
 import { TokenService } from './token.service';
 import { SignInPayload } from '@security/dtos/sign-in.dto';
 import {
@@ -20,13 +20,13 @@ import {
 @Injectable()
 export class SecurityService {
     constructor(
-        @InjectRepository(Credential)
-        private readonly credentialRepository: Repository<Credential>,
+        @InjectRepository(CredentialEntity)
+        private readonly credentialRepository: Repository<CredentialEntity>,
         private readonly tokenService: TokenService,
         private readonly userService: UserService,
     ) {}
 
-    async details(id: string): Promise<Credential> {
+    async details(id: string): Promise<CredentialEntity> {
         const result = await this.credentialRepository.findOneBy({
             credential_id: id,
         });
@@ -37,7 +37,7 @@ export class SecurityService {
         return result;
     }
 
-    async signIn(payload: SignInPayload): Promise<Token> {
+    async signIn(payload: SignInPayload): Promise<TokenEntity> {
         const user = await this.userService.findByEmail(payload.email);
         if (!user) {
             throw new WrongCredentialException();
@@ -60,7 +60,7 @@ export class SecurityService {
         return this.tokenService.getTokens(cred);
     }
 
-    async signUp(payload: SignUpPayload): Promise<Credential | null> {
+    async signUp(payload: SignUpPayload): Promise<CredentialEntity | null> {
         const user = await this.userService.create(
             signupPayloadToUser(payload),
         );
@@ -68,7 +68,10 @@ export class SecurityService {
         const hashedPassword = await encryptPassword(payload.password);
 
         const credential = this.credentialRepository.save(
-            Builder<Credential>().user(user).password(hashedPassword).build(),
+            Builder<CredentialEntity>()
+                .user(user)
+                .password(hashedPassword)
+                .build(),
         );
 
         return credential;

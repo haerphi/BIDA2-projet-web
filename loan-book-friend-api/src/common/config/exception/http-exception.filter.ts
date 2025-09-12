@@ -3,6 +3,7 @@ import {
     ArgumentsHost,
     Catch,
     ExceptionFilter,
+    ForbiddenException,
     HttpStatus,
 } from '@nestjs/common';
 import { isInstanceOf } from '@common/utils/array.utils';
@@ -47,6 +48,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
             )
         ) {
             status = HttpStatus.BAD_REQUEST;
+            message = exception.message;
+        } else if (isInstanceOf(exception, ForbiddenException)) {
+            status = HttpStatus.FORBIDDEN;
             message = exception.message;
         } else if (
             isInstanceOf(

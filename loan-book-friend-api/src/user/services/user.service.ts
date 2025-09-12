@@ -4,17 +4,17 @@ import {
 } from '@common/exceptions/user.exceptions';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '@user/models';
+import { UserEntity } from '@user/models';
 import { Repository } from 'typeorm';
 
 @Injectable()
 export class UserService {
     constructor(
-        @InjectRepository(User)
-        private readonly userRepository: Repository<User>,
+        @InjectRepository(UserEntity)
+        private readonly userRepository: Repository<UserEntity>,
     ) {}
 
-    async create(user: User): Promise<User> {
+    async create(user: UserEntity): Promise<UserEntity> {
         // check if email already exists
         const existingUser = await this.userRepository.findOneBy({
             email: user.email,
@@ -38,7 +38,7 @@ export class UserService {
         await this.userRepository.delete({ user_id: id });
     }
 
-    async findByEmail(email: string): Promise<User | null> {
+    async findByEmail(email: string): Promise<UserEntity | null> {
         return this.userRepository.findOneBy({ email });
     }
 }

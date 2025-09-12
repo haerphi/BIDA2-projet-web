@@ -5,17 +5,17 @@ import {
     OneToOne,
     PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Credential } from './credential.entity';
+import { CredentialEntity } from './credential.entity';
 
 @Entity()
-export class Token {
+export class TokenEntity {
     @PrimaryGeneratedColumn('uuid')
     token_id: string;
     @Column({ nullable: false })
     token: string;
-    @Column({ nullable: false })
+    @Column({ name: 'refresh_token', nullable: false })
     refreshToken: string;
-    @OneToOne(() => Credential, { eager: true })
+    @OneToOne(() => CredentialEntity, { eager: true })
     @JoinColumn({ name: 'credential_id' })
-    credential: Credential;
+    credential: CredentialEntity;
 }

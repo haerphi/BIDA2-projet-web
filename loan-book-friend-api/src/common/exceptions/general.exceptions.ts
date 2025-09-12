@@ -9,3 +9,9 @@ export class NotFoundException extends Error {
         super('api.exception.' + code);
     }
 }
+
+export class UnauthorizedException extends Error {
+    constructor(message = 'unauthorized_exception') {
+        super('api.exception.' + message);
+    }
+}

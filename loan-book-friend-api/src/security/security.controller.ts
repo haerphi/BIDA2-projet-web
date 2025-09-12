@@ -3,8 +3,9 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { SecurityService } from './services/security.service';
 import { SignInPayload } from './dtos/sign-in.dto';
 import { SignUpPayload } from './dtos/sign-up.dto';
-import { Token } from '@security/models/token.entity';
+import { TokenEntity } from '@security/models/token.entity';
 import { toSignInResponse } from './mappers/signin.mappers';
+import { SignInDocumentation, SignUpDocumentation } from './security.swagger';
 
 @ApiBearerAuth('access-token')
 @ApiTags('Authentication & Security')
@@ -12,20 +13,14 @@ import { toSignInResponse } from './mappers/signin.mappers';
 export class SecurityController {
     constructor(private readonly securityService: SecurityService) {}
 
-    @ApiOperation({
-        summary: 'Connect a user',
-        description: 'This route allows a user to sign in',
-    })
+    @ApiOperation(SignInDocumentation)
     @Post('signin')
     public async signIn(@Body() payload: SignInPayload) {
-        const tk: Token = await this.securityService.signIn(payload);
+        const tk: TokenEntity = await this.securityService.signIn(payload);
         return toSignInResponse(tk.token, tk.refreshToken);
     }
 
-    @ApiOperation({
-        summary: 'Register a user',
-        description: 'This route allows a user to sign up',
-    })
+    @ApiOperation(SignUpDocumentation)
     @Post('signup')
     public async signUp(@Body() payload: SignUpPayload) {
         await this.securityService.signUp(payload);

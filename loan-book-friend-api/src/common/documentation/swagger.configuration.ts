@@ -9,17 +9,7 @@ class SwaggerConfiguration {
             .setTitle('NestJS API')
             .setDescription('NestJS swagger document')
             .setVersion('1.0')
-            .addBearerAuth(
-                {
-                    description: `Please enter token`,
-                    name: 'Authorization',
-                    bearerFormat: 'Bearer',
-                    scheme: 'Bearer',
-                    type: 'http',
-                    in: 'Header',
-                },
-                'access-token',
-            )
+            .addBearerAuth()
             .build();
         const document = SwaggerModule.createDocument(app, config);
         SwaggerModule.setup('docs', app, document);

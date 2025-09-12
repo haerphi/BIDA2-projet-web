@@ -1,7 +1,7 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Credential } from '@security/models/credential.entity';
-import { Token } from './models/token.entity';
+import { CredentialEntity } from '@security/models/credential.entity';
+import { TokenEntity } from './models/token.entity';
 import { TokenService } from './services/token.service';
 import { SecurityService } from './services/security.service';
 import { UserModule } from '@user/user.module';
@@ -9,10 +9,11 @@ import { SecurityController } from './security.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { configManager } from '@common/config';
 import { ConfigKey } from '@common/config/enums';
+import { AuthMiddleware } from './middlewares/auth.middleware';
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([Credential, Token]),
+        TypeOrmModule.forFeature([CredentialEntity, TokenEntity]),
         JwtModule.register({
             global: true,
             secret: configManager.getValue(ConfigKey.JWT_TOKEN_SECRET),
@@ -24,7 +25,11 @@ import { ConfigKey } from '@common/config/enums';
         }),
         UserModule,
     ],
-    providers: [TokenService, SecurityService],
+    providers: [TokenService, SecurityService, AuthMiddleware],
     controllers: [SecurityController],
 })
-export class SecurityModule {}
+export class SecurityModule {
+    configure(consumer: MiddlewareConsumer) {
+        consumer.apply(AuthMiddleware).forRoutes('*');
+    }
+}

@@ -8,8 +8,8 @@ import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RefreshTokenPayload } from '@security/dtos/refresh-token.dto';
-import { RefreshToken } from '@security/interfaces';
-import { Token, Credential } from '@security/models';
+import { TokenPayload } from '@security/interfaces';
+import { TokenEntity, CredentialEntity } from '@security/models';
 import { Builder } from 'builder-pattern';
 import { Repository } from 'typeorm';
 
@@ -18,14 +18,14 @@ export class TokenService {
     private readonly logger = new Logger(TokenService.name);
 
     constructor(
-        @InjectRepository(Token)
-        private readonly tokenRepository: Repository<Token>,
-        @InjectRepository(Credential)
-        private readonly credentialRepository: Repository<Credential>,
+        @InjectRepository(TokenEntity)
+        private readonly tokenRepository: Repository<TokenEntity>,
+        @InjectRepository(CredentialEntity)
+        private readonly credentialRepository: Repository<CredentialEntity>,
         private readonly jwtService: JwtService,
     ) {}
 
-    async getTokens(credential: Credential): Promise<Token> {
+    async getTokens(credential: CredentialEntity): Promise<TokenEntity> {
         try {
             await this.tokenRepository.delete({ credential });
             const payload = {
@@ -46,7 +46,7 @@ export class TokenService {
                 ),
             });
 
-            const tk: Token = Builder<Token>()
+            const tk: TokenEntity = Builder<TokenEntity>()
                 .token(token)
                 .refreshToken(refreshToken)
                 .credential(credential)
@@ -66,11 +66,11 @@ export class TokenService {
         }
     }
 
-    async delete(credential: Credential): Promise<void> {
+    async delete(credential: CredentialEntity): Promise<void> {
         await this.tokenRepository.delete({ credential });
     }
 
-    async refresh(payload: RefreshTokenPayload): Promise<Token> {
+    async refresh(payload: RefreshTokenPayload): Promise<TokenEntity> {
         let credentialId: string | null = null;
 
         const JWT_REFRESH_TOKEN_SECRET = configManager.getValue(
@@ -79,7 +79,7 @@ export class TokenService {
         );
 
         try {
-            credentialId = this.jwtService.verify<RefreshToken>(
+            credentialId = this.jwtService.verify<TokenPayload>(
                 payload.refresh,
                 {
                     secret: JWT_REFRESH_TOKEN_SECRET,

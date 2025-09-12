@@ -1,0 +1,51 @@
+import {
+    Injectable,
+    NestMiddleware,
+    UnauthorizedException,
+} from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { TokenPayload } from '@security/interfaces';
+import { RequestWithUser } from '@security/interfaces/request-with-user.interface';
+import { CredentialEntity } from '@security/models';
+import { SecurityService } from '@security/services/security.service';
+
+@Injectable()
+export class AuthMiddleware implements NestMiddleware {
+    constructor(
+        private readonly jwtService: JwtService,
+        private readonly securityService: SecurityService,
+    ) {}
+
+    async use(req: RequestWithUser, res: Response, next: () => void) {
+        if (!req.headers.authorization) {
+            next();
+            return;
+        }
+
+        const [type, token] = req.headers.authorization.split(' ');
+
+        if (type.toLowerCase() !== 'bearer') {
+            throw new UnauthorizedException('invalid_authorization_type');
+        }
+
+        let credId: string | null = null;
+        try {
+            const tk = this.jwtService.verify<TokenPayload>(token);
+            credId = tk.sub;
+        } catch {
+            throw new UnauthorizedException('invalid_expired_token');
+        }
+
+        if (credId) {
+            const credential = await this.securityService.details(credId);
+
+            if (!credential) {
+                throw new UnauthorizedException('invalid_expired_token');
+            }
+
+            req.user = credential.user;
+        }
+
+        next();
+    }
+}

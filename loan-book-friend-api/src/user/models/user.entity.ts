@@ -8,10 +8,10 @@ import {
     UpdateDateColumn,
 } from 'typeorm';
 
-import { Credential } from '@security/models/credential.entity';
+import { CredentialEntity } from '@security/models/credential.entity';
 
 @Entity({ name: 'users' })
-export class User {
+export class UserEntity {
     @PrimaryGeneratedColumn('uuid', { name: 'user_id' })
     user_id: string;
 
@@ -36,6 +36,6 @@ export class User {
     })
     updatedAt: Date;
 
-    @OneToOne(() => Credential, (cred) => cred.user)
-    credential?: Credential;
+    @OneToOne(() => CredentialEntity, (cred) => cred.user)
+    credential?: CredentialEntity;
 }
