@@ -2,9 +2,13 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './home/app.module';
 import { swaggerConfiguration } from '@common/documentation/';
 import { HttpExceptionFilter } from '@common/config/exception';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
+
+    // Validation de DTO
+    app.useGlobalPipes(new ValidationPipe());
 
     // Filtres globaux
     app.useGlobalFilters(new HttpExceptionFilter());

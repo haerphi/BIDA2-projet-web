@@ -1,6 +1,7 @@
 import { Response } from 'express';
 import {
     ArgumentsHost,
+    BadRequestException,
     Catch,
     ExceptionFilter,
     ForbiddenException,
@@ -45,6 +46,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
                 WrongCredentialException,
                 EmailAlreadyExistException,
                 NameAlreadyExistException,
+                BadRequestException,
             )
         ) {
             status = HttpStatus.BAD_REQUEST;
