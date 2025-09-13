@@ -6,7 +6,6 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { TokenPayload } from '@security/interfaces';
 import { RequestWithUser } from '@security/interfaces/request-with-user.interface';
-import { CredentialEntity } from '@security/models';
 import { SecurityService } from '@security/services/security.service';
 
 @Injectable()

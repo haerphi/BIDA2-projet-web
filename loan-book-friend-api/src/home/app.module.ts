@@ -1,11 +1,10 @@
-import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { configManager } from '@common/config/config.manager';
 import { SecurityModule } from '@security/security.module';
 import { UserModule } from '@user/user.module';
-import { AuthMiddleware } from '@security/middlewares/auth.middleware';
 
 @Module({
     imports: [
