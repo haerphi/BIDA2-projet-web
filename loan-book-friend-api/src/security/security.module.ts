@@ -1,7 +1,6 @@
 import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CredentialEntity } from '@security/models/credential.entity';
-import { TokenEntity } from './models/token.entity';
+import { CredentialEntity } from '@security/models';
 import { TokenService } from './services/token.service';
 import { SecurityService } from './services/security.service';
 import { UserModule } from '@user/user.module';
@@ -13,7 +12,7 @@ import { AuthMiddleware } from './middlewares/auth.middleware';
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([CredentialEntity, TokenEntity]),
+        TypeOrmModule.forFeature([CredentialEntity]),
         JwtModule.register({
             global: true,
             secret: configManager.getValue(ConfigKey.JWT_TOKEN_SECRET),

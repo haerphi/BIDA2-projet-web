@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CredentialEntity, TokenEntity } from '@security/models';
+import { CredentialEntity } from '@security/models';
 import { TokenService } from './token.service';
 import { SignInPayload } from '@security/dtos/sign-in.dto';
 import {
@@ -16,6 +16,7 @@ import {
     CredentialNotFoundException,
     WrongCredentialException,
 } from '@common/exceptions';
+import { Token } from '@security/interfaces/tokens.interface';
 
 @Injectable()
 export class SecurityService {
@@ -37,7 +38,7 @@ export class SecurityService {
         return result;
     }
 
-    async signIn(payload: SignInPayload): Promise<TokenEntity> {
+    async signIn(payload: SignInPayload): Promise<Token> {
         const user = await this.userService.findByEmail(payload.email);
         if (!user) {
             throw new WrongCredentialException();
@@ -86,7 +87,6 @@ export class SecurityService {
         }
 
         const details = await this.details(id);
-        await this.tokenService.delete(details);
         await this.credentialRepository.remove(details);
     }
 }
