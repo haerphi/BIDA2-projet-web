@@ -48,13 +48,10 @@ export class SecurityService {
             where: { user: { user_id: user.user_id } },
         });
 
-        console.log('cred', cred);
-
         if (
             !cred ||
             !(await comparePassword(payload.password, cred.password))
         ) {
-            console.log('wrong credential');
             throw new WrongCredentialException();
         }
 
