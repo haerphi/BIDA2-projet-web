@@ -1,1 +1,30 @@
-<p>login-page works!</p>
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <div>
+        <label for="email">Email</label>
+        <input type="text" id="email" formControlName="email" />
+        <ul>
+            @if(isRequired(loginControls.email)){
+            <li>Email is requried!</li>
+            } @for(error of fromValidationFieldError('email'); track $index){
+            <li>{{error}}</li>
+            }
+        </ul>
+    </div>
+
+    <div>
+        <label for="password">Password</label>
+        <input type="password" id="password" formControlName="password" />
+        <ul>
+            @if(isRequired(loginControls.password)){
+            <li>Password is requried!</li>
+            } @for(error of fromValidationFieldError('password'); track $index){
+            <li>{{error}}</li>
+            }
+        </ul>
+    </div>
+
+    <button type="submit" [disabled]="loginForm.invalid">Connect</button>
+    @if(formErrorCode){
+    <p>{{formErrorCode}}</p>
+    }
+</form>

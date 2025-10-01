@@ -1,47 +1,65 @@
-import { Component, inject, OnDestroy } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { Component, inject } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { ApiErrorResponse, ValidationFieldError } from '@core/models';
 import { AuthService } from '@core/services';
-import { Observable, Subscription } from 'rxjs';
+import { isRequired } from '@core/utils/formValidator.validator';
+import { AuthFormFactoryService } from '@features/auth/services/auth-form-factory.service';
 
 @Component({
     selector: 'app-login-page',
-    imports: [],
+    imports: [ReactiveFormsModule, FormsModule],
     templateUrl: './login-page.html',
     styleUrl: './login-page.scss',
 })
-export class LoginPage implements OnDestroy {
-    private readonly _fb = inject(FormBuilder);
+export class LoginPage {
+    protected readonly isRequired = isRequired;
+
+    private readonly _authFormFactory = inject(AuthFormFactoryService);
     private readonly _authService = inject(AuthService);
+    private readonly _router = inject(Router);
 
-    private _loginSubscription: Subscription | null = null;
+    loginForm = this._authFormFactory.createLoginForm();
+    loginControls = this.loginForm.controls;
 
-    loginForm = this._fb.group({
-        email: ['', [Validators.required, Validators.email]], // TODO validator email already used
-        password: ['', [Validators.required, Validators.minLength(6)]],
-    });
+    isLoading = false;
 
-    ngOnDestroy(): void {
-        if (this._loginSubscription) {
-            this._loginSubscription.unsubscribe();
-            this._loginSubscription = null;
+    formErrorCode: string | null = null;
+    formErrorFields: ValidationFieldError[] | null | undefined = null;
+
+    fromValidationFieldError(key: string): any[] {
+        if (!this.formErrorFields) {
+            return [];
         }
+
+        const el = this.formErrorFields.find((f) => f.field === key);
+        if (!el) {
+            return [];
+        }
+
+        return el.errors || [];
     }
 
-    onSubmit(): void {
+    async onSubmit(): Promise<void> {
+        this.loginForm.markAllAsTouched();
+        this.formErrorCode = null;
+        this.formErrorFields = null;
+        this.isLoading = true;
+
         if (this.loginForm.valid) {
-            this._loginSubscription = this._authService
-                .loginEmail({
+            try {
+                await this._authService.loginEmail({
                     email: this.loginForm.value.email!,
                     password: this.loginForm.value.password!,
-                })
-                .subscribe({
-                    next: (response: any) => {
-                        console.log('Login successful', response);
-                    },
-                    error: (error: any) => {
-                        console.error('Login failed', error);
-                    },
                 });
+
+                await this._router.navigate(['/']);
+            } catch (err) {
+                this.formErrorCode = (err as ApiErrorResponse).code;
+                this.formErrorFields = (err as ApiErrorResponse).form;
+            } finally {
+                this.isLoading = false;
+            }
         }
     }
 }
