@@ -1,0 +1,27 @@
+<ul>
+    <li>
+        <a
+            routerLink="/"
+            routerLinkActive="link-active"
+            [routerLinkActiveOptions]="{exact: true}"
+            >Home</a
+        >
+    </li>
+    @if(connected()){
+    <li><span (click)="onLogoutClick()">Logout</span></li>
+    }@else {
+    <li>
+        <a
+            routerLink="/auth"
+            routerLinkActive="link-active"
+            [routerLinkActiveOptions]="{exact: true}"
+            >Login</a
+        >
+    </li>
+    <li>
+        <a routerLink="/auth/register" routerLinkActive="link-active"
+            >Register</a
+        >
+    </li>
+    }
+</ul>
