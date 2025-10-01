@@ -8,7 +8,7 @@ export const SignInApiOperationDocumentation: ApiOperationOptions = {
 };
 
 export const SignInApiResponsesDocumentation: ApiResponseOptions = {
-    status: 201,
+    status: 200,
     description: 'Todo item successfully created.',
     type: SignInResponse,
 };

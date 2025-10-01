@@ -20,13 +20,16 @@ async function bootstrap() {
     // Filtres globaux
     app.useGlobalFilters(new HttpExceptionFilter());
 
+    // Prefix
+    app.setGlobalPrefix('api');
+
     // Swagger
     swaggerConfiguration.config(app);
 
     await app.listen(process.env.PORT ?? 3000);
 
     console.log(
-        `Application is running on: http://localhost:${process.env.PORT ?? 3000}`,
+        `Application is running on: http://localhost:${process.env.PORT ?? 3000}/api`,
     );
     console.log(
         `Swagger is running on: http://localhost:${process.env.PORT ?? 3000}/docs`,

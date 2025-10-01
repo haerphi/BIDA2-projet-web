@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import {
     ApiBearerAuth,
     ApiOperation,
@@ -25,6 +25,7 @@ export class SecurityController {
     @ApiOperation(SignInApiOperationDocumentation)
     @ApiResponse(SignInApiResponsesDocumentation)
     @Post('signin')
+    @HttpCode(HttpStatus.OK)
     public async signIn(@Body() payload: SignInPayload) {
         const tk: Token = await this.securityService.signIn(payload);
         return toSignInResponse(tk.token, tk.refreshToken);
