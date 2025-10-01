@@ -1,27 +1,47 @@
-import { HttpInterceptorFn } from '@angular/common/http';
+import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { ApiCode } from '@core/constants/api-code.enum';
 import { AuthService } from '@core/services';
-import { catchError, throwError } from 'rxjs';
+import { catchError, EMPTY, from, switchMap, throwError } from 'rxjs';
 
 export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
     const router = inject(Router);
     const authService = inject(AuthService);
 
     return next(req).pipe(
-        catchError((error) => {
-            console.log(error);
-            // TODO manage refresh token
-
-            if (error.status === 403) {
-                // redirection vers auth
-                authService.logout();
-                router.navigate(['/', 'auth']);
-                return throwError(() => null);
-            } else {
+        catchError((error: HttpErrorResponse) => {
+            if (
+                error.status === 401 &&
+                error?.error?.code === ApiCode.EXCEPTION_INVALID_EXPIRED_TOKEN
+            ) {
+                return from(authService.refreshToken()).pipe(
+                    switchMap(() => {
+                        const newToken = authService.token();
+                        const retried = newToken
+                            ? req.clone({
+                                  setHeaders: {
+                                      Authorization: `Bearer ${newToken}`,
+                                  },
+                              })
+                            : req;
+                        return next(retried);
+                    }),
+                    catchError(() => {
+                        authService.logout();
+                        router.navigate(['/', 'auth']);
+                        return throwError(() => error);
+                    }),
+                );
             }
 
-            return throwError(() => error.error);
+            if (error.status === 403) {
+                authService.logout();
+                router.navigate(['/', 'auth']);
+                return EMPTY;
+            }
+
+            return throwError(() => error);
         }),
     );
 };

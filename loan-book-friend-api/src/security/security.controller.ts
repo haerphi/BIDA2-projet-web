@@ -15,6 +15,7 @@ import {
     SignUpDocumentation,
 } from './security.swagger';
 import { Token } from './interfaces/tokens.interface';
+import { RefreshTokenPayload } from './dtos/refresh-token.dto';
 
 @ApiBearerAuth('access-token')
 @ApiTags('Authentication & Security')
@@ -35,5 +36,15 @@ export class SecurityController {
     @Post('signup')
     public async signUp(@Body() payload: SignUpPayload) {
         await this.securityService.signUp(payload);
+    }
+
+    @ApiResponse(SignInApiResponsesDocumentation)
+    @Post('refresh-token')
+    @HttpCode(HttpStatus.OK)
+    public async refreshToken(@Body() payload: RefreshTokenPayload) {
+        const tk: Token = await this.securityService.refreshToken(
+            payload.refresh,
+        );
+        return toSignInResponse(tk.token, tk.refreshToken);
     }
 }

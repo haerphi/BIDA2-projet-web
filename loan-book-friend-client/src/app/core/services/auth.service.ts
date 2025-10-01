@@ -1,6 +1,10 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpBackend, HttpClient } from '@angular/common/http';
 import { effect, inject, Injectable, signal } from '@angular/core';
-import { API_ROUTE_AUTH_LOGIN, LOCAL_STORAGE_TOKEN } from '@core/constants';
+import {
+    API_ROUTE_AUTH_LOGIN,
+    API_ROUTE_AUTH_REFRESH_TOKEN,
+    LOCAL_STORAGE_TOKEN,
+} from '@core/constants';
 import { CredentialEmail, SignInResponse } from '@core/models';
 import { environment } from '@env';
 import { firstValueFrom, tap } from 'rxjs';
@@ -10,13 +14,15 @@ import { firstValueFrom, tap } from 'rxjs';
 })
 export class AuthService {
     private readonly _httpClient = inject(HttpClient);
+    // Pour éviter les boucles infinies lors de la requête de refresh token
+    private readonly _httpBackend = inject(HttpBackend);
+
     private readonly _baseUrl = environment.apiUrl;
 
     private _token = signal<string | null>(null);
     public readonly token = this._token.asReadonly();
 
     private _refreshToken = signal<string | null>(null);
-    public readonly refreshToken = this._token.asReadonly();
 
     constructor() {
         // Récupération du token dans le localstorage
@@ -43,6 +49,24 @@ export class AuthService {
                 .post<SignInResponse>(
                     this._baseUrl + API_ROUTE_AUTH_LOGIN,
                     credential,
+                )
+                .pipe(
+                    tap((response) => {
+                        this._token.set(response.token);
+                        this._refreshToken.set(response.refreshToken);
+                    }),
+                ),
+        );
+    }
+
+    public refreshToken(): Promise<SignInResponse> {
+        return firstValueFrom(
+            new HttpClient(this._httpBackend)
+                .post<SignInResponse>(
+                    this._baseUrl + API_ROUTE_AUTH_REFRESH_TOKEN,
+                    {
+                        refresh: this._refreshToken(),
+                    },
                 )
                 .pipe(
                     tap((response) => {

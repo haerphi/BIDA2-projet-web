@@ -6,6 +6,7 @@ import {
     ForbiddenException,
     HttpStatus,
     NotFoundException,
+    UnauthorizedException,
 } from '@nestjs/common';
 import { isInstanceOf } from '@common/utils/array.utils';
 
@@ -15,6 +16,7 @@ import {
     ServerErrorException,
     TokenExpiredException,
     TokenGenerationException,
+    UnauthorizedException as CustomUnauthorizedException,
     ValidationException,
     WrongCredentialException,
 } from '@common/exceptions';
@@ -65,6 +67,13 @@ export class HttpExceptionFilter implements ExceptionFilter {
             status = HttpStatus.BAD_REQUEST;
             errorResponse.code = exception.message;
             errorResponse.form = (exception as any as ValidationException).form;
+        } else if (isInstanceOf(exception, UnauthorizedException)) {
+            status = HttpStatus.UNAUTHORIZED;
+            errorResponse.code = new CustomUnauthorizedException(
+                // @ts-ignore
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+                exception.response.message as string,
+            ).message;
         } else if (isInstanceOf(exception, ForbiddenException)) {
             status = HttpStatus.FORBIDDEN;
             errorResponse.code = exception.message;

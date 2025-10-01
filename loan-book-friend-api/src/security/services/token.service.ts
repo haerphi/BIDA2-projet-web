@@ -7,7 +7,6 @@ import {
 import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { RefreshTokenPayload } from '@security/dtos/refresh-token.dto';
 import { TokenPayload } from '@security/interfaces';
 import { Token } from '@security/interfaces/tokens.interface';
 import { CredentialEntity } from '@security/models';
@@ -53,10 +52,7 @@ export class TokenService {
         }
     }
 
-    async refresh(payload: RefreshTokenPayload): Promise<{
-        token: string;
-        refreshToken: string;
-    }> {
+    async refresh(refresh: string): Promise<Token> {
         let credentialId: string | null = null;
 
         const JWT_REFRESH_TOKEN_SECRET = configManager.getValue(
@@ -65,12 +61,9 @@ export class TokenService {
         );
 
         try {
-            credentialId = this.jwtService.verify<TokenPayload>(
-                payload.refresh,
-                {
-                    secret: JWT_REFRESH_TOKEN_SECRET,
-                },
-            ).sub;
+            credentialId = this.jwtService.verify<TokenPayload>(refresh, {
+                secret: JWT_REFRESH_TOKEN_SECRET,
+            }).sub;
         } catch {
             throw new TokenExpiredException();
         }

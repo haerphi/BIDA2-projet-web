@@ -86,4 +86,8 @@ export class SecurityService {
         const details = await this.details(id);
         await this.credentialRepository.remove(details);
     }
+
+    async refreshToken(refresh: string): Promise<Token> {
+        return this.tokenService.refresh(refresh);
+    }
 }
