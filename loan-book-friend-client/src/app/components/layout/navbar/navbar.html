@@ -8,6 +8,9 @@
         >
     </li>
     @if(connected()){
+    <li>
+        <a routerLink="/users/me" routerLinkActive="router-link-active">Me</a>
+    </li>
     <li><span (click)="onLogoutClick()">Logout</span></li>
     }@else {
     <li>
