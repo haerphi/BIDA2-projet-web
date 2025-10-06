@@ -13,8 +13,8 @@ export class SignInPayload {
 
 export class SignInResponse {
     @ApiProperty()
-    token: string;
+    tokenIat: number;
 
     @ApiProperty()
-    refreshToken: string;
+    refreshTokenIat: number;
 }

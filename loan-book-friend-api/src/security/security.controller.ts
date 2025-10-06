@@ -1,4 +1,12 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    HttpCode,
+    HttpStatus,
+    Post,
+    Req,
+    Res,
+} from '@nestjs/common';
 import {
     ApiBearerAuth,
     ApiOperation,
@@ -8,14 +16,17 @@ import {
 import { SecurityService } from './services/security.service';
 import { SignInPayload } from './dtos/sign-in.dto';
 import { SignUpPayload } from './dtos/sign-up.dto';
-import { toSignInResponse } from './mappers/signin.mappers';
 import {
     SignInApiOperationDocumentation,
     SignInApiResponsesDocumentation,
     SignUpDocumentation,
 } from './security.swagger';
 import { Token } from './interfaces/tokens.interface';
-import { RefreshTokenPayload } from './dtos/refresh-token.dto';
+import { configManager } from '@common/config';
+import type { Request, Response } from 'express';
+import { toSignInResponse } from './mappers/signin.mappers';
+import { UnauthorizedException } from '@common/exceptions';
+import { CookieKey } from '@common/config/enums';
 
 @ApiBearerAuth('access-token')
 @ApiTags('Authentication & Security')
@@ -27,9 +38,26 @@ export class SecurityController {
     @ApiResponse(SignInApiResponsesDocumentation)
     @Post('signin')
     @HttpCode(HttpStatus.OK)
-    public async signIn(@Body() payload: SignInPayload) {
+    public async signIn(
+        @Body() payload: SignInPayload,
+        @Res({ passthrough: true }) response: Response,
+    ) {
         const tk: Token = await this.securityService.signIn(payload);
-        return toSignInResponse(tk.token, tk.refreshToken);
+
+        // Access token can be short-lived cookie, or returned in body if you prefer
+        response.cookie(
+            'access_token',
+            tk.token,
+            configManager.getCookieAccessTokenConfig(),
+        );
+
+        response.cookie(
+            'refresh_token',
+            tk.refreshToken,
+            configManager.getCookieRefreshTokenConfig(),
+        );
+
+        return toSignInResponse(tk.tokenIat, tk.refreshTokenIat);
     }
 
     @ApiOperation(SignUpDocumentation)
@@ -39,12 +67,50 @@ export class SecurityController {
     }
 
     @ApiResponse(SignInApiResponsesDocumentation)
-    @Post('refresh-token')
+    @Post('refresh')
     @HttpCode(HttpStatus.OK)
-    public async refreshToken(@Body() payload: RefreshTokenPayload) {
-        const tk: Token = await this.securityService.refreshToken(
-            payload.refresh,
+    public async refreshToken(
+        @Req() request: Request,
+        @Res({ passthrough: true }) response: Response,
+    ) {
+        const refresh = request.cookies['refresh_token'] as string | undefined;
+
+        if (!refresh) {
+            throw new UnauthorizedException('refresh_token_missing');
+        }
+
+        const tk: Token = await this.securityService.refreshToken(refresh);
+
+        response.cookie(
+            CookieKey.ACCESS_TOKEN,
+            tk.token,
+            configManager.getCookieAccessTokenConfig(),
         );
-        return toSignInResponse(tk.token, tk.refreshToken);
+
+        response.cookie(
+            CookieKey.REFRESH_TOKEN,
+            tk.refreshToken,
+            configManager.getCookieRefreshTokenConfig(),
+        );
+
+        return toSignInResponse(tk.tokenIat, tk.refreshTokenIat);
+    }
+
+    @Post('signout')
+    @HttpCode(HttpStatus.NO_CONTENT)
+    public signOut(
+        @Req() request: Request,
+        @Res({ passthrough: true }) response: Response,
+    ) {
+        response.clearCookie(
+            CookieKey.ACCESS_TOKEN,
+            configManager.getCookieAccessTokenConfig(),
+        );
+        response.clearCookie(
+            CookieKey.REFRESH_TOKEN,
+            configManager.getCookieRefreshTokenConfig(),
+        );
+
+        return;
     }
 }

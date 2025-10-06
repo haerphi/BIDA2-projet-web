@@ -19,6 +19,10 @@ export enum ConfigKey {
     JWT_TOKEN_EXPIRE_IN = 'JWT_TOKEN_EXPIRE_IN',
     JWT_REFRESH_TOKEN_SECRET = 'JWT_REFRESH_TOKEN_SECRET',
     JWT_REFRESH_TOKEN_EXPIRE_IN = 'JWT_REFRESH_TOKEN_EXPIRE_IN',
+
+    // FRONTEND
+    FRONTEND_URL = 'FRONTEND_URL',
+    FRONTEND_DOMAIN = 'FRONTEND_DOMAIN',
 }
 export const configMinimalKeys: ConfigKey[] = Object.keys(
     ConfigKey,

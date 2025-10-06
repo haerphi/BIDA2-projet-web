@@ -29,6 +29,9 @@ import { AuthMiddleware } from './middlewares/auth.middleware';
 })
 export class SecurityModule {
     configure(consumer: MiddlewareConsumer) {
-        consumer.apply(AuthMiddleware).forRoutes('*');
+        consumer
+            .apply(AuthMiddleware)
+            .exclude('/auth/signout', '/auth/refresh')
+            .forRoutes('*');
     }
 }

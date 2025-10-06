@@ -2,6 +2,7 @@ import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConfigKey, configMinimalKeys } from '@common/config/enums';
 
 import * as dotenv from 'dotenv';
+import { CookieOptions } from 'express';
 dotenv.config();
 
 class ConfigManager {
@@ -24,6 +25,38 @@ class ConfigManager {
             entities: [__dirname + '/../../**/*.entity{.ts,.js}'],
             synchronize: this.getValue(ConfigKey.DB_SYNC) === 'true',
             logging: true,
+        };
+    }
+
+    public getCorsConfig() {
+        return {
+            origin: this.getValue(ConfigKey.FRONTEND_URL, false) || '*',
+            methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+            credentials: true,
+        };
+    }
+
+    public getCookieAccessTokenConfig(): CookieOptions {
+        const frontendDomain = this.getValue(ConfigKey.FRONTEND_DOMAIN, true);
+        return {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'lax',
+            path: '/', // send with all routes
+            maxAge: 15 * 60 * 1000, // TODO read from config - form now: 15 min
+            domain: frontendDomain ?? undefined,
+        };
+    }
+
+    public getCookieRefreshTokenConfig(): CookieOptions {
+        const frontendDomain = this.getValue(ConfigKey.FRONTEND_DOMAIN, true);
+        return {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'lax',
+            path: '/api/auth/refresh',
+            maxAge: 7 * 24 * 60 * 60 * 1000, // TODO read from config - form now: 7 days
+            domain: frontendDomain ?? undefined,
         };
     }
 

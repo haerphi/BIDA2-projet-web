@@ -2,8 +2,9 @@ import { HttpBackend, HttpClient } from '@angular/common/http';
 import { effect, inject, Injectable, signal } from '@angular/core';
 import {
     API_ROUTE_AUTH_LOGIN,
+    API_ROUTE_AUTH_LOGOUT,
     API_ROUTE_AUTH_REFRESH_TOKEN,
-    LOCAL_STORAGE_TOKEN,
+    LOCAL_STORAGE,
 } from '@core/constants';
 import { CredentialEmail, SignInResponse } from '@core/models';
 import { environment } from '@env';
@@ -19,26 +20,52 @@ export class AuthService {
 
     private readonly _baseUrl = environment.apiUrl;
 
-    private _token = signal<string | null>(null);
-    public readonly token = this._token.asReadonly();
+    private _tokenIat = signal<number | null>(null);
+    public readonly tokenIat = this._tokenIat.asReadonly();
 
-    private _refreshToken = signal<string | null>(null);
+    private _refreshTokenIat = signal<number | null>(null);
+    public readonly refreshTokenIat = this._refreshTokenIat.asReadonly();
 
     constructor() {
         // Récupération du token dans le localstorage
-        const strToken = localStorage.getItem(LOCAL_STORAGE_TOKEN);
+        const strToken = localStorage.getItem(LOCAL_STORAGE.TOKEN);
         if (strToken) {
-            this._token.set(strToken);
+            this._tokenIat.set(+strToken);
+        }
+
+        const strRefreshToken = localStorage.getItem(
+            LOCAL_STORAGE.REFRESH_TOKEN,
+        );
+        if (strRefreshToken) {
+            this._refreshTokenIat.set(+strRefreshToken);
         }
 
         effect(() => {
+            console.log('Access token changed:', this._tokenIat());
+
             // lorsque le token est mis à jour, on met à jour le localstorage
-            const t = this._token();
+            const t = this._tokenIat();
 
             if (t) {
-                localStorage.setItem(LOCAL_STORAGE_TOKEN, t);
+                localStorage.setItem(LOCAL_STORAGE.TOKEN, t.toString());
             } else {
-                localStorage.removeItem(LOCAL_STORAGE_TOKEN);
+                localStorage.removeItem(LOCAL_STORAGE.TOKEN);
+            }
+        });
+
+        effect(() => {
+            console.log('Refresh token changed:', this._refreshTokenIat());
+
+            // lorsque le refresh token est mis à jour, on met à jour le localstorage
+            const rt = this._refreshTokenIat();
+
+            if (rt) {
+                localStorage.setItem(
+                    LOCAL_STORAGE.REFRESH_TOKEN,
+                    rt.toString(),
+                );
+            } else {
+                localStorage.removeItem(LOCAL_STORAGE.REFRESH_TOKEN);
             }
         });
     }
@@ -52,8 +79,10 @@ export class AuthService {
                 )
                 .pipe(
                     tap((response) => {
-                        this._token.set(response.token);
-                        this._refreshToken.set(response.refreshToken);
+                        console.log(response);
+
+                        this._tokenIat.set(response.tokenIat);
+                        this._refreshTokenIat.set(response.refreshTokenIat);
                     }),
                 ),
         );
@@ -64,21 +93,32 @@ export class AuthService {
             new HttpClient(this._httpBackend)
                 .post<SignInResponse>(
                     this._baseUrl + API_ROUTE_AUTH_REFRESH_TOKEN,
+                    {},
                     {
-                        refresh: this._refreshToken(),
+                        withCredentials: true,
                     },
                 )
                 .pipe(
                     tap((response) => {
-                        this._token.set(response.token);
-                        this._refreshToken.set(response.refreshToken);
+                        this._tokenIat.set(response.tokenIat);
+                        this._refreshTokenIat.set(response.refreshTokenIat);
                     }),
                 ),
         );
     }
 
-    public logout(): void {
-        this._token.set('');
-        this._refreshToken.set('');
+    public logout(): Promise<void> {
+        this._tokenIat.set(null);
+        this._refreshTokenIat.set(null);
+
+        return firstValueFrom(
+            new HttpClient(this._httpBackend).post<void>(
+                this._baseUrl + API_ROUTE_AUTH_LOGOUT,
+                {},
+                {
+                    withCredentials: true,
+                },
+            ),
+        );
     }
 }

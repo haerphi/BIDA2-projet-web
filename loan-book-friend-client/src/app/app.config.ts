@@ -11,7 +11,7 @@ import {
     withFetch,
     withInterceptors,
 } from '@angular/common/http';
-import { httpErrorInterceptor, httpJwtInterceptor } from '@core/interceptors';
+import { httpErrorInterceptor, withCredsInterceptor } from '@core/interceptors';
 
 export const appConfig: ApplicationConfig = {
     providers: [
@@ -20,7 +20,7 @@ export const appConfig: ApplicationConfig = {
         provideRouter(routes),
         provideHttpClient(
             withFetch(),
-            withInterceptors([httpJwtInterceptor, httpErrorInterceptor]),
+            withInterceptors([withCredsInterceptor, httpErrorInterceptor]),
         ),
     ],
 };

@@ -67,6 +67,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
             status = HttpStatus.BAD_REQUEST;
             errorResponse.code = exception.message;
             errorResponse.form = (exception as any as ValidationException).form;
+        } else if (isInstanceOf(exception, CustomUnauthorizedException)) {
+            status = HttpStatus.UNAUTHORIZED;
+            errorResponse.code = exception.message;
         } else if (isInstanceOf(exception, UnauthorizedException)) {
             status = HttpStatus.UNAUTHORIZED;
             errorResponse.code = new CustomUnauthorizedException(

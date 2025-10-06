@@ -1,1 +1,4 @@
-export const LOCAL_STORAGE_TOKEN = 'token';
+export enum LOCAL_STORAGE {
+    TOKEN = 'token',
+    REFRESH_TOKEN = 'refreshToken',
+}

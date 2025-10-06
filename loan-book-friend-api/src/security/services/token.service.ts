@@ -10,6 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { TokenPayload } from '@security/interfaces';
 import { Token } from '@security/interfaces/tokens.interface';
 import { CredentialEntity } from '@security/models';
+import { durationParser } from '@security/utils/duration-parser.utils';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -27,24 +28,32 @@ export class TokenService {
             const payload = {
                 sub: credential.credential_id,
             };
+            const tokenExpireIn = configManager.getValue(
+                ConfigKey.JWT_TOKEN_EXPIRE_IN,
+            );
             const token = await this.jwtService.signAsync(payload, {
                 secret: configManager.getValue(ConfigKey.JWT_TOKEN_SECRET),
-                expiresIn: configManager.getValue(
-                    ConfigKey.JWT_TOKEN_EXPIRE_IN,
-                ),
+                expiresIn: tokenExpireIn,
             });
+
+            const refreshTokenExpireIn = configManager.getValue(
+                ConfigKey.JWT_REFRESH_TOKEN_EXPIRE_IN,
+            );
             const refreshToken = await this.jwtService.signAsync(payload, {
                 secret: configManager.getValue(
                     ConfigKey.JWT_REFRESH_TOKEN_SECRET,
                 ),
-                expiresIn: configManager.getValue(
-                    ConfigKey.JWT_REFRESH_TOKEN_EXPIRE_IN,
-                ),
+                expiresIn: refreshTokenExpireIn,
             });
+
+            const tokenDuration = durationParser(tokenExpireIn);
+            const refreshTokenDuration = durationParser(refreshTokenExpireIn);
 
             return {
                 token,
+                tokenIat: Date.now() + tokenDuration * 1000,
                 refreshToken,
+                refreshTokenIat: Date.now() + refreshTokenDuration * 1000,
             };
         } catch (e) {
             this.logger.error(e);

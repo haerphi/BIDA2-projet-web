@@ -6,15 +6,17 @@ import {
     HttpExceptionFilter,
 } from '@common/config/exception';
 import { ValidationPipe } from '@nestjs/common';
+import cookieParser from 'cookie-parser';
+import { configManager } from '@common/config';
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
 
     // Configuration CORS
-    app.enableCors({
-        origin: process.env.CORS_ORIGIN || '*',
-        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    });
+    app.enableCors(configManager.getCorsConfig());
+
+    // enable cookies (httpOnly)
+    app.use(cookieParser());
 
     // Validation de DTO
     app.useGlobalPipes(

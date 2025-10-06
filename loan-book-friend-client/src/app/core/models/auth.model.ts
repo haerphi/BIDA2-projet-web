@@ -4,6 +4,6 @@ export interface CredentialEmail {
 }
 
 export interface SignInResponse {
-    token: string;
-    refreshToken: string;
+    tokenIat: number;
+    refreshTokenIat: number;
 }

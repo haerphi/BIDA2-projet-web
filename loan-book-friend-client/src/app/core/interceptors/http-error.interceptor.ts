@@ -17,17 +17,11 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
             ) {
                 return from(authService.refreshToken()).pipe(
                     switchMap(() => {
-                        const newToken = authService.token();
-                        const retried = newToken
-                            ? req.clone({
-                                  setHeaders: {
-                                      Authorization: `Bearer ${newToken}`,
-                                  },
-                              })
-                            : req;
-                        return next(retried);
+                        return next(req);
                     }),
                     catchError(() => {
+                        console.log('Refresh token error');
+
                         authService.logout();
                         router.navigate(['/', 'auth']);
                         return throwError(() => error);

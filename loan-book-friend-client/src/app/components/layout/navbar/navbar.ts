@@ -11,7 +11,7 @@ import { AuthService } from '@core/services';
 export class Navbar {
     private readonly _authService = inject(AuthService);
 
-    connected = computed(() => !!this._authService.token());
+    connected = computed(() => !!this._authService.tokenIat());
 
     onLogoutClick() {
         this._authService.logout();

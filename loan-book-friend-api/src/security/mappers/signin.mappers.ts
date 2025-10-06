@@ -1,8 +1,8 @@
 import { SignInResponse } from '@security/dtos/sign-in.dto';
 
 export const toSignInResponse = (
-    token: string,
-    refreshToken: string,
+    tokenIat: number,
+    refreshTokenIat: number,
 ): SignInResponse => {
-    return { token, refreshToken };
+    return { tokenIat, refreshTokenIat };
 };

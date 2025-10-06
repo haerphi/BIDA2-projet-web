@@ -16,15 +16,13 @@ export class AuthMiddleware implements NestMiddleware {
     ) {}
 
     async use(req: RequestWithUser, res: Response, next: () => void) {
-        if (!req.headers.authorization) {
+        const token = req.cookies['access_token'] as string | undefined;
+
+        console.log(req);
+
+        if (!token) {
             next();
             return;
-        }
-
-        const [type, token] = req.headers.authorization.split(' ');
-
-        if (type.toLowerCase() !== 'bearer') {
-            throw new UnauthorizedException('invalid_authorization_type');
         }
 
         let credId: string | null = null;
