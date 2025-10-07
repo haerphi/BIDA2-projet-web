@@ -8,7 +8,7 @@ import {
     Res,
 } from '@nestjs/common';
 import {
-    ApiBearerAuth,
+    ApiCookieAuth,
     ApiOperation,
     ApiResponse,
     ApiTags,
@@ -28,7 +28,7 @@ import { toSignInResponse } from './mappers/signin.mappers';
 import { UnauthorizedException } from '@common/exceptions';
 import { CookieKey } from '@common/config/enums';
 
-@ApiBearerAuth('access-token')
+@ApiCookieAuth('access_token')
 @ApiTags('Authentication & Security')
 @Controller('auth')
 export class SecurityController {

@@ -1,5 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiCookieAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { RequireRoles } from '@security/guards';
 import { User } from '@security/metadata';
 import { UserEntity } from '@user/models';
@@ -8,6 +8,7 @@ import {
     GetConsumerApiResponseDocumentation,
 } from './user.swagger';
 
+@ApiCookieAuth('access_token')
 @Controller('user')
 export class UserController {
     @ApiOperation(GetConsumerApiOperationDocumentation)

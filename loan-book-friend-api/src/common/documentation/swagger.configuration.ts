@@ -9,7 +9,11 @@ class SwaggerConfiguration {
             .setTitle('NestJS API')
             .setDescription('NestJS swagger document')
             .setVersion('1.0')
-            .addBearerAuth()
+            .addCookieAuth('authCookie', {
+                type: 'http',
+                in: 'Header',
+                scheme: 'Bearer',
+            })
             .build();
         const document = SwaggerModule.createDocument(app, config);
         SwaggerModule.setup('docs', app, document);
