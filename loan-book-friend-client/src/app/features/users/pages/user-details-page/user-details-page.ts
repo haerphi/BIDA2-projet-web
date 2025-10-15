@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { UserService } from '@features/users/services/user.service';
+import { UserService } from '@core/services/user.service';
 
 @Component({
     selector: 'app-user-details-page',

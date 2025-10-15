@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { API_ROUTE_USER_CONSUMERS } from '@core/constants';
+import { ApiRoutes } from '@core/constants';
+import { UserList } from '@core/models';
 import { environment } from '@env';
 import { firstValueFrom } from 'rxjs';
 
@@ -13,7 +14,15 @@ export class UserService {
 
     getConsumers(): Promise<any> {
         return firstValueFrom(
-            this._httpClient.get(this._baseUrl + API_ROUTE_USER_CONSUMERS),
+            this._httpClient.get(this._baseUrl + ApiRoutes.user.consumers),
+        );
+    }
+
+    getAllUsers(): Promise<UserList[]> {
+        return firstValueFrom(
+            this._httpClient.get<UserList[]>(
+                this._baseUrl + ApiRoutes.user.all,
+            ),
         );
     }
 }

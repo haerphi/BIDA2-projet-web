@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { UserRole } from '@security/enums/user-role.enum';
+import { UserRole } from '@security/enums';
 import { RequestWithUser } from '@security/interfaces/request-with-user.interface';
 import { Observable } from 'rxjs';
 
@@ -28,6 +28,6 @@ export class RequireRolesGuard implements CanActivate {
             return true;
         }
 
-        return roles.includes(user.role);
+        return user.role === UserRole.Admin || roles.includes(user.role);
     }
 }

@@ -41,4 +41,8 @@ export class UserService {
     async findByEmail(email: string): Promise<UserEntity | null> {
         return this.userRepository.findOneBy({ email });
     }
+
+    async findAll(): Promise<UserEntity[]> {
+        return this.userRepository.find();
+    }
 }

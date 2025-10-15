@@ -9,8 +9,15 @@
     </li>
     @if(connected()){
     <li>
-        <a routerLink="/users/me" routerLinkActive="router-link-active">Me</a>
+        <a routerLink="/users/me" routerLinkActive="router-link-active"
+            >Me {{role()}}</a
+        >
     </li>
+    @if(role() === UserRole.Admin){
+    <li>
+        <a routerLink="/admin" routerLinkActive="router-link-active">Admin</a>
+    </li>
+    }
     <li><span (click)="onLogoutClick()">Logout</span></li>
     }@else {
     <li>

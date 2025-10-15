@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 
 import { CredentialEntity } from '@security/models/credential.entity';
+import { UserRole } from '@security/enums';
 
 @Entity({ name: 'users' })
 export class UserEntity {
@@ -21,6 +22,14 @@ export class UserEntity {
     @Index('UQ_users_email', { unique: true })
     @Column({ type: 'varchar', length: 320, nullable: false })
     email: string;
+
+    @Column({
+        type: 'varchar',
+        length: 20,
+        nullable: true,
+        default: UserRole.User,
+    })
+    role: UserRole = UserRole.User;
 
     @CreateDateColumn({
         name: 'created_at',

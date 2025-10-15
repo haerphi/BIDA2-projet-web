@@ -8,6 +8,7 @@
     "paths": {
       "@core/*": ["./src/app/core/*"],
       "@commons/*": ["./src/app/commons/*"],
+      "@components/*": ["./src/app/components/*"],
       "@features/*": ["./src/app/features/*"],
       "@env": ["./src/environments/environment.ts"]
     }

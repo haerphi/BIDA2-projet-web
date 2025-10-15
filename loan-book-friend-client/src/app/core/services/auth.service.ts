@@ -5,6 +5,7 @@ import {
     API_ROUTE_AUTH_LOGOUT,
     API_ROUTE_AUTH_REFRESH_TOKEN,
     LOCAL_STORAGE,
+    UserRole,
 } from '@core/constants';
 import { CredentialEmail, SignInResponse } from '@core/models';
 import { environment } from '@env';
@@ -26,6 +27,9 @@ export class AuthService {
     private _refreshTokenIat = signal<number | null>(null);
     public readonly refreshTokenIat = this._refreshTokenIat.asReadonly();
 
+    private _role = signal<UserRole | null>(null);
+    public readonly role = this._role.asReadonly();
+
     constructor() {
         // Récupération du token dans le localstorage
         const strToken = localStorage.getItem(LOCAL_STORAGE.TOKEN);
@@ -38,6 +42,11 @@ export class AuthService {
         );
         if (strRefreshToken) {
             this._refreshTokenIat.set(+strRefreshToken);
+        }
+
+        const strRole = localStorage.getItem(LOCAL_STORAGE.ROLE);
+        if (strRole) {
+            this._role.set(strRole as UserRole);
         }
 
         effect(() => {
@@ -68,6 +77,19 @@ export class AuthService {
                 localStorage.removeItem(LOCAL_STORAGE.REFRESH_TOKEN);
             }
         });
+
+        effect(() => {
+            console.log('Role changed:', this._role());
+
+            // lorsque le role est mis à jour, on met à jour le localstorage
+            const r = this._role();
+
+            if (r) {
+                localStorage.setItem(LOCAL_STORAGE.ROLE, r);
+            } else {
+                localStorage.removeItem(LOCAL_STORAGE.ROLE);
+            }
+        });
     }
 
     public loginEmail(credential: CredentialEmail): Promise<SignInResponse> {
@@ -83,6 +105,7 @@ export class AuthService {
 
                         this._tokenIat.set(response.tokenIat);
                         this._refreshTokenIat.set(response.refreshTokenIat);
+                        this._role.set(response.role);
                     }),
                 ),
         );
@@ -102,6 +125,7 @@ export class AuthService {
                     tap((response) => {
                         this._tokenIat.set(response.tokenIat);
                         this._refreshTokenIat.set(response.refreshTokenIat);
+                        this._role.set(response.role);
                     }),
                 ),
         );
@@ -110,6 +134,7 @@ export class AuthService {
     public logout(): Promise<void> {
         this._tokenIat.set(null);
         this._refreshTokenIat.set(null);
+        this._role.set(null);
 
         return firstValueFrom(
             new HttpClient(this._httpBackend).post<void>(
