@@ -3,7 +3,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApiErrorResponse, ValidationFieldError } from '@core/models';
 import { AuthService } from '@core/services';
-import { isRequired } from '@core/utils/formValidator.validator';
+import { fromValidationFieldError } from '@core/utils/validator.utils';
+import { isRequired } from '@core/validators';
 import { AuthFormFactoryService } from '@features/auth/services/auth-form-factory.service';
 
 @Component({
@@ -27,17 +28,13 @@ export class LoginPage {
     formErrorCode: string | null = null;
     formErrorFields: ValidationFieldError[] | null | undefined = null;
 
-    fromValidationFieldError(key: string): any[] {
+    checkFormFieldError(key: string): any[] {
+        console.log(key, this.formErrorFields);
         if (!this.formErrorFields) {
             return [];
         }
 
-        const el = this.formErrorFields.find((f) => f.field === key);
-        if (!el) {
-            return [];
-        }
-
-        return el.errors || [];
+        return fromValidationFieldError(this.formErrorFields, key);
     }
 
     async onSubmit(): Promise<void> {

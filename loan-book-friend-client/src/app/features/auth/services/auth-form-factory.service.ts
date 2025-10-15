@@ -10,6 +10,10 @@ export class AuthFormFactoryService {
 
     public createLoginForm(data?: Partial<CredentialEmail>) {
         return this._fb.group({
+            email: [data?.email, [Validators.required, Validators.email]],
+            password: [data?.password, [Validators.required]],
+        });
+    }
             email: [data?.email, [Validators.required, Validators.email]], // TODO validator email already used
             password: [data?.password, [Validators.required]], // TODO password validator with regex to get strong
         });

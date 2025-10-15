@@ -2,6 +2,7 @@ import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiCode } from '@core/constants/api-code.enum';
+import { ApiErrorResponse } from '@core/models';
 import { AuthService } from '@core/services';
 import { catchError, EMPTY, from, switchMap, throwError } from 'rxjs';
 
@@ -35,7 +36,13 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
                 return EMPTY;
             }
 
-            return throwError(() => error);
+            return throwError(
+                () =>
+                    new ApiErrorResponse(
+                        error?.error?.code,
+                        error?.error?.form,
+                    ),
+            );
         }),
     );
 };
