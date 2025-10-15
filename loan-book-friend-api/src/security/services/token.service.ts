@@ -11,6 +11,7 @@ import { TokenPayload } from '@security/interfaces';
 import { Token } from '@security/interfaces/tokens.interface';
 import { CredentialEntity } from '@security/models';
 import { durationParser } from '@security/utils/duration-parser.utils';
+import { UserEntity } from '@user/models';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -61,7 +62,7 @@ export class TokenService {
         }
     }
 
-    async refresh(refresh: string): Promise<Token> {
+    async refresh(refresh: string): Promise<[Token, UserEntity]> {
         let credentialId: string | null = null;
 
         const JWT_REFRESH_TOKEN_SECRET = configManager.getValue(
@@ -89,6 +90,6 @@ export class TokenService {
         if (!generatedToken) {
             throw new TokenGenerationException();
         }
-        return generatedToken;
+        return [generatedToken, credential.user];
     }
 }

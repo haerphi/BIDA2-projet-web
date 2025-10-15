@@ -21,7 +21,6 @@ import {
     SignInApiResponsesDocumentation,
     SignUpDocumentation,
 } from './security.swagger';
-import { Token } from './interfaces/tokens.interface';
 import { configManager } from '@common/config';
 import type { Request, Response } from 'express';
 import { toSignInResponse } from './mappers/signin.mappers';
@@ -42,7 +41,7 @@ export class SecurityController {
         @Body() payload: SignInPayload,
         @Res({ passthrough: true }) response: Response,
     ) {
-        const tk: Token = await this.securityService.signIn(payload);
+        const [tk, user] = await this.securityService.signIn(payload);
 
         // Access token can be short-lived cookie, or returned in body if you prefer
         response.cookie(
@@ -57,7 +56,7 @@ export class SecurityController {
             configManager.getCookieRefreshTokenConfig(),
         );
 
-        return toSignInResponse(tk.tokenIat, tk.refreshTokenIat);
+        return toSignInResponse(tk.tokenIat, tk.refreshTokenIat, user.role);
     }
 
     @ApiOperation(SignUpDocumentation)
@@ -79,7 +78,7 @@ export class SecurityController {
             throw new UnauthorizedException('refresh_token_missing');
         }
 
-        const tk: Token = await this.securityService.refreshToken(refresh);
+        const [tk, user] = await this.securityService.refreshToken(refresh);
 
         response.cookie(
             CookieKey.ACCESS_TOKEN,
@@ -93,7 +92,7 @@ export class SecurityController {
             configManager.getCookieRefreshTokenConfig(),
         );
 
-        return toSignInResponse(tk.tokenIat, tk.refreshTokenIat);
+        return toSignInResponse(tk.tokenIat, tk.refreshTokenIat, user.role);
     }
 
     @Post('signout')

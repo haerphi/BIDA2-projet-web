@@ -17,6 +17,7 @@ import {
     WrongCredentialException,
 } from '@common/exceptions';
 import { Token } from '@security/interfaces/tokens.interface';
+import { UserEntity } from '@user/models';
 
 @Injectable()
 export class SecurityService {
@@ -38,7 +39,7 @@ export class SecurityService {
         return result;
     }
 
-    async signIn(payload: SignInPayload): Promise<Token> {
+    async signIn(payload: SignInPayload): Promise<[Token, UserEntity]> {
         const user = await this.userService.findByEmail(payload.email);
         if (!user) {
             throw new WrongCredentialException();
@@ -55,7 +56,9 @@ export class SecurityService {
             throw new WrongCredentialException();
         }
 
-        return this.tokenService.getTokens(cred);
+        const token = await this.tokenService.getTokens(cred);
+
+        return [token, user];
     }
 
     async signUp(payload: SignUpPayload): Promise<CredentialEntity | null> {
@@ -87,7 +90,7 @@ export class SecurityService {
         await this.credentialRepository.remove(details);
     }
 
-    async refreshToken(refresh: string): Promise<Token> {
+    async refreshToken(refresh: string): Promise<[Token, UserEntity]> {
         return this.tokenService.refresh(refresh);
     }
 }

@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { UserRole } from '@security/enums';
 import { IsEmail, IsStrongPassword } from 'class-validator';
 
 export class SignInPayload {
@@ -17,4 +18,7 @@ export class SignInResponse {
 
     @ApiProperty()
     refreshTokenIat: number;
+
+    @ApiProperty()
+    role: UserRole;
 }

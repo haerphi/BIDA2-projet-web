@@ -24,7 +24,10 @@ export class RequireRolesGuard implements CanActivate {
             return false;
         }
 
-        // return roles.includes(user.roles);
-        return true; // TODO: User roles
+        if (!roles || roles.length === 0) {
+            return true;
+        }
+
+        return roles.includes(user.role);
     }
 }
