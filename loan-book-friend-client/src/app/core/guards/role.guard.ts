@@ -13,7 +13,6 @@ export const roleGuard = (useRoles: UserRole) => {
             return false;
         }
 
-        console.log(`Role guard: access granted for role ${role}`);
         return true;
     };
 

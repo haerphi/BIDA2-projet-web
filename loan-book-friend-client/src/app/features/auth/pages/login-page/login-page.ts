@@ -29,7 +29,6 @@ export class LoginPage {
     formErrorFields: ValidationFieldError[] | null | undefined = null;
 
     checkFormFieldError(key: string): any[] {
-        console.log(key, this.formErrorFields);
         if (!this.formErrorFields) {
             return [];
         }

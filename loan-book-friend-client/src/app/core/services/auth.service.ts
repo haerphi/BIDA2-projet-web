@@ -51,8 +51,6 @@ export class AuthService {
         }
 
         effect(() => {
-            console.log('Access token changed:', this._tokenIat());
-
             // lorsque le token est mis à jour, on met à jour le localstorage
             const t = this._tokenIat();
 
@@ -64,8 +62,6 @@ export class AuthService {
         });
 
         effect(() => {
-            console.log('Refresh token changed:', this._refreshTokenIat());
-
             // lorsque le refresh token est mis à jour, on met à jour le localstorage
             const rt = this._refreshTokenIat();
 
@@ -80,8 +76,6 @@ export class AuthService {
         });
 
         effect(() => {
-            console.log('Role changed:', this._role());
-
             // lorsque le role est mis à jour, on met à jour le localstorage
             const r = this._role();
 
@@ -102,8 +96,6 @@ export class AuthService {
                 )
                 .pipe(
                     tap((response) => {
-                        console.log(response);
-
                         this._tokenIat.set(response.tokenIat);
                         this._refreshTokenIat.set(response.refreshTokenIat);
                         this._role.set(response.role);

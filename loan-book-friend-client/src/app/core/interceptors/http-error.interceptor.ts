@@ -20,12 +20,10 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
                     switchMap(() => {
                         return next(req);
                     }),
-                    catchError(() => {
-                        console.log('Refresh token error');
-
+                    catchError((newError) => {
                         authService.logout();
                         router.navigate(['/', 'auth']);
-                        return throwError(() => error);
+                        return throwError(() => newError);
                     }),
                 );
             }
