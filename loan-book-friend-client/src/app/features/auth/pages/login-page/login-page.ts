@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ApiErrorResponse, ValidationFieldError } from '@core/models';
 import { AuthService } from '@core/services';
 import { fromValidationFieldError } from '@core/utils/validator.utils';
@@ -19,6 +19,7 @@ export class LoginPage {
     private readonly _authFormFactory = inject(AuthFormFactoryService);
     private readonly _authService = inject(AuthService);
     private readonly _router = inject(Router);
+    private readonly _activatedRoute = inject(ActivatedRoute);
 
     loginForm = this._authFormFactory.createLoginForm();
     loginControls = this.loginForm.controls;
@@ -49,7 +50,10 @@ export class LoginPage {
                     password: this.loginForm.value.password!,
                 });
 
-                await this._router.navigate(['/']);
+                const returnUrl =
+                    this._activatedRoute.snapshot.queryParams['returnUrl'] ||
+                    '/';
+                await this._router.navigate([returnUrl]);
             } catch (err) {
                 this.formErrorCode = (err as ApiErrorResponse).code;
                 this.formErrorFields = (err as ApiErrorResponse).form;
