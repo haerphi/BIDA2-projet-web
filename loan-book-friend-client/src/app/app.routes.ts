@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { notConnectedGuard } from '@core/guards';
 
 export const routes: Routes = [
     {
@@ -13,6 +14,7 @@ export const routes: Routes = [
     },
     {
         path: 'auth',
+        canActivateChild: [notConnectedGuard],
         loadChildren: () =>
             import('@features/auth/auth.routes').then((m) => m.routes),
     },
