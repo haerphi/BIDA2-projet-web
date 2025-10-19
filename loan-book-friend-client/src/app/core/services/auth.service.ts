@@ -4,10 +4,11 @@ import {
     API_ROUTE_AUTH_LOGIN,
     API_ROUTE_AUTH_LOGOUT,
     API_ROUTE_AUTH_REFRESH_TOKEN,
+    API_ROUTE_AUTH_REGISTER,
     LOCAL_STORAGE,
     UserRole,
 } from '@core/constants';
-import { CredentialEmail, SignInResponse } from '@core/models';
+import { CredentialEmail, RegisterForm, SignInResponse } from '@core/models';
 import { environment } from '@env';
 import { firstValueFrom, tap } from 'rxjs';
 
@@ -143,6 +144,15 @@ export class AuthService {
                 {
                     withCredentials: true,
                 },
+            ),
+        );
+    }
+
+    public registerEmail(data: RegisterForm): Promise<void> {
+        return firstValueFrom(
+            this._httpClient.post<void>(
+                this._baseUrl + API_ROUTE_AUTH_REGISTER,
+                data,
             ),
         );
     }

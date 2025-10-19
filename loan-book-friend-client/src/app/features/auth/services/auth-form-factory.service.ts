@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { NonNullableFormBuilder, Validators } from '@angular/forms';
-import { CredentialEmail } from '@core/models';
+import { CredentialEmail, RegisterForm } from '@core/models';
+import { sameAsValidator, strongPasswordValidator } from '@core/validators';
 
 @Injectable({
     providedIn: 'root',
@@ -14,8 +15,23 @@ export class AuthFormFactoryService {
             password: [data?.password, [Validators.required]],
         });
     }
-            email: [data?.email, [Validators.required, Validators.email]], // TODO validator email already used
-            password: [data?.password, [Validators.required]], // TODO password validator with regex to get strong
-        });
+
+    public createRegisterForm(
+        data?: Partial<RegisterForm & { confirmPassword: string }>,
+    ) {
+        return this._fb.group(
+            {
+                name: [data?.name, [Validators.required]], // TODO validator name already used
+                email: [data?.email, [Validators.required, Validators.email]], // TODO validator email already used
+                password: [
+                    data?.password,
+                    [Validators.required, strongPasswordValidator()],
+                ],
+                confirmPassword: [data?.confirmPassword, [Validators.required]],
+            },
+            {
+                validators: [sameAsValidator('password', 'confirmPassword')],
+            },
+        );
     }
 }

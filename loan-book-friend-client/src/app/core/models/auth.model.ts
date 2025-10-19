@@ -10,3 +10,9 @@ export interface SignInResponse {
     refreshTokenIat: number;
     role: UserRole;
 }
+
+export interface RegisterForm {
+    name: string;
+    email: string;
+    password: string;
+}

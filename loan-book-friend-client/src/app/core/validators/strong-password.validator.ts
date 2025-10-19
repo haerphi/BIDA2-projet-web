@@ -11,7 +11,7 @@ export function strongPasswordValidator(): ValidatorFn {
         const hasUpperCase = /[A-Z]+/.test(value);
         const hasLowerCase = /[a-z]+/.test(value);
         const hasNumeric = /[0-9]+/.test(value);
-        const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]+/.test(value);
+        const hasSpecialChar = /[!@#$%^&*(),.?=":{}|<>]+/.test(value);
         const isValidLength = value.length >= 8;
 
         const passwordValid =

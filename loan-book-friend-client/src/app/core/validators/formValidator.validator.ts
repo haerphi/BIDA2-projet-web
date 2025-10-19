@@ -31,3 +31,7 @@ export function hasMinError(control: AbstractControl) {
 export function hasMaxError(control: AbstractControl) {
     return hasError(control, 'max');
 }
+
+export function hasSameAsError(control: AbstractControl) {
+    return hasError(control, 'sameAs');
+}
