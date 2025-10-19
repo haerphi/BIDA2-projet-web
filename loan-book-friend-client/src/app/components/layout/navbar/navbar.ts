@@ -1,5 +1,5 @@
 import { Component, computed, inject } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { UserRole } from '@core/constants';
 import { AuthService } from '@core/services';
 
@@ -12,11 +12,14 @@ import { AuthService } from '@core/services';
 export class Navbar {
     protected readonly UserRole = UserRole;
     private readonly _authService = inject(AuthService);
+    private readonly _router = inject(Router);
 
     connected = computed(() => !!this._authService.tokenIat());
     role = this._authService.role;
 
-    onLogoutClick() {
-        this._authService.logout();
+    async onLogoutClick() {
+        await this._authService.logout();
+
+        this._router.navigate(['/']);
     }
 }
