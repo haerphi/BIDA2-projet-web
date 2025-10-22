@@ -1,4 +1,6 @@
 import { Component, inject } from '@angular/core';
+import { BookUserList, UserDetails } from '@core/models';
+import { BookService } from '@core/services';
 import { UserService } from '@core/services/user.service';
 
 @Component({
@@ -9,8 +11,41 @@ import { UserService } from '@core/services/user.service';
 })
 export class UserDetailsPage {
     private readonly _userService = inject(UserService);
+    private readonly _bookService = inject(BookService);
+
+    isDetailsLoading = true;
+    userDetails: null | UserDetails = null;
+    derDetailsError: null | string = null;
+
+    isBooksLoading = true;
+    userBooks: null | BookUserList[] = null;
+    userBooksError: null | string = null;
 
     constructor() {
-        this._userService.getConsumers().then(console.log).catch(console.error);
+        this._userService
+            .getConsumers()
+            .then((data) => {
+                this.userDetails = data;
+            })
+            .catch(() => {
+                this.derDetailsError =
+                    'An error occurred while fetching user details.';
+            })
+            .finally(() => {
+                this.isDetailsLoading = false;
+            });
+
+        this._bookService
+            .getAllBooksByOwner()
+            .then((data) => {
+                this.userBooks = data;
+            })
+            .catch(() => {
+                this.userBooksError =
+                    'An error occurred while fetching user books.';
+            })
+            .finally(() => {
+                this.isBooksLoading = false;
+            });
     }
 }

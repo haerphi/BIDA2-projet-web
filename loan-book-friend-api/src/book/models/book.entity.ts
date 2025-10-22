@@ -22,9 +22,7 @@ export class BookEntity extends TrackedEntity {
     @Column({ type: 'boolean', default: true })
     available: boolean;
 
-    @ManyToOne(() => UserEntity, (user) => user.books, {
-        nullable: true,
-    })
+    @ManyToOne(() => UserEntity, (user) => user.books)
     @JoinColumn({ name: 'owner_id' })
     owner: UserEntity;
 }

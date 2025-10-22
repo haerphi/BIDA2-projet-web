@@ -1,1 +1,40 @@
-<p>user-details-page works!</p>
+<div>
+    <h2>User Details Page</h2>
+    @if(isDetailsLoading){
+    <p>Loading user details...</p>
+    } @else if(derDetailsError){
+    <p>Error: {{ derDetailsError }}</p>
+    } @else{
+    <p><strong>User ID:</strong> {{ userDetails?.user_id }}</p>
+    <p><strong>Name:</strong> {{ userDetails?.name }}</p>
+    <p><strong>Email:</strong> {{ userDetails?.email }}</p>
+    <p><strong>Role:</strong> {{ userDetails?.role }}</p>
+    <p><strong>Created At:</strong> {{ userDetails?.created_at }}</p>
+    <p><strong>Updated At:</strong> {{ userDetails?.updated_at }}</p>
+    }
+</div>
+<div>
+    @if(isBooksLoading){
+    <p>Loading your books...</p>
+    }@else if (userBooksError) {
+    <p>Error: {{ userBooksError }}</p>
+    } @else {
+    <h3>Your books:</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Is available?</th>
+            </tr>
+            @for(book of userBooks; track $index){
+            <tr>
+                <td>{{ book.title }}</td>
+                <td>{{ book.author }}</td>
+                <td>{{ book.available ? 'Yes' : 'No' }}</td>
+            </tr>
+            }
+        </thead>
+    </table>
+    }
+</div>

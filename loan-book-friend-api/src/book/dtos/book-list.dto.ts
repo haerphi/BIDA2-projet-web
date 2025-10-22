@@ -10,13 +10,10 @@ export class BookListDto {
 }
 
 // used to list books with their owner information
-export class BookUserListDto {
+export class BookUserListDto extends BookListDto {
     @ApiProperty()
     book_id: string;
 
     @ApiProperty()
-    title: string;
-
-    @ApiProperty()
-    author: string;
+    available: boolean;
 }

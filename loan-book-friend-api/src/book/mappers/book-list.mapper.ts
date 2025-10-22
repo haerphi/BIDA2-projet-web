@@ -13,5 +13,6 @@ export const toBookUserListDto = (book: BookEntity): BookUserListDto => {
         title: book.title,
         author: book.author,
         book_id: book.book_id,
+        available: book.available,
     };
 };

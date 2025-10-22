@@ -29,9 +29,16 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
             }
 
             if (error.status === 403) {
-                authService.logout();
-                router.navigate(['/', 'auth']);
-                return EMPTY;
+                return from(authService.refreshToken()).pipe(
+                    switchMap(() => {
+                        return next(req);
+                    }),
+                    catchError((newError) => {
+                        authService.logout();
+                        router.navigate(['/', 'auth']);
+                        return throwError(() => newError);
+                    }),
+                );
             }
 
             return throwError(

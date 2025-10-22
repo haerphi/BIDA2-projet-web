@@ -26,6 +26,12 @@ export const routes: Routes = [
             import('@features/users/users.routes').then((m) => m.routes),
     },
     {
+        path: 'books',
+        canActivateChild: [connectedGuard],
+        loadChildren: () =>
+            import('@features/books/books.routes').then((m) => m.routes),
+    },
+    {
         path: 'admin',
         canActivateChild: [roleGuard(UserRole.Admin)],
         loadChildren: () =>

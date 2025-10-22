@@ -10,7 +10,12 @@
     @if(connected()){
     <li>
         <a routerLink="/users/me" routerLinkActive="router-link-active"
-            >Me {{role()}}</a
+            >Me {{role()}} and my books</a
+        >
+    </li>
+    <li>
+        <a routerLink="/books/create" routerLinkActive="router-link-active"
+            >Add book to collection</a
         >
     </li>
     @if(role() === UserRole.Admin){
