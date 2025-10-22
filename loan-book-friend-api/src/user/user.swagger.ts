@@ -1,6 +1,5 @@
 import { ApiOperationOptions, ApiResponseOptions } from '@nestjs/swagger';
-import { UserEntity } from './models';
-import { UserListDto } from './dtos';
+import { UserDetailsDto, UserListDto } from './dtos';
 
 // getConsumer
 export const GetConsumerApiOperationDocumentation: ApiOperationOptions = {
@@ -11,7 +10,7 @@ export const GetConsumerApiOperationDocumentation: ApiOperationOptions = {
 export const GetConsumerApiResponseDocumentation: ApiResponseOptions = {
     status: 200,
     description: 'The connected user details',
-    type: UserEntity,
+    type: UserDetailsDto,
 };
 
 // getAllUsers
@@ -24,4 +23,5 @@ export const GetAllUsersApiResponseDocumentation: ApiResponseOptions = {
     status: 200,
     description: 'List of all users',
     type: UserListDto,
+    isArray: true,
 };

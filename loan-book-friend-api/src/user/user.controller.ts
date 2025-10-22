@@ -12,7 +12,7 @@ import {
 import { UserRole } from '@security/enums';
 import { UserService } from './services/user.service';
 import { UserListDto } from './dtos';
-import { toUserListDto } from './mappers';
+import { toUserDetailsDto, toUserListDto } from './mappers';
 
 @ApiCookieAuth('access_token')
 @Controller('user')
@@ -24,7 +24,7 @@ export class UserController {
     @RequireRoles()
     @Get()
     public getConsumer(@User() user: UserEntity) {
-        return user;
+        return toUserDetailsDto(user);
     }
 
     @ApiOperation(GetAllUsersApiOperationDocumentation)

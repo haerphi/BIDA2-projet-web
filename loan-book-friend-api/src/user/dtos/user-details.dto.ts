@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { UserRole } from '@security/enums';
 
-export class UserListDto {
+export class UserDetailsDto {
     @ApiProperty()
     user_id: string;
 
@@ -11,5 +12,11 @@ export class UserListDto {
     email: string;
 
     @ApiProperty()
-    role: string;
+    role: UserRole;
+
+    @ApiProperty()
+    created_at: Date;
+
+    @ApiProperty()
+    updated_at: Date;
 }
