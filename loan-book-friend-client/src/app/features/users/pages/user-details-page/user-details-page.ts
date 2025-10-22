@@ -2,10 +2,11 @@ import { Component, inject } from '@angular/core';
 import { BookUserList, UserDetails } from '@core/models';
 import { BookService } from '@core/services';
 import { UserService } from '@core/services/user.service';
+import { UserDetailsDisplay } from '@features/users/components/user-details/user-details-display';
 
 @Component({
     selector: 'app-user-details-page',
-    imports: [],
+    imports: [UserDetailsDisplay],
     templateUrl: './user-details-page.html',
     styleUrl: './user-details-page.scss',
 })
@@ -15,7 +16,7 @@ export class UserDetailsPage {
 
     isDetailsLoading = true;
     userDetails: null | UserDetails = null;
-    derDetailsError: null | string = null;
+    userDetailsError: null | string = null;
 
     isBooksLoading = true;
     userBooks: null | BookUserList[] = null;
@@ -28,7 +29,7 @@ export class UserDetailsPage {
                 this.userDetails = data;
             })
             .catch(() => {
-                this.derDetailsError =
+                this.userDetailsError =
                     'An error occurred while fetching user details.';
             })
             .finally(() => {

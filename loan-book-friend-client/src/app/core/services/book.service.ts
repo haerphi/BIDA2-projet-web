@@ -21,10 +21,10 @@ export class BookService {
         );
     }
 
-    async getAllBooksByOwner(): Promise<BookUserList[]> {
+    async getAllBooksByOwner(id?: string): Promise<BookUserList[]> {
         return await firstValueFrom(
             this._httpClient.get<BookUserList[]>(
-                this._baseUrl + ApiRoutes.book.owned,
+                this._baseUrl + ApiRoutes.book.owned + (id ?? ''),
             ),
         );
     }

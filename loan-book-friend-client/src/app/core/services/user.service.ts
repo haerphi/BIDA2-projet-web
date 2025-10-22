@@ -27,4 +27,12 @@ export class UserService {
             ),
         );
     }
+
+    getUserById(userId: string): Promise<UserDetails> {
+        return firstValueFrom(
+            this._httpClient.get<UserDetails>(
+                this._baseUrl + ApiRoutes.user.byId + userId,
+            ),
+        );
+    }
 }

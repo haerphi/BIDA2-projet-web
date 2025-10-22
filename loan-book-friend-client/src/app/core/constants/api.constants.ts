@@ -10,9 +10,10 @@ export const ApiRoutes = {
     user: {
         consumers: API_ROUTE_USER + '',
         all: API_ROUTE_USER + '/all',
+        byId: API_ROUTE_USER + '/',
     },
     book: {
         create: API_ROUTE_BOOK + '',
-        owned: API_ROUTE_BOOK + '/owned',
+        owned: API_ROUTE_BOOK + '/owned/',
     },
 };

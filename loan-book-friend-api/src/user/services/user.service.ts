@@ -1,3 +1,4 @@
+import { NotFoundException } from '@common/exceptions';
 import {
     EmailAlreadyExistException,
     NameAlreadyExistException,
@@ -44,5 +45,13 @@ export class UserService {
 
     async findAll(): Promise<UserEntity[]> {
         return this.userRepository.find();
+    }
+
+    async findById(id: string): Promise<UserEntity> {
+        const user = await this.userRepository.findOneBy({ user_id: id });
+        if (!user) {
+            throw new NotFoundException('user_not_found');
+        }
+        return user;
     }
 }

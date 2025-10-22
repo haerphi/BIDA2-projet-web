@@ -2,15 +2,10 @@
     <h2>User Details Page</h2>
     @if(isDetailsLoading){
     <p>Loading user details...</p>
-    } @else if(derDetailsError){
-    <p>Error: {{ derDetailsError }}</p>
+    } @else if(userDetailsError){
+    <p>Error: {{ userDetailsError }}</p>
     } @else{
-    <p><strong>User ID:</strong> {{ userDetails?.user_id }}</p>
-    <p><strong>Name:</strong> {{ userDetails?.name }}</p>
-    <p><strong>Email:</strong> {{ userDetails?.email }}</p>
-    <p><strong>Role:</strong> {{ userDetails?.role }}</p>
-    <p><strong>Created At:</strong> {{ userDetails?.created_at }}</p>
-    <p><strong>Updated At:</strong> {{ userDetails?.updated_at }}</p>
+    <app-user-details-display [details]="userDetails!" />
     }
 </div>
 <div>

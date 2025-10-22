@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { ApiCookieAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { RequireRoles } from '@security/guards';
 import { User } from '@security/metadata';
@@ -8,10 +8,12 @@ import {
     GetAllUsersApiResponseDocumentation,
     GetConsumerApiOperationDocumentation,
     GetConsumerApiResponseDocumentation,
+    GetUserByIdApiOperationDocumentation,
+    GetUserByIdApiResponseDocumentation,
 } from './user.swagger';
 import { UserRole } from '@security/enums';
 import { UserService } from './services/user.service';
-import { UserListDto } from './dtos';
+import { UserDetailsDto, UserListDto } from './dtos';
 import { toUserDetailsDto, toUserListDto } from './mappers';
 
 @ApiCookieAuth('access_token')
@@ -23,7 +25,7 @@ export class UserController {
     @ApiResponse(GetConsumerApiResponseDocumentation)
     @RequireRoles()
     @Get()
-    public getConsumer(@User() user: UserEntity) {
+    public getConsumer(@User() user: UserEntity): UserDetailsDto {
         return toUserDetailsDto(user);
     }
 
@@ -34,5 +36,14 @@ export class UserController {
     public async getAllUsers(): Promise<UserListDto[]> {
         const users = await this.userService.findAll();
         return users.map(toUserListDto);
+    }
+
+    @ApiOperation(GetUserByIdApiOperationDocumentation)
+    @ApiResponse(GetUserByIdApiResponseDocumentation)
+    @RequireRoles(UserRole.Admin)
+    @Get(':id')
+    public async getUserById(@Param('id') id: string): Promise<UserDetailsDto> {
+        const user = await this.userService.findById(id);
+        return toUserDetailsDto(user);
     }
 }

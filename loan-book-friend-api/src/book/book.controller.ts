@@ -1,5 +1,17 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
-import { ApiCookieAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+    Body,
+    Controller,
+    ForbiddenException,
+    Get,
+    Param,
+    Post,
+} from '@nestjs/common';
+import {
+    ApiCookieAuth,
+    ApiOperation,
+    ApiParam,
+    ApiResponse,
+} from '@nestjs/swagger';
 import { BookService } from './services';
 import {
     bookCreateDtoToEntity,
@@ -18,6 +30,7 @@ import {
     GetOwnedBooksApiOperationDocumentation,
     GetOwnedBooksApiResponseDocumentation,
 } from './book.swagger';
+import { UserRole } from '@security/enums';
 
 @ApiCookieAuth('access_token')
 @Controller('book')
@@ -26,10 +39,26 @@ export class BookController {
 
     @ApiOperation(GetOwnedBooksApiOperationDocumentation)
     @ApiResponse(GetOwnedBooksApiResponseDocumentation)
+    @ApiParam({
+        name: 'id',
+        required: false,
+    })
     @RequireRoles()
-    @Get('owned')
-    public async getAllBooksByOwner(@User() user: UserEntity) {
-        const books = await this.bookService.findAllByOwnerId(user.user_id);
+    @Get('owned/:id')
+    public async getAllBooksByOwner(
+        @User() user: UserEntity,
+        @Param('id') id?: string,
+    ) {
+        let userId: string = user.user_id;
+        if (id) {
+            if (user.role === UserRole.Admin) {
+                userId = id;
+            } else {
+                throw new ForbiddenException();
+            }
+        }
+
+        const books = await this.bookService.findAllByOwnerId(userId);
         return books.map(toBookUserListDto);
     }
 
