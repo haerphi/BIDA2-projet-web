@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
-import { notConnectedGuard } from '@core/guards';
+import { UserRole } from '@core/constants';
+import { connectedGuard, notConnectedGuard, roleGuard } from '@core/guards';
 
 export const routes: Routes = [
     {
@@ -20,11 +21,13 @@ export const routes: Routes = [
     },
     {
         path: 'users',
+        canActivateChild: [connectedGuard],
         loadChildren: () =>
             import('@features/users/users.routes').then((m) => m.routes),
     },
     {
         path: 'admin',
+        canActivateChild: [roleGuard(UserRole.Admin)],
         loadChildren: () =>
             import('@features/admin/admin.routes').then((m) => m.routes),
     },

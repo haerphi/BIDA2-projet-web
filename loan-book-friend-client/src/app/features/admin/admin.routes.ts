@@ -1,12 +1,9 @@
 import { Routes } from '@angular/router';
 import { AdminHomePage } from './pages/admin-home-page/admin-home-page';
-import { roleGuard } from '@core/guards';
-import { UserRole } from '@core/constants';
 
 export const routes: Routes = [
     {
         path: '',
-        canActivate: [roleGuard(UserRole.Admin)],
         component: AdminHomePage,
         children: [
             {
