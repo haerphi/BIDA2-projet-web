@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { configManager } from '@common/config/config.manager';
 import { SecurityModule } from '@security/security.module';
 import { UserModule } from '@user/user.module';
+import { BookModule } from 'book/book.module';
 
 @Module({
     imports: [
@@ -12,6 +13,7 @@ import { UserModule } from '@user/user.module';
         // Other modules can be imported here
         UserModule,
         SecurityModule,
+        BookModule,
     ],
     controllers: [AppController],
     providers: [AppService],

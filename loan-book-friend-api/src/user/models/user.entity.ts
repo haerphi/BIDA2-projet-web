@@ -2,6 +2,7 @@ import {
     Column,
     Entity,
     Index,
+    OneToMany,
     OneToOne,
     PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -9,6 +10,7 @@ import {
 import { CredentialEntity } from '@security/models/credential.entity';
 import { UserRole } from '@security/enums';
 import { TrackedEntity } from '@common/models';
+import { BookEntity } from 'book/models';
 
 @Entity({ name: 'users' })
 export class UserEntity extends TrackedEntity {
@@ -32,4 +34,7 @@ export class UserEntity extends TrackedEntity {
 
     @OneToOne(() => CredentialEntity, (cred) => cred.user)
     credential?: CredentialEntity;
+
+    @OneToMany(() => BookEntity, (book) => book.owner)
+    books?: BookEntity[];
 }
