@@ -1,16 +1,15 @@
+import { TrackedEntity } from '@common/models';
 import {
     Column,
-    CreateDateColumn,
     Entity,
     JoinColumn,
     OneToOne,
     PrimaryGeneratedColumn,
-    UpdateDateColumn,
 } from 'typeorm';
 import { UserEntity } from 'user/models/user.entity';
 
 @Entity('credential')
-export class CredentialEntity {
+export class CredentialEntity extends TrackedEntity {
     @PrimaryGeneratedColumn('uuid')
     credential_id: string;
 
@@ -24,18 +23,4 @@ export class CredentialEntity {
 
     @Column({ nullable: false })
     password: string;
-
-    @CreateDateColumn({
-        name: 'created_at',
-        type: 'timestamptz',
-        default: () => 'CURRENT_TIMESTAMP',
-    })
-    createdAt: Date;
-
-    @UpdateDateColumn({
-        name: 'updated_at',
-        type: 'timestamptz',
-        default: () => 'CURRENT_TIMESTAMP',
-    })
-    updatedAt: Date;
 }
