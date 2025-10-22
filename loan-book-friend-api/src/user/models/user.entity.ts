@@ -1,18 +1,17 @@
 import {
     Column,
-    CreateDateColumn,
     Entity,
     Index,
     OneToOne,
     PrimaryGeneratedColumn,
-    UpdateDateColumn,
 } from 'typeorm';
 
 import { CredentialEntity } from '@security/models/credential.entity';
 import { UserRole } from '@security/enums';
+import { TrackedEntity } from '@common/models';
 
 @Entity({ name: 'users' })
-export class UserEntity {
+export class UserEntity extends TrackedEntity {
     @PrimaryGeneratedColumn('uuid', { name: 'user_id' })
     user_id: string;
 
@@ -30,20 +29,6 @@ export class UserEntity {
         default: UserRole.User,
     })
     role: UserRole = UserRole.User;
-
-    @CreateDateColumn({
-        name: 'created_at',
-        type: 'timestamptz',
-        default: () => 'CURRENT_TIMESTAMP',
-    })
-    createdAt: Date;
-
-    @UpdateDateColumn({
-        name: 'updated_at',
-        type: 'timestamptz',
-        default: () => 'CURRENT_TIMESTAMP',
-    })
-    updatedAt: Date;
 
     @OneToOne(() => CredentialEntity, (cred) => cred.user)
     credential?: CredentialEntity;
