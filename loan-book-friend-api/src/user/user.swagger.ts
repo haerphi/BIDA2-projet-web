@@ -37,3 +37,15 @@ export const GetUserByIdApiResponseDocumentation: ApiResponseOptions = {
     description: 'The user details',
     type: UserDetailsDto,
 };
+
+// getUserById
+export const GetUserByIdApiOperationDocumentation: ApiOperationOptions = {
+    summary: 'Get user by ID',
+    description: 'This route allows to get details of a user by their ID',
+};
+
+export const GetUserByIdApiResponseDocumentation: ApiResponseOptions = {
+    status: 200,
+    description: 'The user details',
+    type: UserEntity,
+};
