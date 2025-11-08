@@ -14,7 +14,7 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
         catchError((error: HttpErrorResponse) => {
             if (
                 error.status === 401 &&
-                error?.error?.code === ApiCode.EXCEPTION_INVALID_EXPIRED_TOKEN
+                error?.error?.code === ApiCode.ExceptionInValidExpiredToken
             ) {
                 return from(authService.refreshToken()).pipe(
                     switchMap(() => {

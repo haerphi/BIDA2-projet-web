@@ -33,19 +33,19 @@ export class AuthService {
 
     constructor() {
         // Récupération du token dans le localstorage
-        const strToken = localStorage.getItem(LOCAL_STORAGE.TOKEN);
+        const strToken = localStorage.getItem(LOCAL_STORAGE.Token);
         if (strToken) {
             this._tokenIat.set(+strToken);
         }
 
         const strRefreshToken = localStorage.getItem(
-            LOCAL_STORAGE.REFRESH_TOKEN,
+            LOCAL_STORAGE.RefreshToken,
         );
         if (strRefreshToken) {
             this._refreshTokenIat.set(+strRefreshToken);
         }
 
-        const strRole = localStorage.getItem(LOCAL_STORAGE.ROLE);
+        const strRole = localStorage.getItem(LOCAL_STORAGE.Role);
         if (strRole) {
             this._role.set(strRole as UserRole);
         }
@@ -55,9 +55,9 @@ export class AuthService {
             const t = this._tokenIat();
 
             if (t) {
-                localStorage.setItem(LOCAL_STORAGE.TOKEN, t.toString());
+                localStorage.setItem(LOCAL_STORAGE.Token, t.toString());
             } else {
-                localStorage.removeItem(LOCAL_STORAGE.TOKEN);
+                localStorage.removeItem(LOCAL_STORAGE.Token);
             }
         });
 
@@ -66,12 +66,9 @@ export class AuthService {
             const rt = this._refreshTokenIat();
 
             if (rt) {
-                localStorage.setItem(
-                    LOCAL_STORAGE.REFRESH_TOKEN,
-                    rt.toString(),
-                );
+                localStorage.setItem(LOCAL_STORAGE.RefreshToken, rt.toString());
             } else {
-                localStorage.removeItem(LOCAL_STORAGE.REFRESH_TOKEN);
+                localStorage.removeItem(LOCAL_STORAGE.RefreshToken);
             }
         });
 
@@ -80,9 +77,9 @@ export class AuthService {
             const r = this._role();
 
             if (r) {
-                localStorage.setItem(LOCAL_STORAGE.ROLE, r);
+                localStorage.setItem(LOCAL_STORAGE.Role, r);
             } else {
-                localStorage.removeItem(LOCAL_STORAGE.ROLE);
+                localStorage.removeItem(LOCAL_STORAGE.Role);
             }
         });
     }

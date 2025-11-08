@@ -1,12 +1,14 @@
-export const API_ROUTE_AUTH = 'auth';
-export const API_ROUTE_AUTH_LOGIN = API_ROUTE_AUTH + '/signin';
-export const API_ROUTE_AUTH_REGISTER = API_ROUTE_AUTH + '/signup';
-export const API_ROUTE_AUTH_REFRESH_TOKEN = API_ROUTE_AUTH + '/refresh';
-export const API_ROUTE_AUTH_LOGOUT = API_ROUTE_AUTH + '/signout';
-
 const API_ROUTE_USER = 'user';
 const API_ROUTE_BOOK = 'book';
+const API_ROUTE_AUTH = 'auth';
+
 export const ApiRoutes = {
+    auth: {
+        login: API_ROUTE_AUTH + '/signin',
+        register: API_ROUTE_AUTH + '/signup',
+        refresh: API_ROUTE_AUTH + '/refresh',
+        logout: API_ROUTE_AUTH + '/signout',
+    },
     user: {
         consumers: API_ROUTE_USER + '',
         all: API_ROUTE_USER + '/all',
