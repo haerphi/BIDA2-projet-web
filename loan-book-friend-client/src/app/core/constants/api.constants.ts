@@ -13,6 +13,7 @@ export const ApiRoutes = {
         consumers: API_ROUTE_USER + '',
         all: API_ROUTE_USER + '/all',
         byId: API_ROUTE_USER + '/',
+        delete: API_ROUTE_USER + '/delete',
     },
     book: {
         create: API_ROUTE_BOOK + '',
