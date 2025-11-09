@@ -1,13 +1,6 @@
 import { HttpBackend, HttpClient } from '@angular/common/http';
 import { effect, inject, Injectable, signal } from '@angular/core';
-import {
-    API_ROUTE_AUTH_LOGIN,
-    API_ROUTE_AUTH_LOGOUT,
-    API_ROUTE_AUTH_REFRESH_TOKEN,
-    API_ROUTE_AUTH_REGISTER,
-    LOCAL_STORAGE,
-    UserRole,
-} from '@core/constants';
+import { ApiRoutes, LOCAL_STORAGE, UserRole } from '@core/constants';
 import { CredentialEmail, RegisterForm, SignInResponse } from '@core/models';
 import { environment } from '@env';
 import { firstValueFrom, tap } from 'rxjs';
@@ -88,7 +81,7 @@ export class AuthService {
         return firstValueFrom(
             this._httpClient
                 .post<SignInResponse>(
-                    this._baseUrl + API_ROUTE_AUTH_LOGIN,
+                    this._baseUrl + ApiRoutes.auth.login,
                     credential,
                 )
                 .pipe(
@@ -105,7 +98,7 @@ export class AuthService {
         return firstValueFrom(
             new HttpClient(this._httpBackend)
                 .post<SignInResponse>(
-                    this._baseUrl + API_ROUTE_AUTH_REFRESH_TOKEN,
+                    this._baseUrl + ApiRoutes.auth.refresh,
                     {},
                     {
                         withCredentials: true,
@@ -128,7 +121,7 @@ export class AuthService {
 
         return firstValueFrom(
             new HttpClient(this._httpBackend).post<void>(
-                this._baseUrl + API_ROUTE_AUTH_LOGOUT,
+                this._baseUrl + ApiRoutes.auth.logout,
                 {},
                 {
                     withCredentials: true,
@@ -140,7 +133,7 @@ export class AuthService {
     public registerEmail(data: RegisterForm): Promise<void> {
         return firstValueFrom(
             this._httpClient.post<void>(
-                this._baseUrl + API_ROUTE_AUTH_REGISTER,
+                this._baseUrl + ApiRoutes.auth.register,
                 data,
             ),
         );

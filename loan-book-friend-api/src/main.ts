@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './home/app.module';
+import { AppModule } from './features/home/app.module';
 import { swaggerConfiguration } from '@common/documentation/';
 import {
     exceptionFactory,
