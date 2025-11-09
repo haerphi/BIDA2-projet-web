@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import {Controller, Delete, Get, Param} from '@nestjs/common';
 import { ApiCookieAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { RequireRoles } from '../security/guards';
 import { User } from '../security/metadata';
@@ -45,5 +45,11 @@ export class UserController {
     public async getUserById(@Param('id') id: string): Promise<UserDetailsDto> {
         const user = await this.userService.findById(id);
         return toUserDetailsDto(user);
+    }
+
+    @RequireRoles(UserRole.Admin)
+    @Delete(':id')
+    public async deleteUser(@Param('id') id: string): Promise<void> {
+        await this.userService.delete(id);
     }
 }

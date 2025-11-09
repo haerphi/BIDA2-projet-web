@@ -36,6 +36,10 @@ export class UserService {
     }
 
     async delete(id: string): Promise<void> {
+        // check if the user exists
+        await this.findById(id);
+
+        // delete the user
         await this.userRepository.delete({ user_id: id });
     }
 
