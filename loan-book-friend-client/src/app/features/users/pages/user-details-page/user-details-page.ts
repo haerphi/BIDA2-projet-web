@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { BookUserList, UserDetails } from '@core/models';
 import { BookService } from '@core/services';
 import { UserService } from '@core/services/user.service';
-import { UserDetailsDisplay } from '@features/users/components/user-details/user-details-display';
+import { UserDetailsDisplay } from '@features/users/components/user-details-display/user-details-display';
 
 @Component({
     selector: 'app-user-details-page',
