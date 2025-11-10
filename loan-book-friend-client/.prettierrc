@@ -1,6 +1,14 @@
 {
-  "singleQuote": true,
-  "trailingComma": "all",
-  "tabWidth": 4,
-  "endOfLine": "lf"
+    "singleQuote": true,
+    "trailingComma": "all",
+    "tabWidth": 4,
+    "endOfLine": "lf",
+    "overrides": [
+        {
+            "files": "*.html",
+            "options": {
+                "parser": "angular"
+            }
+        }
+    ]
 }

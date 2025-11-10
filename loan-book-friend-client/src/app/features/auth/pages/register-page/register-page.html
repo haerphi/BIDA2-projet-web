@@ -3,10 +3,11 @@
         <label for="name">Name</label>
         <input type="text" id="name" formControlName="name" />
         <ul>
-            @if(isRequired(registerControls.name)){
-            <li>Name is requried!</li>
-            } @for(error of checkFormFieldError('name'); track $index){
-            <li>{{error}}</li>
+            @if (isRequired(registerControls.name)) {
+                <li>Name is requried!</li>
+            }
+            @for (error of checkFormFieldError('name'); track $index) {
+                <li>{{ error }}</li>
             }
         </ul>
     </div>
@@ -14,10 +15,11 @@
         <label for="email">Email</label>
         <input type="text" id="email" formControlName="email" />
         <ul>
-            @if(isRequired(registerControls.email)){
-            <li>Email is requried!</li>
-            } @for(error of checkFormFieldError('email'); track $index){
-            <li>{{error}}</li>
+            @if (isRequired(registerControls.email)) {
+                <li>Email is requried!</li>
+            }
+            @for (error of checkFormFieldError('email'); track $index) {
+                <li>{{ error }}</li>
             }
         </ul>
     </div>
@@ -26,10 +28,11 @@
         <label for="password">Password</label>
         <input type="password" id="password" formControlName="password" />
         <ul>
-            @if(isRequired(registerControls.password)){
-            <li>Password is requried!</li>
-            } @for(error of checkFormFieldError('password'); track $index){
-            <li>{{error}}</li>
+            @if (isRequired(registerControls.password)) {
+                <li>Password is requried!</li>
+            }
+            @for (error of checkFormFieldError('password'); track $index) {
+                <li>{{ error }}</li>
             }
         </ul>
     </div>
@@ -42,16 +45,17 @@
             formControlName="confirmPassword"
         />
         <ul>
-            @if(isRequired(registerControls.confirmPassword)){
-            <li>Confirm password is requried!</li>
-            } @if(hasSameAsError(registerControls.confirmPassword)){
-            <li>Passwords do not match!</li>
+            @if (isRequired(registerControls.confirmPassword)) {
+                <li>Confirm password is requried!</li>
+            }
+            @if (hasSameAsError(registerControls.confirmPassword)) {
+                <li>Passwords do not match!</li>
             }
         </ul>
     </div>
 
     <button type="submit" [disabled]="registerForm.invalid">Register</button>
-    @if(formErrorCode){
-    <p>{{formErrorCode}}</p>
+    @if (formErrorCode) {
+        <p>{{ formErrorCode }}</p>
     }
 </form>

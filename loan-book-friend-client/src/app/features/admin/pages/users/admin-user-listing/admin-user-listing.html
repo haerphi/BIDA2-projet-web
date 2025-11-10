@@ -1,39 +1,44 @@
 <p>admin-user-listing works!</p>
 
-@if(users && users.length > 0){
-<table>
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @for (user of users; track $index) {
-        <tr>
-            <td>{{ user.user_id }}</td>
-            <td>{{ user.name }}</td>
-            <td>{{ user.email }}</td>
-            <td>{{ user.role }}</td>
-            <td>
-                <a [routerLink]="['/admin', 'users', user.user_id]">🔎</a>
-                <app-confirmation-button
-                    buttonText="❌"
-                    questionText="Are you sure you want to delete user {{user.name}} ({{user.email}}) ?"
-                    (confirmed)="deleteUser(user.user_id)"
-                />
-            </td>
-        </tr>
-        }
-    </tbody>
-</table>
+@if (users && users.length > 0) {
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (user of users; track $index) {
+                <tr>
+                    <td>{{ user.user_id }}</td>
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.role }}</td>
+                    <td>
+                        <a [routerLink]="['/admin', 'users', user.user_id]"
+                            >🔎</a
+                        >
+                        <app-confirmation-button
+                            buttonText="❌"
+                            questionText="Are you sure you want to delete user {{
+                                user.name
+                            }} ({{ user.email }}) ?"
+                            (confirmed)="deleteUser(user.user_id)"
+                        />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 } @else if (errorLoadingUsers) {
-<p>errorLoadingUsers</p>
+    <p>errorLoadingUsers</p>
 } @else if (users?.length === 0 && !errorLoadingUsers) {
-<p>No users found</p>
-} @if(loading){
-<app-loading-modal [loadingText]="laodingText" />
+    <p>No users found</p>
+}
+@if (loading) {
+    <app-loading-modal [loadingText]="laodingText" />
 }
