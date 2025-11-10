@@ -12,12 +12,14 @@
                 <h5 class="modal-title text-capitalize">
                     {{ modalType() ? modalType.toString() : '' }}
                 </h5>
-                <button
-                    type="button"
-                    class="btn-close btn-close-white"
-                    aria-label="Close"
-                    (click)="close()"
-                ></button>
+                @if (modalType() !== ModalType.Loading) {
+                    <button
+                        type="button"
+                        class="btn-close btn-close-white"
+                        aria-label="Close"
+                        (click)="close()"
+                    ></button>
+                }
             </div>
 
             <div class="modal-body p-4">
@@ -38,7 +40,7 @@
                 }
             </div>
 
-            <div class="modal-footer border-0 d-flex justify-content-end">
+            <!-- <div class="modal-footer border-0 d-flex justify-content-end">
                 @if (modalType() !== ModalType.Loading) {
                     <button
                         type="button"
@@ -48,14 +50,12 @@
                         Fermer
                     </button>
                 }
-            </div>
+            </div> -->
         </div>
     </div>
 </div>
 
 <!-- Backdrop -->
 @if (isOpen()) {
-    <div class="modal-backdrop fade" [class.show]="isOpen()">
-        {{ isOpen() }}
-    </div>
+    <div class="modal-backdrop fade" [class.show]="isOpen()"></div>
 }

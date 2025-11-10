@@ -16,7 +16,7 @@ export class AdminUserListing implements OnInit {
     private readonly _modalService = inject(CustomModalService);
 
     users: UserList[] | null = null;
-    errorLoadingUsers: string = '';
+    errorLoadingUsers = '';
 
     async ngOnInit(): Promise<void> {
         try {
@@ -30,6 +30,8 @@ export class AdminUserListing implements OnInit {
 
     async deleteUser(userId: string): Promise<void> {
         this._modalService.displayLoadingModal();
+        console.log('Deleting user:', userId);
+
         // await this._userService.deleteUser(userId);
     }
 }
