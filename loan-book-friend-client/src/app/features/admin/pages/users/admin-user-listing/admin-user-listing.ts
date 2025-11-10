@@ -1,12 +1,13 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ConfirmationButton } from '@components/commons';
+import { LoadingModal } from '@components/commons/modals/loading-modal/loading-modal';
 import { UserList } from '@core/models';
 import { UserService } from '@core/services';
 
 @Component({
     selector: 'app-admin-user-listing',
-    imports: [RouterLink, ConfirmationButton],
+    imports: [RouterLink, ConfirmationButton, LoadingModal],
     templateUrl: './admin-user-listing.html',
     styleUrl: './admin-user-listing.scss',
 })
@@ -16,6 +17,9 @@ export class AdminUserListing implements OnInit {
     users: UserList[] | null = null;
     errorLoadingUsers = '';
 
+    loading = true;
+    laodingText = 'Loading users...';
+
     async ngOnInit(): Promise<void> {
         try {
             this.users = await this._userService.getAllUsers();
@@ -23,12 +27,15 @@ export class AdminUserListing implements OnInit {
             console.log(err);
 
             this.errorLoadingUsers = 'Failed to load users.';
+        } finally {
+            this.loading = false;
         }
     }
 
     async deleteUser(userId: string): Promise<void> {
-        console.log('Deleting user:', userId);
+        this.loading = true;
+        this.laodingText = `Deleting user ${userId}...`;
 
-        // await this._userService.deleteUser(userId);
+        await this._userService.deleteUser(userId);
     }
 }

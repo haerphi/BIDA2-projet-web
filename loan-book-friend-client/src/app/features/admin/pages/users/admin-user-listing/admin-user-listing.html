@@ -34,6 +34,6 @@
 <p>errorLoadingUsers</p>
 } @else if (users?.length === 0 && !errorLoadingUsers) {
 <p>No users found</p>
-} @else {
-<p>Loading...</p>
+} @if(loading){
+<app-loading-modal [loadingText]="laodingText" />
 }

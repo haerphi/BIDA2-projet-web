@@ -1,1 +1,11 @@
 <button (click)="onClick()">{{ buttonText() }}</button>
+
+@if(displayConfirmation){
+<app-confirm-modal
+    (confirmed)="onConfirmed()"
+    (cancelled)="onCancelled()"
+    [questionText]="questionText()"
+    [confirmButtonText]="confirmButtonText()"
+    [cancelButtonText]="cancelButtonText()"
+/>
+}

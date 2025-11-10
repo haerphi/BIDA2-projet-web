@@ -1,8 +1,9 @@
 import { Component, input, output } from '@angular/core';
+import { ConfirmModal } from '../modals/confirm-modal/confirm-modal';
 
 @Component({
     selector: 'app-confirmation-button',
-    imports: [],
+    imports: [ConfirmModal],
     templateUrl: './confirmation-button.html',
     styleUrl: './confirmation-button.scss',
 })
@@ -13,8 +14,21 @@ export class ConfirmationButton {
     confirmButtonText = input<string>('Yes'); // not used in this simple implementation
     cancelButtonText = input<string>('No'); // not used in this simple implementation
     confirmed = output<void>();
+    cancelled = output<void>();
+
+    displayConfirmation = false;
 
     onClick(): void {
+        this.displayConfirmation = true;
+    }
+
+    onConfirmed(): void {
+        this.displayConfirmation = false;
         this.confirmed.emit();
+    }
+
+    onCancelled(): void {
+        this.displayConfirmation = false;
+        this.cancelled.emit();
     }
 }
