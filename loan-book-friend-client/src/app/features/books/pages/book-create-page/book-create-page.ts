@@ -26,9 +26,9 @@ export class BookCreatePage {
     isLoading = false;
 
     formErrorCode: string | null = null;
-    formErrorFields: any[] | null | undefined = null;
+    formErrorFields: unknown[] | null | undefined = null;
 
-    checkFormFieldError(key: string): any[] {
+    checkFormFieldError(key: string): unknown[] {
         if (!this.formErrorFields) {
             return [];
         }

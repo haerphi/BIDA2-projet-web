@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { ApiCode } from '@core/constants/api-code.enum';
 import { ApiErrorResponse } from '@core/models';
 import { AuthService } from '@core/services';
-import { catchError, EMPTY, from, switchMap, throwError } from 'rxjs';
+import { catchError, from, switchMap, throwError } from 'rxjs';
 
 export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
     const router = inject(Router);

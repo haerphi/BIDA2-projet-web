@@ -1,9 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { ModalType } from '@components/layout/custom-modal/enums/modal.enum';
 
-export interface CallbackFn {
-    (value: string | boolean): void;
-}
+export type CallbackFn = (value: string | boolean) => void;
 
 @Injectable({
     providedIn: 'root',
@@ -15,27 +13,27 @@ export class CustomModalService {
     private callback: CallbackFn | null = null;
 
     /* Alert Modal */
-    alertText: string = '';
-    confirmText: string = 'OK';
+    alertText = '';
+    confirmText = 'OK';
 
     /* Confirm Modal */
-    questionText: string = '';
-    confirmButtonText: string = '';
-    cancelButtonText: string = '';
+    questionText = '';
+    confirmButtonText = '';
+    cancelButtonText = '';
 
     /* Loading Modal */
-    loadingText: string = 'Loading...';
+    loadingText = 'Loading...';
 
     /* Prompt Modal */
-    promptText: string = '';
-    defaultValue: string = '';
+    promptText = '';
+    defaultValue = '';
     // also use confirmButtonText
     // also use cancelButtonText
 
     displayAlertModal(
         callback: CallbackFn,
         alertText: string,
-        confirmText: string = 'OK',
+        confirmText = 'OK',
     ) {
         this.callback = callback;
         this.alertText = alertText;
@@ -56,7 +54,7 @@ export class CustomModalService {
         this._modalType.set(ModalType.Confirm);
     }
 
-    displayLoadingModal(loadingText: string = 'Loading...') {
+    displayLoadingModal(loadingText = 'Loading...') {
         this.loadingText = loadingText;
         this._modalType.set(ModalType.Loading);
     }

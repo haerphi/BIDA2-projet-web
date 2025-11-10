@@ -29,7 +29,7 @@ export class LoginPage {
     formErrorCode: string | null = null;
     formErrorFields: ValidationFieldError[] | null | undefined = null;
 
-    checkFormFieldError(key: string): any[] {
+    checkFormFieldError(key: string): unknown[] {
         if (!this.formErrorFields) {
             return [];
         }

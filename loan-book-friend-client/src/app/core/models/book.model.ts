@@ -1,5 +1,3 @@
-import { UserList } from './user.model';
-
 export interface BookList {
     title: string;
     author: string;

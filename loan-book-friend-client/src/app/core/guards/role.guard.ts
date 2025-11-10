@@ -4,7 +4,7 @@ import { UserRole } from '@core/constants';
 import { AuthService } from '@core/services';
 
 export const roleGuard = (useRoles: UserRole) => {
-    const guard: CanActivateFn = (route, state) => {
+    const guard: CanActivateFn = () => {
         const authService = inject(AuthService);
         const router = inject(Router);
 
