@@ -3,7 +3,6 @@ import { RouterLink } from '@angular/router';
 import { ConfirmationButton } from '@components/commons';
 import { UserList } from '@core/models';
 import { UserService } from '@core/services';
-import { CustomModalService } from '@components/layout/custom-modal/services/custom-modal.service';
 
 @Component({
     selector: 'app-admin-user-listing',
@@ -13,7 +12,6 @@ import { CustomModalService } from '@components/layout/custom-modal/services/cus
 })
 export class AdminUserListing implements OnInit {
     private readonly _userService = inject(UserService);
-    private readonly _modalService = inject(CustomModalService);
 
     users: UserList[] | null = null;
     errorLoadingUsers = '';
@@ -29,7 +27,6 @@ export class AdminUserListing implements OnInit {
     }
 
     async deleteUser(userId: string): Promise<void> {
-        this._modalService.displayLoadingModal();
         console.log('Deleting user:', userId);
 
         // await this._userService.deleteUser(userId);

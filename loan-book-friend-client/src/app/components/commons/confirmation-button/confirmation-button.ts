@@ -1,5 +1,4 @@
-import { Component, inject, input, output } from '@angular/core';
-import { CustomModalService } from '@components/layout/custom-modal/services/custom-modal.service';
+import { Component, input, output } from '@angular/core';
 
 @Component({
     selector: 'app-confirmation-button',
@@ -8,8 +7,6 @@ import { CustomModalService } from '@components/layout/custom-modal/services/cus
     styleUrl: './confirmation-button.scss',
 })
 export class ConfirmationButton {
-    private readonly _modalService = inject(CustomModalService);
-
     buttonText = input<string>('Confirm');
 
     questionText = input<string>('Are you sure you want to proceed?');
@@ -18,17 +15,6 @@ export class ConfirmationButton {
     confirmed = output<void>();
 
     onClick(): void {
-        // const confirmation = window.confirm(this.questionText());
-        // if (confirmation) {
-        //     this.confirmed.emit();
-        // }
-        this._modalService.displayConfirmModal(
-            () => {
-                this.confirmed.emit();
-            },
-            this.questionText(),
-            this.confirmButtonText(),
-            this.cancelButtonText(),
-        );
+        this.confirmed.emit();
     }
 }
