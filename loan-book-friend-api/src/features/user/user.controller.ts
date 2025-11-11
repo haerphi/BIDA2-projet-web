@@ -1,19 +1,27 @@
-import { Controller, Delete, Get, Param } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Put } from '@nestjs/common';
 import { ApiCookieAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { RequireRoles } from '../security/guards';
 import { User } from '../security/metadata';
 import { UserEntity } from './models';
 import {
+    DeleteSelfApiOperationDocumentation,
+    DeleteSelfApiResponseDocumentation,
+    DeleteUserApiOperationDocumentation,
+    DeleteUserApiResponseDocumentation,
     GetAllUsersApiOperationDocumentation,
     GetAllUsersApiResponseDocumentation,
     GetConsumerApiOperationDocumentation,
     GetConsumerApiResponseDocumentation,
     GetUserByIdApiOperationDocumentation,
     GetUserByIdApiResponseDocumentation,
+    updateSelfApiOperationDocumentation,
+    updateSelfApiResponseDocumentation,
+    updateUserApiOperationDocumentation,
+    updateUserApiResponseDocumentation,
 } from './user.swagger';
 import { UserRole } from '../security/enums';
 import { UserService } from './services/user.service';
-import { UserDetailsDto, UserListDto } from './dtos';
+import type { UserDetailsDto, UserListDto, UserUpdateDto } from './dtos';
 import { toUserDetailsDto, toUserListDto } from './mappers';
 
 @ApiCookieAuth('access_token')
@@ -47,15 +55,42 @@ export class UserController {
         return toUserDetailsDto(user);
     }
 
+    @ApiOperation(DeleteSelfApiOperationDocumentation)
+    @ApiResponse(DeleteSelfApiResponseDocumentation)
     @RequireRoles()
     @Delete('')
-    public async deleteUserSelf(@User() user: UserEntity): Promise<void> {
+    public async deleteSelf(@User() user: UserEntity): Promise<void> {
         await this.userService.delete(user.user_id);
     }
 
+    @ApiOperation(DeleteUserApiOperationDocumentation)
+    @ApiResponse(DeleteUserApiResponseDocumentation)
     @RequireRoles(UserRole.Admin)
     @Delete(':id')
     public async deleteUser(@Param('id') id: string): Promise<void> {
         await this.userService.delete(id);
+    }
+
+    @ApiOperation(updateSelfApiOperationDocumentation)
+    @ApiResponse(updateSelfApiResponseDocumentation)
+    @RequireRoles()
+    @Put('')
+    public async updateSelf(
+        @User() user: UserEntity,
+        @Body() data: Partial<UserUpdateDto>,
+    ): Promise<void> {
+        await this.userService.update(user.user_id, data, user);
+    }
+
+    @ApiOperation(updateUserApiOperationDocumentation)
+    @ApiResponse(updateUserApiResponseDocumentation)
+    @RequireRoles(UserRole.Admin)
+    @Put(':id')
+    public async updateUser(
+        @Param('id') id: string,
+        @Body() data: Partial<UserUpdateDto>,
+        @User() requester: UserEntity,
+    ): Promise<void> {
+        await this.userService.update(id, data, requester);
     }
 }

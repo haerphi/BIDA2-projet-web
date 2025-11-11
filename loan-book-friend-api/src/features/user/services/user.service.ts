@@ -1,4 +1,4 @@
-import { NotFoundException } from '@common/exceptions';
+import { NotFoundException, UnauthorizedException } from '@common/exceptions';
 import {
     EmailAlreadyExistException,
     NameAlreadyExistException,
@@ -7,6 +7,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../models';
 import { Repository } from 'typeorm';
+import { UserRole } from 'features/security/enums';
 
 @Injectable()
 export class UserService {
@@ -17,20 +18,10 @@ export class UserService {
 
     async create(user: UserEntity): Promise<UserEntity> {
         // check if email already exists
-        const existingUser = await this.userRepository.findOneBy({
-            email: user.email,
-        });
-        if (existingUser) {
-            throw new EmailAlreadyExistException();
-        }
+        await this.verifyEmailNotTaken(user.email);
 
         // check if name already exists
-        const existingName = await this.userRepository.findOneBy({
-            name: user.name,
-        });
-        if (existingName) {
-            throw new NameAlreadyExistException();
-        }
+        await this.verifyNameNotTaken(user.name);
 
         return this.userRepository.save(user);
     }
@@ -57,5 +48,55 @@ export class UserService {
             throw new NotFoundException('user_not_found');
         }
         return user;
+    }
+
+    async update(
+        id: string,
+        data: Partial<UserEntity>,
+        requester: UserEntity,
+    ): Promise<UserEntity> {
+        if (data.role && requester.role !== UserRole.Admin) {
+            throw new UnauthorizedException();
+        }
+
+        const existingUser = await this.findById(id);
+
+        // check if email is being updated and if it already exists
+        if (data.email && data.email !== existingUser.email) {
+            await this.verifyEmailNotTaken(data.email);
+        }
+
+        // check if name is being updated and if it already exists
+        if (data.name && data.name !== existingUser.name) {
+            await this.verifyNameNotTaken(data.name);
+        }
+
+        const updatedUser = {
+            ...existingUser,
+            email: data.email ?? existingUser.email,
+            name: data.name ?? existingUser.name,
+            role: data.role ?? existingUser.role,
+        };
+        await this.userRepository.save(updatedUser);
+
+        return existingUser;
+    }
+
+    private async verifyEmailNotTaken(email: string): Promise<void> {
+        const emailUser = await this.userRepository.findOneBy({
+            email,
+        });
+        if (emailUser) {
+            throw new EmailAlreadyExistException();
+        }
+    }
+
+    private async verifyNameNotTaken(name: string): Promise<void> {
+        const nameUser = await this.userRepository.findOneBy({
+            name,
+        });
+        if (nameUser) {
+            throw new NameAlreadyExistException();
+        }
     }
 }
