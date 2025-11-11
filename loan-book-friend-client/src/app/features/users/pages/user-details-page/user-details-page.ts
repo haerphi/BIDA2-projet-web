@@ -3,10 +3,12 @@ import { BookUserList, UserDetails } from '@core/models';
 import { BookService } from '@core/services';
 import { UserService } from '@core/services/user.service';
 import { UserDetailsDisplay } from '@features/users/components/user-details-display/user-details-display';
+import { RouterLink } from '@angular/router';
+import { ConfirmationButton } from '@components/commons';
 
 @Component({
     selector: 'app-user-details-page',
-    imports: [UserDetailsDisplay],
+    imports: [UserDetailsDisplay, RouterLink, ConfirmationButton],
     templateUrl: './user-details-page.html',
     styleUrl: './user-details-page.scss',
 })
@@ -48,5 +50,14 @@ export class UserDetailsPage {
             .finally(() => {
                 this.isBooksLoading = false;
             });
+    }
+
+    async onDeleteBook(bookId: string): Promise<void> {
+        this.isBooksLoading = true;
+        await this._bookService.deleteOwnedBook(bookId);
+
+        // Refresh the book list after deletion
+        this.userBooks = await this._bookService.getAllBooksByOwner();
+        this.isBooksLoading = false;
     }
 }

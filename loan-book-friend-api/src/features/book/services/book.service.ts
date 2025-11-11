@@ -33,4 +33,25 @@ export class BookService {
             where: { owner: { user_id: ownerId } },
         });
     }
+
+    async deleteByIdAndOwnerId(
+        id: string,
+        ownerId: string | null,
+    ): Promise<void> {
+        // find the book by id and owner id
+        const book = await this.bookRepository.findOne({
+            relations: { owner: true },
+            where: { book_id: id },
+        });
+
+        // if ownerId is provided, check if it matches the book's owner
+        if (ownerId) {
+            if (!book || book.owner.user_id !== ownerId) {
+                throw new Error('Book not found or unauthorized');
+            }
+        }
+
+        // delete the book
+        await this.bookRepository.delete({ book_id: id });
+    }
 }

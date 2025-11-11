@@ -12,11 +12,13 @@ export const ApiRoutes = {
     user: {
         consumers: API_ROUTE_USER + '',
         all: API_ROUTE_USER + '/all',
-        byId: API_ROUTE_USER + '/',
-        delete: API_ROUTE_USER + '/delete',
+        byId: API_ROUTE_USER + '/', // + userId
+        delete: API_ROUTE_USER + '/delete', // + userId
     },
     book: {
         create: API_ROUTE_BOOK + '',
         owned: API_ROUTE_BOOK + '/owned/',
+        deleteOwned: API_ROUTE_BOOK + '/owned/', // + bookId
+        delete: API_ROUTE_BOOK + '/', // + bookId
     },
 };

@@ -21,12 +21,26 @@
                     <th>Title</th>
                     <th>Author</th>
                     <th>Is available?</th>
+                    <th>Actions</th>
                 </tr>
                 @for (book of userBooks; track $index) {
                     <tr>
-                        <td>{{ book.title }}</td>
+                        <td>
+                            <a routerLink="/books/{{ book.book_id }}">{{
+                                book.title
+                            }}</a>
+                        </td>
                         <td>{{ book.author }}</td>
                         <td>{{ book.available ? 'Yes' : 'No' }}</td>
+                        <td>
+                            <a routerLink="/books/{{ book.book_id }}/edit">
+                                ✏️
+                            </a>
+                            <app-confirmation-button
+                                (confirmed)="onDeleteBook(book.book_id)"
+                                buttonText="❌"
+                            />
+                        </td>
                     </tr>
                 }
             </thead>

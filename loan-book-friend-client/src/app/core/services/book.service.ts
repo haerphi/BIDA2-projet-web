@@ -28,4 +28,21 @@ export class BookService {
             ),
         );
     }
+
+    async deleteOwnedBook(bookId: string): Promise<void> {
+        await firstValueFrom(
+            this._httpClient.delete<void>(
+                this._baseUrl + ApiRoutes.book.deleteOwned + bookId,
+            ),
+        );
+    }
+
+    // ADMIN METHODS
+    async deleteBook(bookId: string): Promise<void> {
+        await firstValueFrom(
+            this._httpClient.delete<void>(
+                this._baseUrl + ApiRoutes.book.delete + bookId,
+            ),
+        );
+    }
 }
