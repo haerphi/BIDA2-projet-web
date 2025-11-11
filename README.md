@@ -46,7 +46,7 @@
 - ✅ Creer un user (formulaire, POST vers l'API)
 - ✅ Lire la liste des users (GET, affichage dynamique) - ADMIN
 - Modifier un user existant (formulaire, PUT/PATCH)
-- Supprimer un user (avec confirmation) - ADMIN et self
+- ✅ Supprimer un user (avec confirmation) - ADMIN et self
 - ✅ Afficher les details d'un user (fiche individuelle) - ADMIN et self
 
 - ✅ Creer un book (formulaire, POST vers l'API)

@@ -24,6 +24,9 @@ export class AuthService {
     private _role = signal<UserRole | null>(null);
     public readonly role = this._role.asReadonly();
 
+    private _userId = signal<string | null>(null);
+    public readonly userId = this._userId.asReadonly();
+
     constructor() {
         // Récupération du token dans le localstorage
         const strToken = localStorage.getItem(LOCAL_STORAGE.Token);

@@ -1,13 +1,12 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { ConfirmationButton } from '@components/commons';
 import { LoadingModal } from '@components/commons/modals/loading-modal/loading-modal';
 import { UserList } from '@core/models';
 import { UserService } from '@core/services';
 
 @Component({
     selector: 'app-admin-user-listing',
-    imports: [RouterLink, ConfirmationButton, LoadingModal],
+    imports: [RouterLink, LoadingModal],
     templateUrl: './admin-user-listing.html',
     styleUrl: './admin-user-listing.scss',
 })

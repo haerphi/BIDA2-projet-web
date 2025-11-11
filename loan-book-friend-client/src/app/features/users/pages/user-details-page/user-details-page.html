@@ -47,3 +47,13 @@
         </table>
     }
 </div>
+
+@if (!isDetailsLoading && !userDetailsError) {
+    <app-confirmation-button
+        (confirmed)="onDeleteAccount()"
+        buttonText="Delete Account"
+    />
+}
+@if (isPageLoading) {
+    <app-loading-modal />
+}

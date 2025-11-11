@@ -47,6 +47,12 @@ export class UserController {
         return toUserDetailsDto(user);
     }
 
+    @RequireRoles()
+    @Delete('')
+    public async deleteUserSelf(@User() user: UserEntity): Promise<void> {
+        await this.userService.delete(user.user_id);
+    }
+
     @RequireRoles(UserRole.Admin)
     @Delete(':id')
     public async deleteUser(@Param('id') id: string): Promise<void> {
