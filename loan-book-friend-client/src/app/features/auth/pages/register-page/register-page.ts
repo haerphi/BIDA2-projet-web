@@ -41,9 +41,9 @@ export class RegisterPage {
         this.registerForm.markAllAsTouched();
         this.formErrorCode = null;
         this.formErrorFields = null;
-        this.isLoading = true;
 
         if (this.registerForm.valid) {
+            this.isLoading = true;
             try {
                 await this._authService.registerEmail({
                     name: this.registerForm.value.name!,

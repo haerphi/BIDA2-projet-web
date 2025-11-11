@@ -36,10 +36,22 @@ export class UserService {
         );
     }
 
-    deleteUser(userId?: string): Promise<void> {
+    deleteUser(userId: string | null = null): Promise<void> {
         return firstValueFrom(
             this._httpClient.delete<void>(
                 this._baseUrl + ApiRoutes.user.delete + (userId || ''),
+            ),
+        );
+    }
+
+    updateUser(
+        data: Partial<UserDetails>,
+        userId: string | null = null,
+    ): Promise<void> {
+        return firstValueFrom(
+            this._httpClient.put<void>(
+                this._baseUrl + ApiRoutes.user.update + (userId || ''),
+                data,
             ),
         );
     }

@@ -13,7 +13,8 @@ export const ApiRoutes = {
         consumers: API_ROUTE_USER + '',
         all: API_ROUTE_USER + '/all',
         byId: API_ROUTE_USER + '/', // + userId
-        delete: API_ROUTE_USER + '/', // + userId
+        delete: API_ROUTE_USER + '/', // + userId?
+        update: API_ROUTE_USER + '/', // + userId?
     },
     book: {
         create: API_ROUTE_BOOK + '',

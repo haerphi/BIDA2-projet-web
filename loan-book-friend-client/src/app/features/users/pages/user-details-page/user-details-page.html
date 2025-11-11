@@ -3,13 +3,23 @@
     @if (userDetailsError) {
         <p>Error: {{ userDetailsError }}</p>
     } @else {
-        <app-user-details-display [details]="userDetails" />
+        @if (editMode && userDetails) {
+            <button (click)="onExitEditMode()">Cancel</button>
+            <app-user-edit-form
+                (profileUpdated)="onProfileUpdated()"
+                [data]="userDetails"
+                [self]="!userId()"
+            />
+        } @else {
+            <button (click)="onEnterEditMode()" [disabled]="!userDetails">
+                Edit profile
+            </button>
+            <app-user-details-display [details]="userDetails" />
+        }
     }
 </div>
 <div>
-    @if (isBooksLoading) {
-        <p>Loading your books...</p>
-    } @else if (userBooksError) {
+    @if (userBooksError && !isBooksLoading) {
         <p>Error: {{ userBooksError }}</p>
     } @else {
         <h3>Your books:</h3>
@@ -46,7 +56,7 @@
     }
 </div>
 
-@if (!isDetailsLoading && !userDetailsError) {
+@if (userDetails && !userDetailsError) {
     <app-confirmation-button
         (confirmed)="onDeleteAccount()"
         buttonText="Delete Account"
