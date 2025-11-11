@@ -21,23 +21,22 @@ export class BookService {
         );
     }
 
-    async getAllBooksByOwner(id?: string): Promise<BookUserList[]> {
+    async getAllOwnedBooks(): Promise<BookUserList[]> {
         return await firstValueFrom(
             this._httpClient.get<BookUserList[]>(
-                this._baseUrl + ApiRoutes.book.owned + (id ?? ''),
+                this._baseUrl + ApiRoutes.book.owned,
             ),
         );
     }
 
-    async deleteOwnedBook(bookId: string): Promise<void> {
-        await firstValueFrom(
-            this._httpClient.delete<void>(
-                this._baseUrl + ApiRoutes.book.deleteOwned + bookId,
+    async getAllBooksByOwner(userId: string): Promise<BookUserList[]> {
+        return await firstValueFrom(
+            this._httpClient.get<BookUserList[]>(
+                this._baseUrl + ApiRoutes.book.ownedBy + userId,
             ),
         );
     }
 
-    // ADMIN METHODS
     async deleteBook(bookId: string): Promise<void> {
         await firstValueFrom(
             this._httpClient.delete<void>(

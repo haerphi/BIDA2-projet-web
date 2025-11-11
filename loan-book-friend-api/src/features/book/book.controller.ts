@@ -15,8 +15,6 @@ import {
     CreateBookApiResponseDocumentation,
     DeleteBookApiOperationDocumentation,
     DeleteBookApiResponseDocumentation,
-    DeleteOwnedBookApiOperationDocumentation,
-    DeleteOwnedBookApiResponseDocumentation,
     GetBooksApiOperationDocumentation,
     GetBooksApiResponseDocumentation,
     GetBooksOwnedByIdApiOperationDocumentation,
@@ -71,22 +69,11 @@ export class BookController {
         return toBookUserListDto(createdBook);
     }
 
-    @ApiOperation(DeleteOwnedBookApiOperationDocumentation)
-    @ApiResponse(DeleteOwnedBookApiResponseDocumentation)
-    @RequireRoles()
-    @Delete('owned/:id')
-    public async deleteOwnedBook(
-        @User() user: UserEntity,
-        @Param('id') id: string,
-    ) {
-        await this.bookService.deleteByIdAndOwnerId(id, user.user_id);
-    }
-
     @ApiOperation(DeleteBookApiOperationDocumentation)
     @ApiResponse(DeleteBookApiResponseDocumentation)
-    @RequireRoles(UserRole.Admin)
+    @RequireRoles()
     @Delete(':id')
-    public async deleteBook(@Param('id') id: string) {
-        await this.bookService.deleteByIdAndOwnerId(id, null);
+    public async deleteBook(@User() user: UserEntity, @Param('id') id: string) {
+        await this.bookService.deleteById(id, user);
     }
 }

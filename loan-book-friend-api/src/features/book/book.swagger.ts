@@ -54,21 +54,9 @@ export const CreateBookApiResponseDocumentation: ApiResponseOptions = {
     type: BookCreateDto,
 };
 
-// DeleteOwnedBook
-export const DeleteOwnedBookApiOperationDocumentation: ApiOperationOptions = {
-    summary: 'Delete a book owned by the connected user',
-    description:
-        'This route allows to delete a book owned by the connected user',
-};
-
-export const DeleteOwnedBookApiResponseDocumentation: ApiResponseOptions = {
-    status: 200,
-    description: 'The book has been deleted successfully',
-};
-
-// Delete book (admin)
+// Delete book
 export const DeleteBookApiOperationDocumentation: ApiOperationOptions = {
-    summary: 'Delete a book by id (admin)',
+    summary: 'Delete a book by id',
     description: 'This route allows to delete a book by id',
 };
 

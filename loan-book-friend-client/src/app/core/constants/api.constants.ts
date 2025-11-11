@@ -18,7 +18,7 @@ export const ApiRoutes = {
     book: {
         create: API_ROUTE_BOOK + '',
         owned: API_ROUTE_BOOK + '/owned/',
-        deleteOwned: API_ROUTE_BOOK + '/owned/', // + bookId
+        ownedBy: API_ROUTE_BOOK + '/ownedby/', // + userId
         delete: API_ROUTE_BOOK + '/', // + bookId
     },
 };

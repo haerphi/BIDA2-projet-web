@@ -1,12 +1,13 @@
 import { Component, inject } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ConfirmationButton } from '@components/commons';
 import { BookUserList, UserDetails } from '@core/models';
 import { BookService, UserService } from '@core/services';
 import { UserDetailsDisplay } from '@features/users/components/user-details-display/user-details-display';
 
 @Component({
     selector: 'app-admin-user-details',
-    imports: [UserDetailsDisplay],
+    imports: [UserDetailsDisplay, RouterLink, ConfirmationButton],
     templateUrl: './admin-user-details.html',
     styleUrl: './admin-user-details.scss',
 })
@@ -58,5 +59,27 @@ export class AdminUserDetails {
             .finally(() => {
                 this.isBooksLoading = false;
             });
+    }
+
+    onDeleteBook(bookId: string) {
+        this._bookService.deleteBook(bookId).then(() => {
+            // Refresh the book list after deletion
+            const userId = this._activatedRoute.snapshot.paramMap.get('id');
+            if (userId) {
+                this.isBooksLoading = true;
+                this._bookService
+                    .getAllBooksByOwner(userId)
+                    .then((data) => {
+                        this.userBooks = data;
+                    })
+                    .catch(() => {
+                        this.userBooksError =
+                            'An error occurred while fetching user books.';
+                    })
+                    .finally(() => {
+                        this.isBooksLoading = false;
+                    });
+            }
+        });
     }
 }

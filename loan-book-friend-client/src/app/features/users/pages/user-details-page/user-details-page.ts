@@ -39,7 +39,7 @@ export class UserDetailsPage {
             });
 
         this._bookService
-            .getAllBooksByOwner()
+            .getAllOwnedBooks()
             .then((data) => {
                 this.userBooks = data;
             })
@@ -54,10 +54,10 @@ export class UserDetailsPage {
 
     async onDeleteBook(bookId: string): Promise<void> {
         this.isBooksLoading = true;
-        await this._bookService.deleteOwnedBook(bookId);
+        await this._bookService.deleteBook(bookId);
 
         // Refresh the book list after deletion
-        this.userBooks = await this._bookService.getAllBooksByOwner();
+        this.userBooks = await this._bookService.getAllOwnedBooks();
         this.isBooksLoading = false;
     }
 }
