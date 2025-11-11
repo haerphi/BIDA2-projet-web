@@ -31,11 +31,4 @@ export class AdminUserListing implements OnInit {
             this.loading = false;
         }
     }
-
-    async deleteUser(userId: string): Promise<void> {
-        this.loading = true;
-        this.laodingText = `Deleting user ${userId}...`;
-
-        await this._userService.deleteUser(userId);
-    }
 }

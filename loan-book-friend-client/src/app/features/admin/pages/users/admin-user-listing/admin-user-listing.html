@@ -22,13 +22,6 @@
                         <a [routerLink]="['/admin', 'users', user.user_id]"
                             >🔎</a
                         >
-                        <app-confirmation-button
-                            buttonText="❌"
-                            questionText="Are you sure you want to delete user {{
-                                user.name
-                            }} ({{ user.email }}) ?"
-                            (confirmed)="deleteUser(user.user_id)"
-                        />
                     </td>
                 </tr>
             }

@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ConfirmationButton } from '@components/commons';
 import { BookUserList, UserDetails } from '@core/models';
 import { BookService, UserService } from '@core/services';
@@ -15,6 +15,9 @@ export class AdminUserDetails {
     private readonly _userService = inject(UserService);
     private readonly _bookService = inject(BookService);
     private readonly _activatedRoute = inject(ActivatedRoute);
+    private readonly _router = inject(Router);
+
+    userId = this._activatedRoute.snapshot.paramMap.get('id');
 
     isDetailsLoading = true;
     userDetails: null | UserDetails = null;
@@ -25,9 +28,7 @@ export class AdminUserDetails {
     userBooksError: null | string = null;
 
     constructor() {
-        const userId = this._activatedRoute.snapshot.paramMap.get('id');
-
-        if (!userId) {
+        if (!this.userId) {
             this.userDetailsError = 'No user ID provided in the route.';
             this.isDetailsLoading = false;
             this.isBooksLoading = false;
@@ -35,7 +36,7 @@ export class AdminUserDetails {
         }
 
         this._userService
-            .getUserById(userId)
+            .getUserById(this.userId)
             .then((data) => {
                 this.userDetails = data;
             })
@@ -48,7 +49,7 @@ export class AdminUserDetails {
             });
 
         this._bookService
-            .getAllBooksByOwner(userId)
+            .getAllBooksByOwner(this.userId)
             .then((data) => {
                 this.userBooks = data;
             })
@@ -64,11 +65,10 @@ export class AdminUserDetails {
     onDeleteBook(bookId: string) {
         this._bookService.deleteBook(bookId).then(() => {
             // Refresh the book list after deletion
-            const userId = this._activatedRoute.snapshot.paramMap.get('id');
-            if (userId) {
+            if (this.userId) {
                 this.isBooksLoading = true;
                 this._bookService
-                    .getAllBooksByOwner(userId)
+                    .getAllBooksByOwner(this.userId)
                     .then((data) => {
                         this.userBooks = data;
                     })
@@ -81,5 +81,21 @@ export class AdminUserDetails {
                     });
             }
         });
+    }
+
+    onDeleteUser() {
+        if (!this.userId) {
+            return;
+        }
+
+        this._userService
+            .deleteUser(this.userId)
+            .then(() => {
+                this._router.navigate(['/admin', 'users']);
+            })
+            .catch(() => {
+                this.userDetailsError =
+                    'An error occurred while deleting the user.';
+            });
     }
 }
