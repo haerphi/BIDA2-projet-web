@@ -8,6 +8,6 @@ import { UserDetails as UserDetailsType } from '@core/models';
     styleUrl: './user-details-display.scss',
 })
 export class UserDetailsDisplay {
-    details = input.required<UserDetailsType>();
+    details = input.required<UserDetailsType | null>();
     displayAll = input<boolean>(false);
 }

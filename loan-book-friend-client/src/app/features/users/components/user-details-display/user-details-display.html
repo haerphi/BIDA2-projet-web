@@ -1,8 +1,8 @@
-<p><strong>User ID:</strong> {{ details().user_id }}</p>
-<p><strong>Name:</strong> {{ details().name }}</p>
-<p><strong>Email:</strong> {{ details().email }}</p>
+<p><strong>User ID:</strong> {{ details()?.user_id || '...' }}</p>
+<p><strong>Name:</strong> {{ details()?.name || '...' }}</p>
+<p><strong>Email:</strong> {{ details()?.email || '...' }}</p>
 @if (displayAll()) {
-    <p><strong>Role:</strong> {{ details().role }}</p>
-    <p><strong>Created At:</strong> {{ details().created_at }}</p>
-    <p><strong>Updated At:</strong> {{ details().updated_at }}</p>
+    <p><strong>Role:</strong> {{ details()?.role || '...' }}</p>
+    <p><strong>Created At:</strong> {{ details()?.created_at || '...' }}</p>
+    <p><strong>Updated At:</strong> {{ details()?.updated_at || '...' }}</p>
 }

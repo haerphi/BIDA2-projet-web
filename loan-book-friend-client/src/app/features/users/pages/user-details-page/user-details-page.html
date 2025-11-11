@@ -1,11 +1,9 @@
 <div>
     <h2>User Details Page</h2>
-    @if (isDetailsLoading) {
-        <p>Loading user details...</p>
-    } @else if (userDetailsError) {
+    @if (userDetailsError) {
         <p>Error: {{ userDetailsError }}</p>
     } @else {
-        <app-user-details-display [details]="userDetails!" />
+        <app-user-details-display [details]="userDetails" />
     }
 </div>
 <div>
