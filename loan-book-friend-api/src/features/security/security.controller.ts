@@ -14,8 +14,6 @@ import {
     ApiTags,
 } from '@nestjs/swagger';
 import { SecurityService } from './services/security.service';
-import { SignInPayload } from './dtos/sign-in.dto';
-import { SignUpPayload } from './dtos/sign-up.dto';
 import {
     SignInApiOperationDocumentation,
     SignInApiResponsesDocumentation,
@@ -26,6 +24,7 @@ import type { Request, Response } from 'express';
 import { toSignInResponse } from './mappers/signin.mappers';
 import { UnauthorizedException } from '@common/exceptions';
 import { CookieKey } from '@common/config/enums';
+import { SignInPayload, SignUpPayload } from './dtos';
 
 @ApiCookieAuth('access_token')
 @ApiTags('Authentication & Security')
