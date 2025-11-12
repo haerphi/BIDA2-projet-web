@@ -79,7 +79,10 @@ export class UserController {
         @User() user: UserEntity,
         @Body() data: Partial<UserUpdateDto>,
     ): Promise<void> {
-        await this.userService.update(user.user_id, data, user);
+        await this.userService.update(user.user_id, {
+            name: data.name,
+            email: data.email,
+        });
     }
 
     @ApiOperation(updateUserApiOperationDocumentation)
@@ -88,9 +91,8 @@ export class UserController {
     @Put(':id')
     public async updateUser(
         @Param('id') id: string,
-        @Body() data: Partial<UserUpdateDto>,
-        @User() requester: UserEntity,
+        @Body() data: Partial<UserUpdateAdminDto>,
     ): Promise<void> {
-        await this.userService.update(id, data, requester);
+        await this.userService.update(id, data);
     }
 }

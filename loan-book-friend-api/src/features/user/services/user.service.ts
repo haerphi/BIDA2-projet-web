@@ -1,4 +1,4 @@
-import { NotFoundException, UnauthorizedException } from '@common/exceptions';
+import { NotFoundException } from '@common/exceptions';
 import {
     EmailAlreadyExistException,
     NameAlreadyExistException,
@@ -7,7 +7,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../models';
 import { Repository } from 'typeorm';
-import { UserRole } from 'features/security/enums';
 
 @Injectable()
 export class UserService {
@@ -50,15 +49,7 @@ export class UserService {
         return user;
     }
 
-    async update(
-        id: string,
-        data: Partial<UserEntity>,
-        requester: UserEntity,
-    ): Promise<UserEntity> {
-        if (data.role && requester.role !== UserRole.Admin) {
-            throw new UnauthorizedException();
-        }
-
+    async update(id: string, data: Partial<UserEntity>): Promise<UserEntity> {
         const existingUser = await this.findById(id);
 
         // check if email is being updated and if it already exists
