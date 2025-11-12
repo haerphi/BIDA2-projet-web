@@ -26,7 +26,7 @@ export class UserEditForm implements OnInit {
     self = input<boolean>(false);
     profileUpdated = output<void>();
 
-    isLoading = true;
+    isLoading = false;
 
     userEditForm!: FormGroup<EditFormControls>;
     userEditControls!: EditFormControls;
@@ -34,12 +34,9 @@ export class UserEditForm implements OnInit {
     formErrorCode: string | null = null;
     formErrorFields: unknown[] | null | undefined = null;
 
-    async ngOnInit(): Promise<void> {
-        this.isLoading = true;
-
+    ngOnInit(): void {
         this.userEditForm = this._authFormFactory.editUserForm(this.data());
         this.userEditControls = this.userEditForm.controls;
-        this.isLoading = false;
     }
 
     checkFormFieldError(key: string): unknown[] {

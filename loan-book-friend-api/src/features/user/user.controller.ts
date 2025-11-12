@@ -21,7 +21,12 @@ import {
 } from './user.swagger';
 import { UserRole } from '../security/enums';
 import { UserService } from './services/user.service';
-import type { UserDetailsDto, UserListDto, UserUpdateDto } from './dtos';
+import type {
+    UserDetailsDto,
+    UserListDto,
+    UserUpdateAdminDto,
+    UserUpdateDto,
+} from './dtos';
 import { toUserDetailsDto, toUserListDto } from './mappers';
 
 @ApiCookieAuth('access_token')

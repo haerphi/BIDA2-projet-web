@@ -3,6 +3,8 @@ import {
     Controller,
     HttpCode,
     HttpStatus,
+    Param,
+    Patch,
     Post,
     Req,
     Res,
@@ -24,7 +26,16 @@ import type { Request, Response } from 'express';
 import { toSignInResponse } from './mappers/signin.mappers';
 import { UnauthorizedException } from '@common/exceptions';
 import { CookieKey } from '@common/config/enums';
-import { SignInPayload, SignUpPayload } from './dtos';
+import {
+    CredentialChangePasswordAdminDto,
+    CredentialChangePasswordDto,
+    SignInPayload,
+    SignUpPayload,
+} from './dtos';
+import { RequireRoles } from './guards';
+import { UserEntity } from 'features/user/models';
+import { User } from './metadata';
+import { UserRole } from './enums';
 
 @ApiCookieAuth('access_token')
 @ApiTags('Authentication & Security')
@@ -110,5 +121,31 @@ export class SecurityController {
         );
 
         return;
+    }
+
+    @RequireRoles()
+    @Patch('password')
+    async changePassword(
+        @User() user: UserEntity,
+        @Body() payload: CredentialChangePasswordDto,
+    ) {
+        await this.securityService.changePassword(
+            user.user_id,
+            payload.oldPassword,
+            payload.newPassword,
+        );
+    }
+
+    @RequireRoles(UserRole.Admin)
+    @Patch(':userId/password')
+    async changePasswordOfUser(
+        @Param('userId') userId: string,
+        @Body() payload: CredentialChangePasswordAdminDto,
+    ) {
+        await this.securityService.changePassword(
+            userId,
+            true,
+            payload.newPassword,
+        );
     }
 }

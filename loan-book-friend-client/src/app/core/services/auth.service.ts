@@ -141,4 +141,26 @@ export class AuthService {
             ),
         );
     }
+
+    public changePassword(
+        userId: string | null,
+        oldPassword: string | null,
+        newPassword: string,
+    ): Promise<void> {
+        let route = ApiRoutes.auth.changePassword;
+
+        if (userId) {
+            route = ApiRoutes.auth.changePasswordAdmin.replace(
+                ':userId',
+                userId,
+            );
+        }
+
+        return firstValueFrom(
+            this._httpClient.patch<void>(this._baseUrl + route, {
+                oldPassword: userId ? undefined : oldPassword,
+                newPassword: newPassword,
+            }),
+        );
+    }
 }

@@ -10,9 +10,21 @@
                 [data]="userDetails"
                 [self]="!userId()"
             />
+        } @else if (changePasswordMode && userDetails) {
+            <button (click)="onExitChangePasswordMode()">Cancel</button>
+            <app-user-edit-password-form
+                [userId]="userId()"
+                (passwordUpdated)="onPasswordUpdated()"
+            />
         } @else {
             <button (click)="onEnterEditMode()" [disabled]="!userDetails">
                 Edit profile
+            </button>
+            <button
+                (click)="onEnterChangePasswordMode()"
+                [disabled]="!userDetails"
+            >
+                Change password
             </button>
             <app-user-details-display [details]="userDetails" />
         }

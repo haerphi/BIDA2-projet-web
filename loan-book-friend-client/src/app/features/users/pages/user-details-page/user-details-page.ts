@@ -7,6 +7,7 @@ import { Router, RouterLink } from '@angular/router';
 import { ConfirmationButton } from '@components/commons';
 import { LoadingModal } from '@components/commons/modals/loading-modal/loading-modal';
 import { UserEditForm } from '@features/users/components/user-edit-form/user-edit-form';
+import { UserEditPasswordForm } from '@features/users/components/user-edit-password-form/user-edit-password-form';
 
 @Component({
     selector: 'app-user-details-page',
@@ -16,6 +17,7 @@ import { UserEditForm } from '@features/users/components/user-edit-form/user-edi
         ConfirmationButton,
         LoadingModal,
         UserEditForm,
+        UserEditPasswordForm,
     ],
     templateUrl: './user-details-page.html',
     styleUrl: './user-details-page.scss',
@@ -30,6 +32,7 @@ export class UserDetailsPage implements OnInit {
     private readonly _router = inject(Router);
 
     editMode = false;
+    changePasswordMode = false;
 
     userDetails: null | UserDetails = null;
     userDetailsError: null | string = null;
@@ -82,6 +85,23 @@ export class UserDetailsPage implements OnInit {
     onProfileUpdated(): Promise<void> {
         this.editMode = false;
         return this._refreshUserDetails();
+    }
+
+    onEnterChangePasswordMode(): void {
+        this.changePasswordMode = true;
+    }
+
+    onExitChangePasswordMode(): void {
+        this.changePasswordMode = false;
+    }
+
+    async onPasswordUpdated(): Promise<void> {
+        this.changePasswordMode = false;
+        if (!this.userId()) {
+            await this._authService.logout();
+
+            this._router.navigate(['/', 'auth', 'login']);
+        }
     }
 
     private async _refreshUserDetails(): Promise<void> {

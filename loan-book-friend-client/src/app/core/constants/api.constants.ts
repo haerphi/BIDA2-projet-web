@@ -8,6 +8,8 @@ export const ApiRoutes = {
         register: API_ROUTE_AUTH + '/signup',
         refresh: API_ROUTE_AUTH + '/refresh',
         logout: API_ROUTE_AUTH + '/signout',
+        changePassword: API_ROUTE_AUTH + '/password', // /!\ PATCH method
+        changePasswordAdmin: API_ROUTE_AUTH + '/:userId/password', // /!\ PATCH method + replace :userId
     },
     user: {
         consumers: API_ROUTE_USER + '',

@@ -93,4 +93,27 @@ export class SecurityService {
     async refreshToken(refresh: string): Promise<[Token, UserEntity]> {
         return this.tokenService.refresh(refresh);
     }
+
+    async changePassword(
+        userId: string,
+        oldPassword: string | boolean,
+        newPassword: string,
+    ): Promise<void> {
+        const cred = await this.credentialRepository.findOne({
+            where: { user: { user_id: userId } },
+        });
+
+        if (!cred) {
+            throw new CredentialNotFoundException();
+        }
+
+        if (typeof oldPassword !== 'boolean') {
+            if (!(await comparePassword(oldPassword, cred.password))) {
+                throw new WrongCredentialException();
+            }
+        }
+
+        cred.password = await encryptPassword(newPassword);
+        await this.credentialRepository.save(cred);
+    }
 }

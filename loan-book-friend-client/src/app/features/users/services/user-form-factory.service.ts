@@ -14,6 +14,12 @@ export interface EditFormControls {
     email: AbstractControl<any, any, any>;
 }
 
+export interface EditPasswordFormControls {
+    oldPassword: AbstractControl<any, any, any>;
+    newPassword: AbstractControl<any, any, any>;
+    confirmPassword: AbstractControl<any, any, any>;
+}
+
 @Injectable({
     providedIn: 'root',
 })
@@ -30,17 +36,19 @@ export class UserFormFactoryService {
         });
     }
 
-    public editUserPasswordForm() {
+    public editUserPasswordForm(): FormGroup<EditPasswordFormControls> {
+        /* @ts-expect-error: ... is not assignable to type ... */
         return this._fb.group(
             {
-                password: [
+                oldPassword: ['', [Validators.required]],
+                newPassword: [
                     '',
                     [Validators.required, strongPasswordValidator()],
                 ],
                 confirmPassword: ['', [Validators.required]],
             },
             {
-                validators: [sameAsValidator('password', 'confirmPassword')],
+                validators: [sameAsValidator('newPassword', 'confirmPassword')],
             },
         );
     }
