@@ -16,6 +16,8 @@ export class ConfirmationButton {
     confirmed = output<void>();
     cancelled = output<void>();
 
+    disabled = input<boolean>(false);
+
     displayConfirmation = false;
 
     onClick(): void {

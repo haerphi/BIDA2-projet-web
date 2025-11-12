@@ -26,7 +26,14 @@
             >
                 Change password
             </button>
+
             <app-user-details-display [details]="userDetails" />
+
+            <app-confirmation-button
+                (confirmed)="onDeleteAccount()"
+                buttonText="Delete Account"
+                [disabled]="!userDetails"
+            />
         }
     }
 </div>
@@ -68,12 +75,6 @@
     }
 </div>
 
-@if (userDetails && !userDetailsError) {
-    <app-confirmation-button
-        (confirmed)="onDeleteAccount()"
-        buttonText="Delete Account"
-    />
-}
 @if (isPageLoading) {
     <app-loading-modal />
 }

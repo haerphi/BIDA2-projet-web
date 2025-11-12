@@ -1,4 +1,4 @@
-<button (click)="onClick()">{{ buttonText() }}</button>
+<button (click)="onClick()" [disabled]="disabled()">{{ buttonText() }}</button>
 
 @if (displayConfirmation) {
     <app-confirm-modal

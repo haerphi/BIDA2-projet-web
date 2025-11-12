@@ -50,7 +50,7 @@
 - ✅ Afficher les details d'un user (fiche individuelle) - ADMIN et self
 
 - ✅ Creer un book (formulaire, POST vers l'API)
-- Lire la liste des books (GET, affichage dynamique)
+- ✅ Lire la liste des books (GET, affichage dynamique)
 - Modifier un book existant (formulaire, PUT/PATCH)
 - ✅ Supprimer un book (avec confirmation)
 - Afficher les details d'un book (fiche individuelle)
