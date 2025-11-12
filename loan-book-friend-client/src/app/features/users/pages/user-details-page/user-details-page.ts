@@ -121,7 +121,7 @@ export class UserDetailsPage implements OnInit {
                 // TODO remove artificial delay
                 setTimeout(() => {
                     this.userDetails = data;
-                }, 3000);
+                }, 1000);
             })
             .catch(() => {
                 this.userDetailsError =

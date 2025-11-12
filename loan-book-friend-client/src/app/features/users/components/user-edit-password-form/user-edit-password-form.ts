@@ -1,6 +1,5 @@
 import { Component, inject, input, OnInit, output } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
 import { ApiErrorResponse } from '@core/models';
 import { AuthService } from '@core/services';
 import { fromValidationFieldError } from '@core/utils/validator.utils';
@@ -24,7 +23,6 @@ export class UserEditPasswordForm implements OnInit {
 
     private readonly _authFormFactory = inject(UserFormFactoryService);
     private readonly _authService = inject(AuthService);
-    private readonly _router = inject(Router);
 
     userId = input<string | null>(null);
     passwordUpdated = output<void>();
@@ -52,9 +50,11 @@ export class UserEditPasswordForm implements OnInit {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onChange(event: any): void {
-        this.passwordFormControls.oldPassword.setValue(
-            event.target.value as string,
-        );
+        if (this.userId()) {
+            this.passwordFormControls.oldPassword.setValue(
+                event.target.value as string,
+            );
+        }
     }
 
     async onSubmit(): Promise<void> {
