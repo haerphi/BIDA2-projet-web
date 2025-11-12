@@ -1,15 +1,25 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    Post,
+    Put,
+} from '@nestjs/common';
 import { ApiCookieAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { BookService } from './services';
 import {
     bookCreateDtoToEntity,
+    bookUpdateDtoToEntity,
+    toBookDetailsDto,
     toBookListDto,
     toBookUserListDto,
 } from './mappers';
 import { RequireRoles } from '../security/guards';
 import { User } from '../security/metadata';
 import { UserEntity } from '../user/models';
-import { BookCreateDto } from './dtos';
+import { BookCreateDto, BookUpdateDto } from './dtos';
 import {
     CreateBookApiOperationDocumentation,
     CreateBookApiResponseDocumentation,
@@ -75,5 +85,29 @@ export class BookController {
     @Delete(':id')
     public async deleteBook(@User() user: UserEntity, @Param('id') id: string) {
         await this.bookService.deleteById(id, user);
+    }
+
+    @RequireRoles()
+    @Get(':id')
+    public async getBookById(
+        @User() requester: UserEntity,
+        @Param('id') id: string,
+    ) {
+        const book = await this.bookService.findById(id, requester);
+        return toBookDetailsDto(book);
+    }
+
+    @RequireRoles()
+    @Put(':id')
+    public async updateBookById(
+        @User() user: UserEntity,
+        @Param('id') id: string,
+        @Body() bookData: Partial<BookUpdateDto>,
+    ) {
+        await this.bookService.update(
+            id,
+            bookUpdateDtoToEntity(bookData),
+            user,
+        );
     }
 }

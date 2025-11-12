@@ -1,0 +1,12 @@
+<p>Title: {{ bookDetails()?.title || '...' }}</p>
+<p>Author: {{ bookDetails()?.author || '...' }}</p>
+<p>
+    Status:
+    {{
+        bookDetails()
+            ? bookDetails()?.available
+                ? 'Available'
+                : 'Not available'
+            : '...'
+    }}
+</p>

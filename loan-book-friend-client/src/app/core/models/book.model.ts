@@ -8,7 +8,14 @@ export interface BookUserList extends BookList {
     available: boolean;
 }
 
-export interface BookCreate {
+export interface BookForm {
     title: string;
     author: string;
+}
+
+export interface BookDetails {
+    book_id: string;
+    title: string;
+    author: string;
+    available: boolean;
 }

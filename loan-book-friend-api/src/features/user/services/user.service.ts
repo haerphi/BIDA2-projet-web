@@ -62,7 +62,7 @@ export class UserService {
             await this.verifyNameNotTaken(data.name);
         }
 
-        const updatedUser = {
+        const updatedUser: UserEntity = {
             ...existingUser,
             email: data.email ?? existingUser.email,
             name: data.name ?? existingUser.name,
@@ -70,7 +70,7 @@ export class UserService {
         };
         await this.userRepository.save(updatedUser);
 
-        return existingUser;
+        return updatedUser;
     }
 
     private async verifyEmailNotTaken(email: string): Promise<void> {

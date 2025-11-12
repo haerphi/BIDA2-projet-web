@@ -23,5 +23,7 @@ export const ApiRoutes = {
         owned: API_ROUTE_BOOK + '/owned/',
         ownedBy: API_ROUTE_BOOK + '/ownedby/', // + userId
         delete: API_ROUTE_BOOK + '/', // + bookId
+        byId: API_ROUTE_BOOK + '/', // + bookId
+        update: API_ROUTE_BOOK + '/', // + bookId
     },
 };

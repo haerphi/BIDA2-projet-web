@@ -1,1 +1,11 @@
-<p>book-edit-page works!</p>
+<h2>Editing book</h2>
+<a routerLink="/books/{{ bookDetails?.book_id }}">Back to the book details</a>
+@if (!bookError) {
+    <app-book-edit-form [data]="bookDetails" (bookUpdated)="onBookUpdated()" />
+} @else {
+    <p>{{ bookError }}</p>
+}
+
+@if (isLoading) {
+    <app-loading-modal />
+}

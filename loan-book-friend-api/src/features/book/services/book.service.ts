@@ -54,4 +54,58 @@ export class BookService {
         // delete the book
         await this.bookRepository.delete({ book_id: id });
     }
+
+    async findById(id: string, requester: UserEntity) {
+        const book = await this.bookRepository.findOne({
+            where: { book_id: id },
+            relations: { owner: true },
+        });
+
+        if (!book) {
+            throw new NotFoundException('book_not_found');
+        }
+
+        // If the requester is not admin and not the owner, restrict access
+        if (
+            requester.role !== UserRole.Admin &&
+            book.owner.user_id !== requester.user_id
+        ) {
+            throw new NotFoundException('book_not_found');
+        }
+
+        return book;
+    }
+
+    async update(
+        id: string,
+        bookData: Partial<BookEntity>,
+        user: UserEntity,
+    ): Promise<BookEntity> {
+        const book = await this.bookRepository.findOne({
+            where: { book_id: id },
+            relations: { owner: true },
+        });
+
+        if (!book) {
+            throw new NotFoundException('book_not_found');
+        }
+
+        // If the requester is not admin and not the owner, restrict access
+        if (
+            user.role !== UserRole.Admin &&
+            book.owner.user_id !== user.user_id
+        ) {
+            throw new NotFoundException('book_not_found');
+        }
+
+        const updatedBook: BookEntity = {
+            ...book,
+            title: bookData.title ?? book.title,
+            author: bookData.author ?? book.author,
+            available: bookData.available ?? book.available,
+        };
+        await this.bookRepository.save(updatedBook);
+
+        return updatedBook;
+    }
 }

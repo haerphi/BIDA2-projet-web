@@ -20,7 +20,7 @@ export class BookCreatePage {
     private readonly _bookService = inject(BookService);
     private readonly _router = inject(Router);
 
-    bookForm = this._bookFormFactory.createBookForm();
+    bookForm = this._bookFormFactory.bookForm();
     bookControls = this.bookForm.controls;
 
     isLoading = false;
