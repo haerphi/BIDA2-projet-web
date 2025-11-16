@@ -1,10 +1,10 @@
 import { NotFoundException } from '@common/exceptions';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { BookEntity } from '../models';
+import { BookEntity } from '@book/models';
 import { Repository } from 'typeorm';
-import { UserEntity } from 'features/user/models';
-import { UserRole } from 'features/security/enums';
+import { UserEntity } from '@user/models';
+import { UserRole } from '@security/enums';
 
 @Injectable()
 export class BookService {

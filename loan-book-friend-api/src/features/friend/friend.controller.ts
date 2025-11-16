@@ -8,9 +8,9 @@ import {
     Post,
     Query,
 } from '@nestjs/common';
-import { RequireRoles } from 'features/security/guards';
-import { User } from 'features/security/metadata';
-import { UserEntity } from 'features/user/models';
+import { RequireRoles } from '@security/guards';
+import { User } from '@security/metadata';
+import { UserEntity } from '@user/models';
 import {
     FriendAcceptDto,
     FriendAddDto,
@@ -32,10 +32,10 @@ import {
     GetFriendRequestApiResponseDocumentation,
     GetFriendsApiOperationDocumentation,
     GetFriendsApiResponseDocumentation,
-} from './friend.swagger';
-import { toUserListDto } from 'features/user/mappers';
-import { UserListDto } from 'features/user/dtos';
-import { ToFriendRequestDto } from './mappers/friend-request.mappers';
+} from '@friend/friend.swagger';
+import { toUserListDto } from '@user/mappers';
+import { UserListDto } from '@user/dtos';
+import { ToFriendRequestDto } from '@friend/mappers';
 
 @ApiCookieAuth('access_token')
 @Controller('friend')

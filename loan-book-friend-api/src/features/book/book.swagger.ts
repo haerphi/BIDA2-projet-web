@@ -1,5 +1,5 @@
 import { ApiOperationOptions, ApiResponseOptions } from '@nestjs/swagger';
-import { BookCreateDto, BookUserListDto } from './dtos';
+import { BookCreateDto, BookUserListDto } from '@book/dtos';
 
 // getOwnedBooks
 export const GetOwnedBooksApiOperationDocumentation: ApiOperationOptions = {

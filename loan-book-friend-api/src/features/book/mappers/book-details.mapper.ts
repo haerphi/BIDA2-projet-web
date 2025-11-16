@@ -1,5 +1,5 @@
-import { BookDetailsDto } from '../dtos';
-import { BookEntity } from '../models';
+import { BookDetailsDto } from '@book/dtos';
+import { BookEntity } from '@book/models';
 
 export const toBookDetailsDto = (book: BookEntity): BookDetailsDto => {
     return {

@@ -1,5 +1,5 @@
 import { ApiOperationOptions, ApiResponseOptions } from '@nestjs/swagger';
-import { SignInResponse } from './dtos';
+import { SignInResponse } from '@security/dtos';
 
 // signIn
 export const SignInApiOperationDocumentation: ApiOperationOptions = {

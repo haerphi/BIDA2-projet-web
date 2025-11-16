@@ -6,7 +6,7 @@ import {
     OneToOne,
     PrimaryGeneratedColumn,
 } from 'typeorm';
-import { UserEntity } from '../../user/models/user.entity';
+import { UserEntity } from '@user/models/user.entity';
 
 @Entity('credential')
 export class CredentialEntity extends TrackedEntity {

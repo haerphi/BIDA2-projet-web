@@ -3,10 +3,10 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { configManager } from '@common/config/config.manager';
-import { SecurityModule } from '../security/security.module';
-import { UserModule } from '../user/user.module';
-import { BookModule } from '../book/book.module';
-import { FriendModule } from 'features/friend/friend.module';
+import { SecurityModule } from '@security/security.module';
+import { UserModule } from '@user/user.module';
+import { BookModule } from '@book/book.module';
+import { FriendModule } from '@friend/friend.module';
 
 @Module({
     imports: [

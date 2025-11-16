@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FriendEntity } from '../models';
+import { FriendEntity } from '@friend/models';
 import { Repository } from 'typeorm';
-import { UserEntity } from 'features/user/models';
+import { UserEntity } from '@user/models';
 import { NotFoundException } from '@common/exceptions';
-import { FriendRequest } from '../models/friend-request.model';
+import { FriendRequest } from '@friend/models/friend-request.model';
 
 @Injectable()
 export class FriendService {

@@ -1,8 +1,8 @@
 import { Body, Controller, Delete, Get, Param, Put } from '@nestjs/common';
 import { ApiCookieAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { RequireRoles } from '../security/guards';
-import { User } from '../security/metadata';
-import { UserEntity } from './models';
+import { RequireRoles } from '@security/guards';
+import { User } from '@security/metadata';
+import { UserEntity } from '@user/models';
 import {
     DeleteSelfApiOperationDocumentation,
     DeleteSelfApiResponseDocumentation,
@@ -19,15 +19,15 @@ import {
     updateUserApiOperationDocumentation,
     updateUserApiResponseDocumentation,
 } from './user.swagger';
-import { UserRole } from '../security/enums';
-import { UserService } from './services/user.service';
+import { UserRole } from '@security/enums';
+import { UserService } from '@user/services';
 import type {
     UserDetailsDto,
     UserListDto,
     UserUpdateAdminDto,
     UserUpdateDto,
-} from './dtos';
-import { toUserDetailsDto, toUserListDto } from './mappers';
+} from '@user/dtos';
+import { toUserDetailsDto, toUserListDto } from '@user/mappers';
 
 @ApiCookieAuth('access_token')
 @Controller('user')

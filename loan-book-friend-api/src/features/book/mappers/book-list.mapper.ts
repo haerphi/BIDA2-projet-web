@@ -1,5 +1,5 @@
-import { BookListDto, BookUserListDto } from '../dtos';
-import { BookEntity } from '../models';
+import { BookListDto, BookUserListDto } from '@book/dtos';
+import { BookEntity } from '@book/models';
 
 export const toBookListDto = (book: BookEntity): BookListDto => {
     return {

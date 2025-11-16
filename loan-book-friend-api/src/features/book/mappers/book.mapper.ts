@@ -1,6 +1,6 @@
-import { UserEntity } from '../../user/models';
-import { BookCreateDto, BookUpdateDto } from '../dtos';
-import { BookEntity } from '../models';
+import { UserEntity } from '@user/models';
+import { BookCreateDto, BookUpdateDto } from '@book/dtos';
+import { BookEntity } from '@book/models';
 import { Builder } from 'builder-pattern';
 
 export const bookCreateDtoToEntity = (

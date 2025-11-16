@@ -1,5 +1,5 @@
-import { SignInResponse } from '../dtos/sign-in.dto';
-import { UserRole } from '../enums';
+import { SignInResponse } from '@security/dtos';
+import { UserRole } from '@security/enums';
 
 export const toSignInResponse = (
     tokenIat: number,

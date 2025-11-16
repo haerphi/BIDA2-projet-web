@@ -2,10 +2,10 @@ import { NotFoundException } from '@common/exceptions';
 import {
     EmailAlreadyExistException,
     NameAlreadyExistException,
-} from '@common/exceptions/user.exceptions';
+} from '@common/exceptions';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserEntity } from '../models';
+import { UserEntity } from '@user/models';
 import { Repository } from 'typeorm';
 
 @Injectable()

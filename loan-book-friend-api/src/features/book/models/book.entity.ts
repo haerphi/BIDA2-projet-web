@@ -1,5 +1,5 @@
 import { TrackedEntity } from '@common/models';
-import { UserEntity } from '../../user/models';
+import { UserEntity } from '@user/models';
 import {
     Column,
     Entity,

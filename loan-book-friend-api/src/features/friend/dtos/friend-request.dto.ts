@@ -1,6 +1,6 @@
-import { ToBoolean } from '@common/utils/validator.utils';
+import { ToBoolean } from '@common/utils/validators';
 import { ApiProperty } from '@nestjs/swagger';
-import { UserListDto } from 'features/user/dtos';
+import { UserListDto } from '@user/dtos';
 
 export class FriendRequestDto {
     @ApiProperty()

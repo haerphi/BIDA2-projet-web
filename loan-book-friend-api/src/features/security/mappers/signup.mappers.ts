@@ -1,5 +1,5 @@
-import { SignUpPayload } from '../dtos/sign-up.dto';
-import { UserEntity } from '../../user/models';
+import { SignUpPayload } from '@security/dtos';
+import { UserEntity } from '@user/models';
 import { Builder } from 'builder-pattern';
 
 export const signupPayloadToUser = (payload: SignUpPayload): UserEntity => {

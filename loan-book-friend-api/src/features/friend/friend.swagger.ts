@@ -1,6 +1,6 @@
 import { ApiOperationOptions, ApiResponseOptions } from '@nestjs/swagger';
-import { UserListDto } from 'features/user/dtos';
-import { FriendRequestDto } from './dtos/friend-request.dto';
+import { UserListDto } from '@user/dtos';
+import { FriendRequestDto } from '@friend/dtos';
 
 // addFriend
 export const AddFriendApiOperationDocumentation: ApiOperationOptions = {

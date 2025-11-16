@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { FriendController } from './friend.controller';
-import { FriendService } from './services/friend.service';
+import { FriendController } from '@friend/friend.controller';
+import { FriendService } from '@friend/services/friend.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { FriendEntity } from './models';
+import { FriendEntity } from '@friend/models';
 import { UserEntity } from 'features/user/models';
 
 @Module({

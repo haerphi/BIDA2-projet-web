@@ -1,5 +1,5 @@
-import { UserListDto } from '../dtos';
-import { UserEntity } from '../models';
+import { UserListDto } from '@user/dtos';
+import { UserEntity } from '@user/models';
 
 export const toUserListDto = (user: UserEntity): UserListDto => {
     return {

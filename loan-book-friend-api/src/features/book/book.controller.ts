@@ -8,18 +8,18 @@ import {
     Put,
 } from '@nestjs/common';
 import { ApiCookieAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { BookService } from './services';
+import { BookService } from '@book/services';
 import {
     bookCreateDtoToEntity,
     bookUpdateDtoToEntity,
     toBookDetailsDto,
     toBookListDto,
     toBookUserListDto,
-} from './mappers';
-import { RequireRoles } from '../security/guards';
-import { User } from '../security/metadata';
-import { UserEntity } from '../user/models';
-import { BookCreateDto, BookUpdateDto } from './dtos';
+} from '@book/mappers';
+import { RequireRoles } from '@security/guards';
+import { User } from '@security/metadata';
+import { UserEntity } from '@user/models';
+import { BookCreateDto, BookUpdateDto } from '@book/dtos';
 import {
     CreateBookApiOperationDocumentation,
     CreateBookApiResponseDocumentation,
@@ -31,8 +31,8 @@ import {
     GetBooksOwnedByIdApiResponseDocumentation,
     GetOwnedBooksApiOperationDocumentation,
     GetOwnedBooksApiResponseDocumentation,
-} from './book.swagger';
-import { UserRole } from '../security/enums';
+} from '@book/book.swagger';
+import { UserRole } from '@security/enums';
 
 @ApiCookieAuth('access_token')
 @Controller('book')

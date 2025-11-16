@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { UserRole } from '../../enums';
-import { RequestWithUser } from '../../interfaces/request-with-user.interface';
+import { UserRole } from '@security/enums';
+import { RequestWithUser } from '@security/interfaces';
 import { Observable } from 'rxjs';
 
 @Injectable()

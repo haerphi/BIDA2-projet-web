@@ -7,11 +7,11 @@ import {
     PrimaryGeneratedColumn,
 } from 'typeorm';
 
-import { CredentialEntity } from '../../security/models/credential.entity';
-import { UserRole } from '../../security/enums';
+import { CredentialEntity } from '@security/models';
+import { UserRole } from '@security/enums';
 import { TrackedEntity } from '@common/models';
-import { BookEntity } from '../../book/models';
-import { FriendEntity } from 'features/friend/models';
+import { BookEntity } from '@book/models';
+import { FriendEntity } from '@friend/models';
 
 @Entity({ name: 'users' })
 export class UserEntity extends TrackedEntity {

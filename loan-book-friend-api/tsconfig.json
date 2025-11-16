@@ -16,8 +16,11 @@
         "baseUrl": "./src",
         "paths": {
             "@common/*": ["./common/*"],
-            "@security/*": ["./security/*"],
-            "@user/*": ["./user/*"],
+            "@home/*": ["./features/home/*"],
+            "@security/*": ["./features/security/*"],
+            "@user/*": ["./features/user/*"],
+            "@book/*": ["./features/book/*"],
+            "@friend/*": ["./features/friend/*"],
             "@utils/*": ["./common/utils/*"]
         },
         "incremental": true,

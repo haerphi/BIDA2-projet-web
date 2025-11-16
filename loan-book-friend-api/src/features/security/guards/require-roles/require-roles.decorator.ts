@@ -1,7 +1,7 @@
 import { applyDecorators, SetMetadata, UseGuards } from '@nestjs/common';
-import { UserRole } from '../../enums/user-role.enum';
-import { RequireRolesGuard } from './require-roles.guard';
 import { ApiBearerAuth, ApiUnauthorizedResponse } from '@nestjs/swagger';
+import { UserRole } from '@security/enums';
+import { RequireRolesGuard } from './require-roles.guard';
 
 export const RequireRoles = (...args: UserRole[]) =>
     applyDecorators(

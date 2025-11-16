@@ -1,23 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CredentialEntity } from '../models';
-import { TokenService } from './token.service';
-import { SignInPayload } from '../dtos/sign-in.dto';
+import { CredentialEntity } from '@security/models';
+import { TokenService } from '@security/services';
+import { SignInPayload } from '@security/dtos';
 import {
     comparePassword,
     encryptPassword,
-} from '../utils/password-decoder.utils';
-import { SignUpPayload } from '../dtos/sign-up.dto';
-import { UserService } from '../../user/services/user.service';
-import { signupPayloadToUser } from '../mappers/signup.mappers';
+} from '@security/utils/password-decoder.utils';
+import { SignUpPayload } from '@security/dtos';
+import { UserService } from '@user/services/user.service';
+import { signupPayloadToUser } from '@security/mappers';
 import { Builder } from 'builder-pattern';
 import {
     CredentialNotFoundException,
     WrongCredentialException,
 } from '@common/exceptions';
-import { Token } from '../interfaces/tokens.interface';
-import { UserEntity } from '../../user/models';
+import { Token } from '@security/interfaces';
+import { UserEntity } from '@user/models';
 
 @Injectable()
 export class SecurityService {

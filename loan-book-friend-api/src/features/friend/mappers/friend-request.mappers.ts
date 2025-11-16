@@ -1,6 +1,6 @@
 import { toUserListDto } from 'features/user/mappers';
-import { FriendRequestDto } from '../dtos/friend-request.dto';
-import { FriendRequest } from '../models/friend-request.model';
+import { FriendRequestDto } from '@friend/dtos';
+import { FriendRequest } from '@friend/models';
 
 export const ToFriendRequestDto = (
     friendRequest: FriendRequest,

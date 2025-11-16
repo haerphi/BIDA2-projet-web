@@ -1,14 +1,13 @@
 import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CredentialEntity } from './models';
-import { TokenService } from './services/token.service';
-import { SecurityService } from './services/security.service';
-import { UserModule } from '../user/user.module';
-import { SecurityController } from './security.controller';
+import { CredentialEntity } from '@security/models';
+import { TokenService, SecurityService } from '@security/services';
+import { UserModule } from '@user/user.module';
+import { SecurityController } from '@security/security.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { configManager } from '@common/config';
 import { ConfigKey } from '@common/config/enums';
-import { AuthMiddleware } from './middlewares/auth.middleware';
+import { AuthMiddleware } from '@security/middlewares';
 
 @Module({
     imports: [

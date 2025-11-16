@@ -1,4 +1,4 @@
-import { PaginationDto } from '@common/dtos/pagination.dto';
+import { PaginationDto } from '@common/dtos';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class FriendGetQueryDto extends PaginationDto {

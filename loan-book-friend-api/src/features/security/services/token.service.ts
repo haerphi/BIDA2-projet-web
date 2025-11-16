@@ -7,11 +7,10 @@ import {
 import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { TokenPayload } from '../interfaces';
-import { Token } from '../interfaces/tokens.interface';
-import { CredentialEntity } from '../models';
-import { durationParser } from '../utils/duration-parser.utils';
-import { UserEntity } from '../../user/models';
+import { TokenPayload, Token } from '@security/interfaces';
+import { CredentialEntity } from '@security/models';
+import { durationParser } from '@security/utils/duration-parser.utils';
+import { UserEntity } from '@user/models';
 import { Repository } from 'typeorm';
 
 @Injectable()

@@ -1,4 +1,4 @@
-import { UserEntity } from 'features/user/models';
+import { UserEntity } from '@user/models';
 
 export interface FriendRequest {
     fromYou: boolean;

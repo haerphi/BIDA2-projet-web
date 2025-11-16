@@ -15,15 +15,15 @@ import {
     ApiResponse,
     ApiTags,
 } from '@nestjs/swagger';
-import { SecurityService } from './services/security.service';
+import { SecurityService } from '@security/services';
 import {
     SignInApiOperationDocumentation,
     SignInApiResponsesDocumentation,
     SignUpDocumentation,
-} from './security.swagger';
+} from '@security/security.swagger';
 import { configManager } from '@common/config';
 import type { Request, Response } from 'express';
-import { toSignInResponse } from './mappers/signin.mappers';
+import { toSignInResponse } from '@security/mappers';
 import { UnauthorizedException } from '@common/exceptions';
 import { CookieKey } from '@common/config/enums';
 import {
@@ -31,11 +31,11 @@ import {
     CredentialChangePasswordDto,
     SignInPayload,
     SignUpPayload,
-} from './dtos';
-import { RequireRoles } from './guards';
-import { UserEntity } from 'features/user/models';
-import { User } from './metadata';
-import { UserRole } from './enums';
+} from '@security/dtos';
+import { RequireRoles } from '@security/guards';
+import { UserEntity } from '@user/models';
+import { User } from '@security/metadata';
+import { UserRole } from '@security/enums';
 
 @ApiCookieAuth('access_token')
 @ApiTags('Authentication & Security')
