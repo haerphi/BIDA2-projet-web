@@ -34,6 +34,13 @@ export const routes: Routes = [
                         './pages/loans/admin-loan-details/admin-loan-details'
                     ).then((m) => m.AdminLoanDetails),
             },
+            {
+                path: 'books/:id/edit',
+                loadComponent: () =>
+                    import(
+                        './pages/books/admin-book-edit/admin-book-edit'
+                    ).then((m) => m.AdminBookEdit),
+            },
         ],
     },
 ];

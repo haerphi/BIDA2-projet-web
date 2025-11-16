@@ -23,8 +23,7 @@ import { UserEditPasswordForm } from '@features/users/components/user-edit-passw
     styleUrl: './user-details-page.scss',
 })
 export class UserDetailsPage implements OnInit {
-    /* IF USED IN ADMIN PAGE */
-    userId = input<string | null>(null);
+    userId = input<string | null>(null); // if null, shows current user else this is used by admin to show other users
 
     private readonly _userService = inject(UserService);
     private readonly _bookService = inject(BookService);
@@ -54,6 +53,14 @@ export class UserDetailsPage implements OnInit {
 
         // Refresh the book list after deletion
         await this._refreshUserBooks();
+    }
+
+    onEditBook(bookId: string): void {
+        if (this.userId()) {
+            this._router.navigate(['/admin', 'books', bookId, 'edit']);
+        } else {
+            this._router.navigate(['/books', bookId, 'edit']);
+        }
     }
 
     onDeleteAccount(): void {

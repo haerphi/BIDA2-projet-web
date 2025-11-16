@@ -60,9 +60,9 @@
                         <td>{{ book.author }}</td>
                         <td>{{ book.available ? 'Yes' : 'No' }}</td>
                         <td>
-                            <a routerLink="/books/{{ book.book_id }}/edit">
+                            <button (click)="onEditBook(book.book_id)">
                                 ✏️
-                            </a>
+                            </button>
                             <app-confirmation-button
                                 (confirmed)="onDeleteBook(book.book_id)"
                                 buttonText="❌"
