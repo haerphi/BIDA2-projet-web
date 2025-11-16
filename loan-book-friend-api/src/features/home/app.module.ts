@@ -6,6 +6,7 @@ import { configManager } from '@common/config/config.manager';
 import { SecurityModule } from '../security/security.module';
 import { UserModule } from '../user/user.module';
 import { BookModule } from '../book/book.module';
+import { FriendModule } from 'features/friend/friend.module';
 
 @Module({
     imports: [
@@ -14,6 +15,7 @@ import { BookModule } from '../book/book.module';
         UserModule,
         SecurityModule,
         BookModule,
+        FriendModule,
     ],
     controllers: [AppController],
     providers: [AppService],

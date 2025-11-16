@@ -17,7 +17,8 @@
         "paths": {
             "@common/*": ["./common/*"],
             "@security/*": ["./security/*"],
-            "@user/*": ["./user/*"]
+            "@user/*": ["./user/*"],
+            "@utils/*": ["./common/utils/*"]
         },
         "incremental": true,
         "skipLibCheck": true,
