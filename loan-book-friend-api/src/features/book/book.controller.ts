@@ -93,7 +93,7 @@ export class BookController {
         @User() requester: UserEntity,
         @Param('id') id: string,
     ) {
-        const book = await this.bookService.findById(id, requester);
+        const book = await this.bookService.findById(id, requester.user_id);
         return toBookDetailsDto(book);
     }
 

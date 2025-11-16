@@ -21,6 +21,7 @@
             "@user/*": ["./features/user/*"],
             "@book/*": ["./features/book/*"],
             "@friend/*": ["./features/friend/*"],
+            "@loan/*": ["./features/loan/*"],
             "@utils/*": ["./common/utils/*"]
         },
         "incremental": true,

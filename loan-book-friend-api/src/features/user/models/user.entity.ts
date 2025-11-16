@@ -12,6 +12,7 @@ import { UserRole } from '@security/enums';
 import { TrackedEntity } from '@common/models';
 import { BookEntity } from '@book/models';
 import { FriendEntity } from '@friend/models';
+import { LoanEntity } from '@loan/models';
 
 @Entity({ name: 'users' })
 export class UserEntity extends TrackedEntity {
@@ -40,8 +41,11 @@ export class UserEntity extends TrackedEntity {
     books?: BookEntity[];
 
     @OneToMany(() => FriendEntity, (friend) => friend.userA)
-    friendsA: FriendEntity[];
+    friendsA?: FriendEntity[];
 
     @OneToMany(() => FriendEntity, (friend) => friend.userB)
-    friendsB: FriendEntity[];
+    friendsB?: FriendEntity[];
+
+    @OneToMany(() => LoanEntity, (loan) => loan.borrower)
+    borrowedBooks?: LoanEntity[];
 }

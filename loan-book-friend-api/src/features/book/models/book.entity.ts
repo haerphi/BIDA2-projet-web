@@ -1,10 +1,12 @@
 import { TrackedEntity } from '@common/models';
+import { LoanEntity } from '@loan/models';
 import { UserEntity } from '@user/models';
 import {
     Column,
     Entity,
     JoinColumn,
     ManyToOne,
+    OneToMany,
     PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -25,4 +27,7 @@ export class BookEntity extends TrackedEntity {
     @ManyToOne(() => UserEntity, (user) => user.books)
     @JoinColumn({ name: 'owner_id' })
     owner: UserEntity;
+
+    @OneToMany(() => LoanEntity, (loan) => loan.book)
+    loans: LoanEntity[];
 }

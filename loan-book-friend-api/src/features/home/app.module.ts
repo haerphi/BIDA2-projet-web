@@ -7,6 +7,7 @@ import { SecurityModule } from '@security/security.module';
 import { UserModule } from '@user/user.module';
 import { BookModule } from '@book/book.module';
 import { FriendModule } from '@friend/friend.module';
+import { LoanModule } from '@loan/loan.module';
 
 @Module({
     imports: [
@@ -16,6 +17,7 @@ import { FriendModule } from '@friend/friend.module';
         SecurityModule,
         BookModule,
         FriendModule,
+        LoanModule,
     ],
     controllers: [AppController],
     providers: [AppService],

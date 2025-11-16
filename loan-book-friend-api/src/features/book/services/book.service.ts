@@ -5,12 +5,14 @@ import { BookEntity } from '@book/models';
 import { Repository } from 'typeorm';
 import { UserEntity } from '@user/models';
 import { UserRole } from '@security/enums';
+import { UserService } from '@user/services';
 
 @Injectable()
 export class BookService {
     constructor(
         @InjectRepository(BookEntity)
         private readonly bookRepository: Repository<BookEntity>,
+        private readonly userService: UserService,
     ) {}
 
     async create(book: BookEntity): Promise<BookEntity> {
@@ -55,7 +57,7 @@ export class BookService {
         await this.bookRepository.delete({ book_id: id });
     }
 
-    async findById(id: string, requester: UserEntity) {
+    async findById(id: string, requester_id: string) {
         const book = await this.bookRepository.findOne({
             where: { book_id: id },
             relations: { owner: true },
@@ -64,6 +66,8 @@ export class BookService {
         if (!book) {
             throw new NotFoundException('book_not_found');
         }
+
+        const requester = await this.userService.findById(requester_id);
 
         // If the requester is not admin and not the owner, restrict access
         if (
