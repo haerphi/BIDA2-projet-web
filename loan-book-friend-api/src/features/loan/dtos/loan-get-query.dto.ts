@@ -1,8 +1,8 @@
-import { PaginationDto } from '@common/dtos';
+import { PaginationQueryDto } from '@common/dtos';
 import { ToBoolean } from '@common/utils/validators';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
-export class LoanGetQueryDto extends PaginationDto {
+export class LoanGetQueryDto extends PaginationQueryDto {
     @ApiPropertyOptional()
     @ToBoolean()
     asBorrower?: boolean;

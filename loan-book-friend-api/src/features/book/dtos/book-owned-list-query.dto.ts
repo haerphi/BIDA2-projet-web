@@ -2,14 +2,14 @@ import { PaginationQueryDto } from '@common/dtos';
 import { ToBoolean } from '@common/utils/validators';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
-export class FriendRequestGetQueryDto extends PaginationQueryDto {
+export class BookOwnedListQueryDto extends PaginationQueryDto {
+    @ApiPropertyOptional()
+    title?: string;
+
+    @ApiPropertyOptional()
+    author?: string;
+
     @ApiPropertyOptional()
     @ToBoolean()
-    fromYou?: boolean;
-
-    @ApiPropertyOptional()
-    name?: string;
-
-    @ApiPropertyOptional()
-    email?: string;
+    currentlyLoaned?: boolean;
 }
