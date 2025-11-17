@@ -1,4 +1,5 @@
 import { ApiOperationOptions, ApiResponseOptions } from '@nestjs/swagger';
+import { LoanDetailsDto, LoanListDto } from '@loan/dtos';
 
 // createLoan
 export const CreateLoanApiOperationDocumentation: ApiOperationOptions = {
@@ -9,5 +10,30 @@ export const CreateLoanApiOperationDocumentation: ApiOperationOptions = {
 export const CreateLoanApiResponseDocumentation: ApiResponseOptions = {
     status: 201,
     description: 'The created loan details',
-    type: 'LoanDetailsDto', // Replace with actual DTO when available
+    type: LoanDetailsDto,
+};
+
+// getLoans
+export const GetLoansApiOperationDocumentation: ApiOperationOptions = {
+    summary: 'Get loans',
+    description:
+        'This route allows to get loans where the user is either the borrower or the lender',
+};
+
+export const GetLoansApiResponseDocumentation: ApiResponseOptions = {
+    status: 200,
+    description: 'List of loans',
+    type: LoanListDto,
+    isArray: true,
+};
+
+// returnLoan
+export const ReturnLoanApiOperationDocumentation: ApiOperationOptions = {
+    summary: 'Return a loaned book',
+    description: 'This route allows to return a loaned book',
+};
+
+export const ReturnLoanApiResponseDocumentation: ApiResponseOptions = {
+    status: 200,
+    description: 'The loan has been successfully returned',
 };

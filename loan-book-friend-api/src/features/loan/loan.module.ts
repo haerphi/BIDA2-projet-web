@@ -5,9 +5,15 @@ import { LoanEntity } from '@loan/models';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { BookModule } from '@book/book.module';
 import { UserModule } from '@user/user.module';
+import { FriendModule } from '@friend/friend.module';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([LoanEntity]), BookModule, UserModule],
+    imports: [
+        TypeOrmModule.forFeature([LoanEntity]),
+        BookModule,
+        UserModule,
+        FriendModule,
+    ],
     providers: [LoanService],
     exports: [LoanService],
     controllers: [LoanController],

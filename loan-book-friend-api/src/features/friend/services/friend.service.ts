@@ -207,4 +207,22 @@ export class FriendService {
 
         await this.friendRepository.remove(friendship);
     }
+
+    async isFriend(userId: string, friendId: string): Promise<boolean> {
+        const friendship = await this.friendRepository.findOne({
+            where: [
+                {
+                    userA: { user_id: userId },
+                    userB: { user_id: friendId },
+                },
+                {
+                    userA: { user_id: friendId },
+                    userB: { user_id: userId },
+                },
+            ],
+            relations: ['userA', 'userB'],
+        });
+
+        return !!friendship && !!friendship.acceptedAt;
+    }
 }

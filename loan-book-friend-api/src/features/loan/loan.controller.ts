@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post, Query } from '@nestjs/common';
 import { LoanService } from '@loan/services';
 import {
     LoanCreateDto,
@@ -15,7 +15,12 @@ import { ApiCookieAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import {
     CreateLoanApiOperationDocumentation,
     CreateLoanApiResponseDocumentation,
+    GetLoansApiOperationDocumentation,
+    GetLoansApiResponseDocumentation,
+    ReturnLoanApiOperationDocumentation,
+    ReturnLoanApiResponseDocumentation,
 } from '@loan/loan.swagger';
+import { LoanReturnDto } from './dtos/loan-return.dto';
 
 @ApiCookieAuth('access_token')
 @Controller('loan')
@@ -39,6 +44,8 @@ export class LoanController {
         return toLoanDetailsDto(loan);
     }
 
+    @ApiOperation(GetLoansApiOperationDocumentation)
+    @ApiResponse(GetLoansApiResponseDocumentation)
     @RequireRoles()
     @Get()
     async getLoans(
@@ -56,5 +63,16 @@ export class LoanController {
         console.log(loans);
 
         return loans.map((l) => toLoanListDto(l, requester.user_id));
+    }
+
+    @ApiOperation(ReturnLoanApiOperationDocumentation)
+    @ApiResponse(ReturnLoanApiResponseDocumentation)
+    @RequireRoles()
+    @Patch()
+    async returnLoan(
+        @User() requester: UserEntity,
+        @Body() body: LoanReturnDto,
+    ): Promise<void> {
+        await this.loanService.returnLoan(requester.user_id, body.loanId);
     }
 }

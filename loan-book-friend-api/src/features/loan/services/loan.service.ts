@@ -1,4 +1,6 @@
 import { BookService } from '@book/services';
+import { AreNotFriendException, NotFoundException } from '@common/exceptions';
+import { FriendService } from '@friend/services';
 import { LoanEntity } from '@loan/models';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -12,15 +14,25 @@ export class LoanService {
         private readonly loanRepository: Repository<LoanEntity>,
         private readonly userService: UserService,
         private readonly bookService: BookService,
+        private readonly friendService: FriendService,
     ) {}
 
     async createLoan(
-        requesterId: string,
+        lenderId: string,
         bookId: string,
         borrowerId: string,
     ): Promise<LoanEntity> {
+        const isFriend = await this.friendService.isFriend(
+            lenderId,
+            borrowerId,
+        );
+
+        if (!isFriend) {
+            throw new AreNotFriendException();
+        }
+
         const borrower = await this.userService.findById(borrowerId);
-        const book = await this.bookService.findById(bookId, requesterId);
+        const book = await this.bookService.findById(bookId, lenderId);
 
         const loan = this.loanRepository.create({
             book: book,
@@ -31,13 +43,13 @@ export class LoanService {
     }
 
     async getAllLoans(
-        requesterId: string,
+        userId: string,
         asBorrower?: boolean,
         asLender?: boolean,
         page?: number,
         limit?: number,
     ): Promise<LoanEntity[]> {
-        const requester = await this.userService.findById(requesterId);
+        const requester = await this.userService.findById(userId);
 
         const queryBuilder = this.loanRepository
             .createQueryBuilder('loan')
@@ -62,5 +74,24 @@ export class LoanService {
         }
 
         return queryBuilder.getMany();
+    }
+
+    async returnLoan(ownerId: string, loanId: string): Promise<LoanEntity> {
+        const loan = await this.loanRepository.findOne({
+            where: {
+                loanId: loanId,
+                book: {
+                    owner: { user_id: ownerId },
+                },
+            },
+            relations: ['book', 'borrower'],
+        });
+
+        if (!loan) {
+            throw new NotFoundException('loan_not_found');
+        }
+
+        loan.returnedAt = new Date();
+        return this.loanRepository.save(loan);
     }
 }
