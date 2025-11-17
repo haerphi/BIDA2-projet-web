@@ -5,6 +5,7 @@ import {
     LoanListDto,
     LoanDetailsDto,
     LoanGetQueryDto,
+    LoanReturnDto,
 } from '@loan/dtos';
 import { RequireRoles } from '@security/guards';
 import { UserEntity } from '@user/models';
@@ -20,7 +21,6 @@ import {
     ReturnLoanApiOperationDocumentation,
     ReturnLoanApiResponseDocumentation,
 } from '@loan/loan.swagger';
-import { LoanReturnDto } from './dtos/loan-return.dto';
 
 @ApiCookieAuth('access_token')
 @Controller('loan')
@@ -56,6 +56,7 @@ export class LoanController {
             requester.user_id,
             params.asBorrower,
             params.asLender,
+            params.returned,
             params.page,
             params.limit,
         );

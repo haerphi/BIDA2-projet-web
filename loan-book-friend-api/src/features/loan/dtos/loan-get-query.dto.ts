@@ -10,4 +10,8 @@ export class LoanGetQueryDto extends PaginationDto {
     @ApiPropertyOptional()
     @ToBoolean()
     asLender?: boolean;
+
+    @ApiPropertyOptional()
+    @ToBoolean()
+    returned?: boolean;
 }

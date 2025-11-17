@@ -46,6 +46,7 @@ export class LoanService {
         userId: string,
         asBorrower?: boolean,
         asLender?: boolean,
+        returned?: boolean,
         page?: number,
         limit?: number,
     ): Promise<LoanEntity[]> {
@@ -67,6 +68,14 @@ export class LoanService {
             queryBuilder.andWhere('lender.user_id = :requesterId', {
                 requesterId: requester.user_id,
             });
+        }
+
+        if (returned != undefined) {
+            if (returned) {
+                queryBuilder.andWhere('loan.returnedAt IS NOT NULL');
+            } else {
+                queryBuilder.andWhere('loan.returnedAt IS NULL');
+            }
         }
 
         if (page !== undefined && limit !== undefined) {
