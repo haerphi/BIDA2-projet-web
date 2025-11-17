@@ -36,6 +36,7 @@ import {
 import { toUserListDto } from '@user/mappers';
 import { UserListDto } from '@user/dtos';
 import { ToFriendRequestDto } from '@friend/mappers';
+import { ListApiResponseDto } from '@common/dtos';
 
 @ApiCookieAuth('access_token')
 @Controller('friend')
@@ -76,16 +77,12 @@ export class FriendController {
     async getFriendRequests(
         @User() user: UserEntity,
         @Query() params: FriendRequestGetQueryDto,
-    ): Promise<FriendRequestDto[]> {
-        const requests = await this.friendService.getFriendRequests(
+    ): Promise<ListApiResponseDto<FriendRequestDto>> {
+        const { requests, total } = await this.friendService.getFriendRequests(
             user.user_id,
-            params.fromYou,
-            params.page,
-            params.limit,
-            params.name,
-            params.email,
+            params,
         );
-        return requests.map(ToFriendRequestDto);
+        return { data: requests.map(ToFriendRequestDto), total };
     }
 
     @ApiOperation(AcceptFriendApiOperationDocumentation)
@@ -109,15 +106,12 @@ export class FriendController {
     async getFriends(
         @User() user: UserEntity,
         @Query() params: FriendGetQueryDto,
-    ): Promise<UserListDto[]> {
-        const friends = await this.friendService.getFriends(
+    ): Promise<ListApiResponseDto<UserListDto>> {
+        const { friends, total } = await this.friendService.getFriends(
             user.user_id,
-            params.page,
-            params.limit,
-            params.name,
-            params.email,
+            params,
         );
-        return friends.map(toUserListDto);
+        return { total, data: friends.map(toUserListDto) };
     }
 
     @ApiOperation(DeleteFriendApiOperationDocumentation)

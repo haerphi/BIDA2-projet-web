@@ -21,6 +21,7 @@ import {
     ReturnLoanApiOperationDocumentation,
     ReturnLoanApiResponseDocumentation,
 } from '@loan/loan.swagger';
+import { ListApiResponseDto } from '@common/dtos';
 
 @ApiCookieAuth('access_token')
 @Controller('loan')
@@ -51,19 +52,16 @@ export class LoanController {
     async getLoans(
         @User() requester: UserEntity,
         @Query() params: LoanGetQueryDto,
-    ): Promise<LoanListDto[]> {
-        const loans = await this.loanService.getAllLoans(
+    ): Promise<ListApiResponseDto<LoanListDto>> {
+        const { total, loans } = await this.loanService.getAllLoans(
             requester.user_id,
-            params.asBorrower,
-            params.asLender,
-            params.returned,
-            params.page,
-            params.limit,
+            params,
         );
 
-        console.log(loans);
-
-        return loans.map((l) => toLoanListDto(l, requester.user_id));
+        return {
+            total,
+            data: loans.map((l) => toLoanListDto(l, requester.user_id)),
+        };
     }
 
     @ApiOperation(ReturnLoanApiOperationDocumentation)

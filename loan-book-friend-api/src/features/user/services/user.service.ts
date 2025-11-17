@@ -1,8 +1,10 @@
+import { PaginationQueryDto } from '@common/dtos';
 import { NotFoundException } from '@common/exceptions';
 import {
     EmailAlreadyExistException,
     NameAlreadyExistException,
 } from '@common/exceptions';
+import { executePagination } from '@common/utils/repository.utils';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '@user/models';
@@ -37,8 +39,16 @@ export class UserService {
         return this.userRepository.findOneBy({ email });
     }
 
-    async findAll(): Promise<UserEntity[]> {
-        return this.userRepository.find();
+    async findAll(
+        filters: PaginationQueryDto,
+    ): Promise<{ users: UserEntity[]; total: number }> {
+        const query = this.userRepository.createQueryBuilder('user');
+
+        const [total, users] = await Promise.all(
+            executePagination<UserEntity>(query, filters),
+        );
+
+        return { total, users };
     }
 
     async findById(id: string): Promise<UserEntity> {

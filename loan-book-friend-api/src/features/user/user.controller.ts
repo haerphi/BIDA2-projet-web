@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Put } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    Put,
+    Query,
+} from '@nestjs/common';
 import { ApiCookieAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { RequireRoles } from '@security/guards';
 import { User } from '@security/metadata';
@@ -28,6 +36,7 @@ import type {
     UserUpdateDto,
 } from '@user/dtos';
 import { toUserDetailsDto, toUserListDto } from '@user/mappers';
+import { ListApiResponseDto, PaginationQueryDto } from '@common/dtos';
 
 @ApiCookieAuth('access_token')
 @Controller('user')
@@ -46,9 +55,11 @@ export class UserController {
     @ApiResponse(GetAllUsersApiResponseDocumentation)
     @RequireRoles(UserRole.Admin)
     @Get('all')
-    public async getAllUsers(): Promise<UserListDto[]> {
-        const users = await this.userService.findAll();
-        return users.map(toUserListDto);
+    public async getAllUsers(
+        @Query() query: PaginationQueryDto,
+    ): Promise<ListApiResponseDto<UserListDto>> {
+        const { total, users } = await this.userService.findAll(query);
+        return { total, data: users.map(toUserListDto) };
     }
 
     @ApiOperation(GetUserByIdApiOperationDocumentation)

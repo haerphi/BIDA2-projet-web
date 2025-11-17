@@ -1,5 +1,10 @@
-import { ApiOperationOptions, ApiResponseOptions } from '@nestjs/swagger';
+import {
+    ApiOperationOptions,
+    ApiResponseOptions,
+    getSchemaPath,
+} from '@nestjs/swagger';
 import { LoanDetailsDto, LoanListDto } from '@loan/dtos';
+import { ListApiResponseDto } from '@common/dtos';
 
 // createLoan
 export const CreateLoanApiOperationDocumentation: ApiOperationOptions = {
@@ -23,8 +28,24 @@ export const GetLoansApiOperationDocumentation: ApiOperationOptions = {
 export const GetLoansApiResponseDocumentation: ApiResponseOptions = {
     status: 200,
     description: 'List of loans',
-    type: LoanListDto,
-    isArray: true,
+    schema: {
+        allOf: [
+            {
+                $ref: getSchemaPath(ListApiResponseDto),
+            },
+            {
+                properties: {
+                    data: {
+                        type: 'array',
+                        items: { $ref: getSchemaPath(LoanListDto) },
+                    },
+                    total: {
+                        type: 'number',
+                    },
+                },
+            },
+        ],
+    },
 };
 
 // returnLoan

@@ -2,7 +2,7 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsNumber } from 'class-validator';
 
-export class PaginationDto {
+export class PaginationQueryDto {
     @ApiPropertyOptional({
         default: 1,
     })
@@ -16,4 +16,10 @@ export class PaginationDto {
     @IsNumber()
     @Transform(({ value }) => parseInt(value))
     limit?: number = 10;
+
+    @ApiPropertyOptional()
+    orderBy?: string;
+
+    @ApiPropertyOptional()
+    orderDirection?: 'ASC' | 'DESC';
 }

@@ -1,6 +1,11 @@
-import { ApiOperationOptions, ApiResponseOptions } from '@nestjs/swagger';
+import {
+    ApiOperationOptions,
+    ApiResponseOptions,
+    getSchemaPath,
+} from '@nestjs/swagger';
 import { UserListDto } from '@user/dtos';
 import { FriendRequestDto } from '@friend/dtos';
+import { ListApiResponseDto } from '@common/dtos';
 
 // addFriend
 export const AddFriendApiOperationDocumentation: ApiOperationOptions = {
@@ -23,9 +28,26 @@ export const GetFriendRequestApiOperationDocumentation: ApiOperationOptions = {
 
 export const GetFriendRequestApiResponseDocumentation: ApiResponseOptions = {
     status: 200,
-    description: 'List of friend requests',
-    type: FriendRequestDto,
-    isArray: true,
+    description:
+        'List of friend requests (for some reason swagger dont get the right object type)',
+    schema: {
+        allOf: [
+            {
+                $ref: getSchemaPath(ListApiResponseDto),
+            },
+            {
+                properties: {
+                    data: {
+                        type: 'array',
+                        items: { $ref: getSchemaPath(FriendRequestDto) },
+                    },
+                    total: {
+                        type: 'number',
+                    },
+                },
+            },
+        ],
+    },
 };
 
 // acceptFriend
@@ -50,8 +72,24 @@ export const GetFriendsApiOperationDocumentation: ApiOperationOptions = {
 export const GetFriendsApiResponseDocumentation: ApiResponseOptions = {
     status: 200,
     description: 'List of friends',
-    type: UserListDto,
-    isArray: true,
+    schema: {
+        allOf: [
+            {
+                $ref: getSchemaPath(ListApiResponseDto),
+            },
+            {
+                properties: {
+                    data: {
+                        type: 'array',
+                        items: { $ref: getSchemaPath(UserListDto) },
+                    },
+                    total: {
+                        type: 'number',
+                    },
+                },
+            },
+        ],
+    },
 };
 
 // deleteFriend

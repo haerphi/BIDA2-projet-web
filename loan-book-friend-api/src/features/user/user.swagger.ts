@@ -1,5 +1,10 @@
-import { ApiOperationOptions, ApiResponseOptions } from '@nestjs/swagger';
+import {
+    ApiOperationOptions,
+    ApiResponseOptions,
+    getSchemaPath,
+} from '@nestjs/swagger';
 import { UserDetailsDto, UserListDto } from './dtos';
+import { ListApiResponseDto } from '@common/dtos';
 
 // getConsumer
 export const GetConsumerApiOperationDocumentation: ApiOperationOptions = {
@@ -22,8 +27,24 @@ export const GetAllUsersApiOperationDocumentation: ApiOperationOptions = {
 export const GetAllUsersApiResponseDocumentation: ApiResponseOptions = {
     status: 200,
     description: 'List of all users',
-    type: UserListDto,
-    isArray: true,
+    schema: {
+        allOf: [
+            {
+                $ref: getSchemaPath(ListApiResponseDto),
+            },
+            {
+                properties: {
+                    data: {
+                        type: 'array',
+                        items: { $ref: getSchemaPath(UserListDto) },
+                    },
+                    total: {
+                        type: 'number',
+                    },
+                },
+            },
+        ],
+    },
 };
 
 // getById

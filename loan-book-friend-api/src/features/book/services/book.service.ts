@@ -6,6 +6,8 @@ import { Repository } from 'typeorm';
 import { UserEntity } from '@user/models';
 import { UserRole } from '@security/enums';
 import { UserService } from '@user/services';
+import { BookListQueryDto, BookOwnedListQueryDto } from '@book/dtos';
+import { executePagination } from '@common/utils/repository.utils';
 
 @Injectable()
 export class BookService {
@@ -23,20 +25,64 @@ export class BookService {
         await this.bookRepository.delete({ book_id: id });
     }
 
-    async findAll(): Promise<BookEntity[]> {
-        return this.bookRepository
-            .createQueryBuilder('book')
-            .select(['book.title', 'book.author'])
-            .distinctOn(['book.title', 'book.author'])
-            .orderBy('book.title', 'ASC')
-            .addOrderBy('book.author', 'ASC')
-            .getMany();
+    async findAll(
+        filters: BookListQueryDto,
+    ): Promise<{ books: BookEntity[]; total: number }> {
+        // distinc book title and author filter
+        let query = this.bookRepository.createQueryBuilder('book');
+
+        if (filters.title) {
+            query = query.where('book.title ILIKE :title', {
+                title: `%${filters.title}%`,
+            });
+        }
+
+        if (filters.author) {
+            query = query.andWhere('book.author ILIKE :author', {
+                author: `%${filters.author}%`,
+            });
+        }
+
+        const [total, books] = await Promise.all(
+            executePagination<BookEntity>(query, filters),
+        );
+
+        return { total, books };
     }
 
-    async findAllByOwnerId(ownerId: string): Promise<BookEntity[]> {
-        return this.bookRepository.find({
-            where: { owner: { user_id: ownerId } },
-        });
+    async findAllByOwnerId(
+        ownerId: string,
+        filters: BookOwnedListQueryDto,
+    ): Promise<{ books: BookEntity[]; total: number }> {
+        let query = this.bookRepository
+            .createQueryBuilder('book')
+            .where('book.owner_id = :ownerId', { ownerId });
+
+        if (filters.title) {
+            query = query.andWhere('book.title ILIKE :title', {
+                title: `%${filters.title}%`,
+            });
+        }
+
+        if (filters.author) {
+            query = query.andWhere('book.author ILIKE :author', {
+                author: `%${filters.author}%`,
+            });
+        }
+
+        if (filters.currentlyLoaned !== undefined) {
+            if (filters.currentlyLoaned) {
+                query = query.andWhere('book.available = false');
+            } else {
+                query = query.andWhere('book.available = true');
+            }
+        }
+
+        const [total, books] = await Promise.all(
+            executePagination<BookEntity>(query, filters),
+        );
+
+        return { total, books };
     }
 
     async deleteById(id: string, user: UserEntity): Promise<void> {

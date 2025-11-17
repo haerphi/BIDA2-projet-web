@@ -1,10 +1,10 @@
 import { PaginationQueryDto } from '@common/dtos';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
-export class FriendGetQueryDto extends PaginationQueryDto {
+export class BookListQueryDto extends PaginationQueryDto {
     @ApiPropertyOptional()
-    name?: string;
+    title?: string;
 
     @ApiPropertyOptional()
-    email?: string;
+    author?: string;
 }

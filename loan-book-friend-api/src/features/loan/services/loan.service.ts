@@ -1,6 +1,8 @@
 import { BookService } from '@book/services';
 import { AreNotFriendException, NotFoundException } from '@common/exceptions';
+import { executePagination } from '@common/utils/repository.utils';
 import { FriendService } from '@friend/services';
+import { LoanGetQueryDto } from '@loan/dtos';
 import { LoanEntity } from '@loan/models';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -44,45 +46,41 @@ export class LoanService {
 
     async getAllLoans(
         userId: string,
-        asBorrower?: boolean,
-        asLender?: boolean,
-        returned?: boolean,
-        page?: number,
-        limit?: number,
-    ): Promise<LoanEntity[]> {
+        filters: LoanGetQueryDto,
+    ): Promise<{ loans: LoanEntity[]; total: number }> {
         const requester = await this.userService.findById(userId);
 
-        const queryBuilder = this.loanRepository
+        const query = this.loanRepository
             .createQueryBuilder('loan')
             .leftJoinAndSelect('loan.book', 'book')
             .leftJoinAndSelect('loan.borrower', 'borrower')
             .leftJoinAndSelect('book.owner', 'lender');
 
-        if (asBorrower) {
-            queryBuilder.andWhere('borrower.user_id = :requesterId', {
+        if (filters.asBorrower) {
+            query.andWhere('borrower.user_id = :requesterId', {
                 requesterId: requester.user_id,
             });
         }
 
-        if (asLender) {
-            queryBuilder.andWhere('lender.user_id = :requesterId', {
+        if (filters.asLender) {
+            query.andWhere('lender.user_id = :requesterId', {
                 requesterId: requester.user_id,
             });
         }
 
-        if (returned != undefined) {
-            if (returned) {
-                queryBuilder.andWhere('loan.returnedAt IS NOT NULL');
+        if (filters.returned != undefined) {
+            if (filters.returned) {
+                query.andWhere('loan.returnedAt IS NOT NULL');
             } else {
-                queryBuilder.andWhere('loan.returnedAt IS NULL');
+                query.andWhere('loan.returnedAt IS NULL');
             }
         }
 
-        if (page !== undefined && limit !== undefined) {
-            queryBuilder.skip((page - 1) * limit).take(limit);
-        }
+        const [total, loans] = await Promise.all(
+            executePagination<LoanEntity>(query, filters),
+        );
 
-        return queryBuilder.getMany();
+        return { total, loans };
     }
 
     async returnLoan(ownerId: string, loanId: string): Promise<LoanEntity> {
