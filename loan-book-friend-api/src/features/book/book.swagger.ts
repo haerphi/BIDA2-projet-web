@@ -4,7 +4,6 @@ import {
     getSchemaPath,
 } from '@nestjs/swagger';
 import { BookDetailsDto, BookListDto, BookUserListDto } from '@book/dtos';
-import { ListApiResponseDto } from '@common/dtos';
 
 // getAllBooksFromCurrentUser
 export const GetAllBooksFromCurrentUserApiOperationDocumentation: ApiOperationOptions =
@@ -20,9 +19,6 @@ export const GetAllBooksFromCurrentUserApiResponseDocumentation: ApiResponseOpti
         description: 'List of all books owned by the connected user',
         schema: {
             allOf: [
-                {
-                    $ref: getSchemaPath(ListApiResponseDto),
-                },
                 {
                     properties: {
                         data: {
@@ -52,9 +48,6 @@ export const GetAllBooksByOwnerApiResponseDocumentation: ApiResponseOptions = {
     schema: {
         allOf: [
             {
-                $ref: getSchemaPath(ListApiResponseDto),
-            },
-            {
                 properties: {
                     data: {
                         type: 'array',
@@ -80,9 +73,6 @@ export const GetAllBooksApiResponseDocumentation: ApiResponseOptions = {
     description: 'List of all books',
     schema: {
         allOf: [
-            {
-                $ref: getSchemaPath(ListApiResponseDto),
-            },
             {
                 properties: {
                     data: {

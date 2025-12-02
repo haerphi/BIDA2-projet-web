@@ -1,3 +1,4 @@
+import { GetBookAvailability } from '@book/book-availability.utils';
 import { BookListDto, BookUserListDto } from '@book/dtos';
 import { BookEntity } from '@book/models';
 
@@ -13,6 +14,6 @@ export const toBookUserListDto = (book: BookEntity): BookUserListDto => {
         title: book.title,
         author: book.author,
         book_id: book.book_id,
-        available: book.available,
+        available: GetBookAvailability(book.loanedTo),
     };
 };

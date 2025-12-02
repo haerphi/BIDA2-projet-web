@@ -152,8 +152,12 @@ export class BookService {
             ...book,
             title: bookData.title ?? book.title,
             author: bookData.author ?? book.author,
-            available: bookData.available ?? book.available,
         };
+
+        if (bookData.loanedTo !== undefined) {
+            updatedBook.loanedTo = bookData.loanedTo;
+        }
+
         await this.bookRepository.save(updatedBook);
 
         return updatedBook;

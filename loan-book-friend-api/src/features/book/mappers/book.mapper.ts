@@ -11,7 +11,7 @@ export const bookCreateDtoToEntity = (
         .title(dto.title)
         .author(dto.author)
         .owner(user)
-        .available(true)
+        .loanedTo(null)
         .build();
 };
 
@@ -21,6 +21,6 @@ export const bookUpdateDtoToEntity = (
     return Builder<Partial<BookEntity>>()
         .title(dto.title)
         .author(dto.author)
-        .available(dto.available)
+        .loanedTo(dto.loanedTo)
         .build();
 };

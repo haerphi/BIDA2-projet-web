@@ -1,3 +1,4 @@
+import { BookAvailability } from '@book/enums/book-availability.enum';
 import { ApiProperty } from '@nestjs/swagger';
 
 // used to help listing books when adding a list to user collection
@@ -15,5 +16,5 @@ export class BookUserListDto extends BookListDto {
     book_id: string;
 
     @ApiProperty()
-    available: boolean;
+    available: BookAvailability;
 }

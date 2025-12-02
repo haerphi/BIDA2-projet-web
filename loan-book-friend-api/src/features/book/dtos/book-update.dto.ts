@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsString, Length } from 'class-validator';
+import { IsString, Length } from 'class-validator';
 
 export class BookUpdateDto {
     @ApiProperty()
@@ -13,6 +13,5 @@ export class BookUpdateDto {
     author?: string;
 
     @ApiProperty()
-    @IsBoolean()
-    available?: boolean;
+    loanedTo?: Date | null;
 }

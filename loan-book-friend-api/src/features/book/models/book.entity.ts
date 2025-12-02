@@ -21,8 +21,8 @@ export class BookEntity extends TrackedEntity {
     @Column({ type: 'varchar', length: 255, nullable: false })
     author: string;
 
-    @Column({ type: 'boolean', default: true })
-    available: boolean;
+    @Column({ type: 'date', nullable: true })
+    loanedTo: Date | null;
 
     @ManyToOne(() => UserEntity, (user) => user.books)
     @JoinColumn({ name: 'owner_id' })
