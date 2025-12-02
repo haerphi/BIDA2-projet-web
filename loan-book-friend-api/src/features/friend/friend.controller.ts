@@ -20,7 +20,12 @@ import {
     FriendRequestGetQueryDto,
 } from '@friend/dtos';
 import { FriendService } from '@friend/services';
-import { ApiCookieAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+    ApiCookieAuth,
+    ApiExtraModels,
+    ApiOperation,
+    ApiResponse,
+} from '@nestjs/swagger';
 import {
     AcceptFriendApiOperationDocumentation,
     AcceptFriendApiResponseDocumentation,
@@ -39,6 +44,7 @@ import { ToFriendRequestDto } from '@friend/mappers';
 import { ListApiResponseDto } from '@common/dtos';
 
 @ApiCookieAuth('access_token')
+@ApiExtraModels(ListApiResponseDto, FriendRequestDto, UserListDto)
 @Controller('friend')
 export class FriendController {
     constructor(private readonly friendService: FriendService) {}

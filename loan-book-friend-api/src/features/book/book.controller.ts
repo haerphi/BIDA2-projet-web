@@ -8,7 +8,12 @@ import {
     Put,
     Query,
 } from '@nestjs/common';
-import { ApiCookieAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+    ApiCookieAuth,
+    ApiExtraModels,
+    ApiOperation,
+    ApiResponse,
+} from '@nestjs/swagger';
 import { BookService } from '@book/services';
 import {
     bookCreateDtoToEntity,
@@ -47,6 +52,7 @@ import { UserRole } from '@security/enums';
 import { ListApiResponseDto } from '@common/dtos';
 
 @ApiCookieAuth('access_token')
+@ApiExtraModels(BookListDto, BookUserListDto)
 @Controller('book')
 export class BookController {
     constructor(private readonly bookService: BookService) {}

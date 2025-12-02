@@ -9,7 +9,9 @@ export class UserListDto {
 
     @ApiProperty()
     email: string;
+}
 
+export class UserListWithRoleDto extends UserListDto {
     @ApiProperty()
     role: string;
 }

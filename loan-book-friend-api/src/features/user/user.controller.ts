@@ -7,7 +7,12 @@ import {
     Put,
     Query,
 } from '@nestjs/common';
-import { ApiCookieAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+    ApiCookieAuth,
+    ApiExtraModels,
+    ApiOperation,
+    ApiResponse,
+} from '@nestjs/swagger';
 import { RequireRoles } from '@security/guards';
 import { User } from '@security/metadata';
 import { UserEntity } from '@user/models';
@@ -29,7 +34,7 @@ import {
 } from './user.swagger';
 import { UserRole } from '@security/enums';
 import { UserService } from '@user/services';
-import type {
+import {
     UserDetailsDto,
     UserListDto,
     UserUpdateAdminDto,
@@ -39,6 +44,7 @@ import { toUserDetailsDto, toUserListDto } from '@user/mappers';
 import { ListApiResponseDto, PaginationQueryDto } from '@common/dtos';
 
 @ApiCookieAuth('access_token')
+@ApiExtraModels(UserListDto)
 @Controller('user')
 export class UserController {
     constructor(private readonly userService: UserService) {}

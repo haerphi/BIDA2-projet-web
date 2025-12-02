@@ -4,7 +4,6 @@ import {
     getSchemaPath,
 } from '@nestjs/swagger';
 import { UserDetailsDto, UserListDto } from './dtos';
-import { ListApiResponseDto } from '@common/dtos';
 
 // getConsumer
 export const GetConsumerApiOperationDocumentation: ApiOperationOptions = {
@@ -29,9 +28,6 @@ export const GetAllUsersApiResponseDocumentation: ApiResponseOptions = {
     description: 'List of all users',
     schema: {
         allOf: [
-            {
-                $ref: getSchemaPath(ListApiResponseDto),
-            },
             {
                 properties: {
                     data: {

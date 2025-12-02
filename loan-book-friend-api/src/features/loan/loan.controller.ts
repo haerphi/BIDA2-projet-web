@@ -12,7 +12,12 @@ import { UserEntity } from '@user/models';
 import { User } from '@security/metadata';
 
 import { toLoanDetailsDto, toLoanListDto } from '@loan/mappers';
-import { ApiCookieAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+    ApiCookieAuth,
+    ApiExtraModels,
+    ApiOperation,
+    ApiResponse,
+} from '@nestjs/swagger';
 import {
     CreateLoanApiOperationDocumentation,
     CreateLoanApiResponseDocumentation,
@@ -24,6 +29,7 @@ import {
 import { ListApiResponseDto } from '@common/dtos';
 
 @ApiCookieAuth('access_token')
+@ApiExtraModels(LoanListDto, ListApiResponseDto)
 @Controller('loan')
 export class LoanController {
     constructor(private readonly loanService: LoanService) {}
@@ -42,7 +48,7 @@ export class LoanController {
             createLoanDto.borrowerId,
         );
 
-        return toLoanDetailsDto(loan);
+        return toLoanDetailsDto(loan, requester.user_id);
     }
 
     @ApiOperation(GetLoansApiOperationDocumentation)
