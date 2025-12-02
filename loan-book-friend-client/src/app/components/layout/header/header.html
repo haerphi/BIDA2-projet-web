@@ -1,0 +1,31 @@
+<header
+    class="bg-white bg-opacity-75 backdrop-blur sticky-top border-bottom py-3"
+>
+    <div class="container d-flex justify-content-between align-items-center">
+        <a class="link" routerLink="/">
+            <div class="d-flex align-items-center gap-2">
+                <div class="fs-1">📚</div>
+                <div>
+                    <h1 class="h4 mb-0">Prêts de livres entre amis</h1>
+                    <small class="text-muted"
+                        >Suivez vos livres et vos prêts d’un coup d’œil</small
+                    >
+                </div>
+            </div>
+        </a>
+
+        @if (connected()) {
+            <div class="d-flex gap-2 flex-wrap">
+                @if (role() === UserRole.Admin) {
+                    <a
+                        class="btn btn-secondary"
+                        routerLink="/admin"
+                        routerLinkActive="router-link-active"
+                        >Admin</a
+                    >
+                }
+                <button class="btn btn-danger">Se déconnecter</button>
+            </div>
+        }
+    </div>
+</header>

@@ -1,0 +1,20 @@
+<div class="input-group mb-3">
+    <span class="input-group-text">🔍</span>
+    <input type="text" class="form-control" placeholder="Rechercher…" />
+</div>
+
+<ul class="list-group mb-3">
+    @for (book of books(); track book.book_id) {
+        <li class="list-group-item">
+            <div class="fw-semibold">{{ book.title }}</div>
+            <div class="d-flex justify-content-between">
+                <small class="text-muted"
+                    >{{ book.author }} • 12/03/2024(TODO)</small
+                >
+                <span class="chip chip-success">Disponible(TODO)</span>
+                <span class="chip chip-warning">Prêté</span>
+                <span class="chip chip-danger">En retard</span>
+            </div>
+        </li>
+    }
+</ul>

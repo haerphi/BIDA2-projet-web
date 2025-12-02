@@ -13,3 +13,8 @@ export class ApiErrorResponse extends Error {
         this.form = form;
     }
 }
+
+export interface ApiListResponse<T> {
+    data: T[];
+    total: number;
+}

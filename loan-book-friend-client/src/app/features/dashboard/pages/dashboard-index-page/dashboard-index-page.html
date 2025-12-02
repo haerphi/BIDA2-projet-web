@@ -1,0 +1,93 @@
+<section class="row row-cols-1 row-cols-md-4 g-3 mb-4">
+    <div class="col">
+        <app-stat-element
+            title="📚 Total livres"
+            [badgeColor]="TextBgStyleEnum.Primary"
+            badgeText="+3 cette semaine"
+            [stat]="27"
+            [loading]="booksLoading"
+        />
+    </div>
+
+    <div class="col">
+        <app-stat-element
+            title="👥 Amis"
+            [badgeColor]="TextBgStyleEnum.Success"
+            badgeText="+3 cette semaine"
+            [stat]="9"
+        />
+    </div>
+
+    <div class="col">
+        <app-stat-element
+            title="📤 Prêts en cours"
+            [badgeColor]="TextBgStyleEnum.Primary"
+            badgeText="2 retours attendus"
+            [stat]="5"
+        />
+    </div>
+
+    <div class="col">
+        <app-stat-element
+            title="⏰ Retards"
+            [badgeColor]="TextBgStyleEnum.Danger"
+            badgeText="À relancer"
+            [stat]="2"
+        />
+    </div>
+</section>
+
+<!-- 3 colonnes -->
+<section class="row g-4">
+    <!-- LIVRES -->
+    <div class="col-lg-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="section-title">📚 Mes livres</div>
+                <p class="section-subtitle">Gérer votre bibliothèque</p>
+                <app-spoil buttonText="➕ Nouveau livre">
+                    <app-book-create />
+                </app-spoil>
+                <hr />
+                <app-book-list [books]="books" />
+            </div>
+        </div>
+    </div>
+
+    <!-- AMIS -->
+    <div class="col-lg-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="section-title">👥 Mes amis</div>
+                <p class="section-subtitle">Contacts</p>
+                <app-spoil buttonText="➕ Nouvel ami">
+                    <app-friend-send-request
+                /></app-spoil>
+                <hr />
+                <app-spoil buttonText="➕ Voir les demandes d'ami">
+                    <app-friend-requests />
+                    /></app-spoil
+                >
+                <hr />
+                <app-friend-list />
+            </div>
+        </div>
+    </div>
+
+    <!-- PRÊTS -->
+    <div class="col-lg-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="section-title">📤 Prêts</div>
+                <p class="section-subtitle">Suivi des emprunts</p>
+
+                <app-spoil buttonText="➕ Nouveau prêt">
+                    <app-loan-create />
+                    /></app-spoil
+                >
+                <hr />
+                <app-loan-list />
+            </div>
+        </div>
+    </div>
+</section>

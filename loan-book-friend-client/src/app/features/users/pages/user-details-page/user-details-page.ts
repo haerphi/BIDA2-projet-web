@@ -150,8 +150,8 @@ export class UserDetailsPage implements OnInit {
         }
 
         promise
-            .then((data) => {
-                this.userBooks = data;
+            .then((response) => {
+                this.userBooks = response.data;
             })
             .catch(() => {
                 this.userBooksError =

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { ApiRoutes } from '@core/constants';
-import { BookForm, BookUserList } from '@core/models';
+import { ApiListResponse, BookForm, BookUserList } from '@core/models';
 import { environment } from '@env';
 import { firstValueFrom } from 'rxjs';
 
@@ -21,17 +21,17 @@ export class BookService {
         );
     }
 
-    getAllOwnedBooks(): Promise<BookUserList[]> {
+    getAllOwnedBooks(): Promise<ApiListResponse<BookUserList>> {
         return firstValueFrom(
-            this._httpClient.get<BookUserList[]>(
+            this._httpClient.get<ApiListResponse<BookUserList>>(
                 this._baseUrl + ApiRoutes.book.owned,
             ),
         );
     }
 
-    getAllBooksByOwner(userId: string): Promise<BookUserList[]> {
+    getAllBooksByOwner(userId: string): Promise<ApiListResponse<BookUserList>> {
         return firstValueFrom(
-            this._httpClient.get<BookUserList[]>(
+            this._httpClient.get<ApiListResponse<BookUserList>>(
                 this._baseUrl + ApiRoutes.book.ownedBy + userId,
             ),
         );

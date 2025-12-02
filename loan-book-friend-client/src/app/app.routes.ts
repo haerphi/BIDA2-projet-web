@@ -5,13 +5,8 @@ import { connectedGuard, notConnectedGuard, roleGuard } from '@core/guards';
 export const routes: Routes = [
     {
         path: '',
-        redirectTo: 'home',
+        redirectTo: 'dashboard',
         pathMatch: 'full',
-    },
-    {
-        path: 'home',
-        loadChildren: () =>
-            import('@features/home/home.routes').then((m) => m.routes),
     },
     {
         path: 'auth',
@@ -30,6 +25,14 @@ export const routes: Routes = [
         canActivateChild: [connectedGuard],
         loadChildren: () =>
             import('@features/books/books.routes').then((m) => m.routes),
+    },
+    {
+        path: 'dashboard',
+        canActivateChild: [connectedGuard],
+        loadChildren: () =>
+            import('@features/dashboard/dashboard.routes').then(
+                (m) => m.routes,
+            ),
     },
     {
         path: 'admin',
