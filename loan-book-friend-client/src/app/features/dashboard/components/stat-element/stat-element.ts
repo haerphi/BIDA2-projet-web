@@ -1,9 +1,10 @@
 import { Component, input } from '@angular/core';
+import { Spinner } from '@components/commons/loadings/spinner/spinner';
 import { TextBgStyleEnum } from '@core/constants/styles/text-bg.style-enum';
 
 @Component({
     selector: 'app-stat-element',
-    imports: [],
+    imports: [Spinner],
     templateUrl: './stat-element.html',
     styleUrl: './stat-element.scss',
 })

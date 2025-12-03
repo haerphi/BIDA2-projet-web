@@ -46,15 +46,14 @@ export class DashboardIndexPage implements OnInit {
         this._bookService
             .getAllOwnedBooks()
             .then((response) => {
-                setTimeout(() => {
-                    this.booksCount = response.total;
-                    this.books = response.data;
-                    this.booksLoading = false;
-                }, 2000);
+                this.booksCount = response.total;
+                this.books = response.data;
             })
             .catch((error) => {
                 this.bookFetchError = error.message;
             })
-            .finally(() => {});
+            .finally(() => {
+                this.booksLoading = false;
+            });
     }
 }
