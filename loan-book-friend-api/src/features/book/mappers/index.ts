@@ -1,3 +1,3 @@
-export * from './book-list.mapper';
-export * from './book.mapper';
-export * from './book-details.mapper';
+export * from './to-book-entity.mappers';
+export * from './to-book-list-dto.mappers';
+export * from './to-book-list-owned-dto.mappers';

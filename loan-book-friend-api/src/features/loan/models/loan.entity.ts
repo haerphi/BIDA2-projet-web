@@ -16,11 +16,19 @@ export class LoanEntity extends TrackedEntity {
 
     @ManyToOne(() => BookEntity, (book) => book.loans)
     @JoinColumn({ name: 'book_id' })
-    book?: BookEntity;
+    book: BookEntity;
 
     @ManyToOne(() => UserEntity, (user) => user.borrowedBooks)
     @JoinColumn({ name: 'borrower_id' })
-    borrower?: UserEntity;
+    borrower: UserEntity;
+
+    @Column({
+        type: 'timestamptz',
+        name: 'should_be_returned_at',
+        nullable: true,
+        default: null,
+    })
+    shouldBeReturnedAt: Date | null;
 
     @Column({
         type: 'timestamptz',

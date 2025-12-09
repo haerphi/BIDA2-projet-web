@@ -1,3 +1,4 @@
+import { BookAvailability } from '@book/enums';
 import { TrackedEntity } from '@common/models';
 import { LoanEntity } from '@loan/models';
 import { UserEntity } from '@user/models';
@@ -13,7 +14,7 @@ import {
 @Entity({ name: 'books' })
 export class BookEntity extends TrackedEntity {
     @PrimaryGeneratedColumn('uuid', { name: 'book_id' })
-    book_id: string;
+    bookId: string;
 
     @Column({ type: 'varchar', length: 255, nullable: false })
     title: string;
@@ -21,8 +22,8 @@ export class BookEntity extends TrackedEntity {
     @Column({ type: 'varchar', length: 255, nullable: false })
     author: string;
 
-    @Column({ type: 'date', nullable: true })
-    loanedTo: Date | null;
+    @Column({ type: 'varchar', length: 50, nullable: false })
+    condition: 'new' | 'good' | 'poor';
 
     @ManyToOne(() => UserEntity, (user) => user.books)
     @JoinColumn({ name: 'owner_id' })
@@ -30,4 +31,8 @@ export class BookEntity extends TrackedEntity {
 
     @OneToMany(() => LoanEntity, (loan) => loan.book)
     loans: LoanEntity[];
+}
+
+export class BookEntityWithAvailability extends BookEntity {
+    availability: BookAvailability;
 }

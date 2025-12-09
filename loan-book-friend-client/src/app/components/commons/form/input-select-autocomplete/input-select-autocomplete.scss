@@ -1,0 +1,18 @@
+.option-item {
+    cursor: pointer;
+}
+
+.option-item:hover {
+    background-color: #f0f0f0;
+}
+
+.option-item-disabled {
+    cursor: initial;
+    background-color: #e0e0e0;
+}
+
+.option-container {
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+}

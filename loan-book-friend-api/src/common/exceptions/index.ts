@@ -1,3 +1,4 @@
+export * from './friend.exceptions';
 export * from './general.exceptions';
 export * from './loan.exceptions';
 export * from './security.exceptions';

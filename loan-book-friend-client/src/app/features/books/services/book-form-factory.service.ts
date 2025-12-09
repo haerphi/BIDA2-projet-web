@@ -24,6 +24,7 @@ export class BookFormFactoryService {
         return this._fb.group({
             title: [data?.title, [Validators.required]],
             author: [data?.author, [Validators.required]],
+            condition: [data?.condition, [Validators.required]],
         });
     }
 
@@ -34,7 +35,7 @@ export class BookFormFactoryService {
         return this._fb.group({
             title: [data?.title, [Validators.required]],
             author: [data?.author, [Validators.required]],
-            available: [data?.available, [Validators.required]],
+            available: [data?.availability, [Validators.required]],
         });
     }
 }

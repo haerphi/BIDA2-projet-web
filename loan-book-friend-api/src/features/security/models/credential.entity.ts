@@ -18,7 +18,7 @@ export class CredentialEntity extends TrackedEntity {
         onUpdate: 'CASCADE',
         eager: true,
     })
-    @JoinColumn({ name: 'user_id', referencedColumnName: 'user_id' })
+    @JoinColumn({ name: 'user_id', referencedColumnName: 'userId' })
     user!: UserEntity;
 
     @Column({ nullable: false })

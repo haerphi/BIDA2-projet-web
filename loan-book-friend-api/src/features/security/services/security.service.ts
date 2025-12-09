@@ -46,7 +46,7 @@ export class SecurityService {
         }
 
         const cred = await this.credentialRepository.findOne({
-            where: { user: { user_id: user.user_id } },
+            where: { user: { userId: user.userId } },
         });
 
         if (
@@ -100,7 +100,7 @@ export class SecurityService {
         newPassword: string,
     ): Promise<void> {
         const cred = await this.credentialRepository.findOne({
-            where: { user: { user_id: userId } },
+            where: { user: { userId: userId } },
         });
 
         if (!cred) {

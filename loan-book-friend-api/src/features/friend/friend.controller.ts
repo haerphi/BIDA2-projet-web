@@ -1,136 +1,124 @@
 import {
-    BadRequestException,
     Body,
     Controller,
     Delete,
     Get,
+    Param,
     Patch,
     Post,
     Query,
 } from '@nestjs/common';
+import { FriendService } from '@friend/services';
+import { ApiCookieAuth } from '@nestjs/swagger';
 import { RequireRoles } from '@security/guards';
 import { User } from '@security/metadata';
 import { UserEntity } from '@user/models';
 import {
-    FriendAcceptDto,
-    FriendAddDto,
-    FriendGetQueryDto,
-    FriendRemoveDto,
-    FriendRequestDto,
-    FriendRequestGetQueryDto,
+    FriendGetListDto,
+    FriendGetListQueryDto,
+    ReceivedFriendRequestDto,
+    SendFriendRequestFormDto,
+    SentFriendRequestDto,
 } from '@friend/dtos';
-import { FriendService } from '@friend/services';
+import { NameOrEmailIsRequired } from '@common/exceptions';
+import { ListApiResponseDto, PaginationQueryDto } from '@common/dtos';
 import {
-    ApiCookieAuth,
-    ApiExtraModels,
-    ApiOperation,
-    ApiResponse,
-} from '@nestjs/swagger';
-import {
-    AcceptFriendApiOperationDocumentation,
-    AcceptFriendApiResponseDocumentation,
-    AddFriendApiOperationDocumentation,
-    AddFriendApiResponseDocumentation,
-    DeleteFriendApiOperationDocumentation,
-    DeleteFriendApiResponseDocumentation,
-    GetFriendRequestApiOperationDocumentation,
-    GetFriendRequestApiResponseDocumentation,
-    GetFriendsApiOperationDocumentation,
-    GetFriendsApiResponseDocumentation,
-} from '@friend/friend.swagger';
-import { toUserListDto } from '@user/mappers';
-import { UserListDto } from '@user/dtos';
-import { ToFriendRequestDto } from '@friend/mappers';
-import { ListApiResponseDto } from '@common/dtos';
+    friendEntityToReceivedFriendRequestDto,
+    friendEntityToSentFriendRequestDto,
+    friendWithCountsToFriendGetListDto,
+} from '@friend/mappers';
 
 @ApiCookieAuth('access_token')
-@ApiExtraModels(ListApiResponseDto, FriendRequestDto, UserListDto)
 @Controller('friend')
 export class FriendController {
     constructor(private readonly friendService: FriendService) {}
 
-    @ApiOperation(AddFriendApiOperationDocumentation)
-    @ApiResponse(AddFriendApiResponseDocumentation)
     @RequireRoles()
     @Post()
-    async addFriend(
+    async sendFriendRequest(
         @User() requester: UserEntity,
-        @Body() body: FriendAddDto,
+        @Body() data: SendFriendRequestFormDto,
     ): Promise<void> {
-        if (!body.friend_email && !body.friend_name) {
-            throw new BadRequestException(
-                'At least one of friend_email or friend_name must be provided',
-            );
+        if (!data.name && !data.email) {
+            throw new NameOrEmailIsRequired();
         }
 
-        if (body.friend_email) {
-            await this.friendService.addFriendByEmail(
-                requester.user_id,
-                body.friend_email,
-            );
-        } else if (body.friend_name) {
-            await this.friendService.addFriendByName(
-                requester.user_id,
-                body.friend_name,
-            );
-        }
+        await this.friendService.sendFriendRequest(
+            requester.userId,
+            data.name,
+            data.email,
+        );
     }
 
-    @ApiOperation(GetFriendRequestApiOperationDocumentation)
-    @ApiResponse(GetFriendRequestApiResponseDocumentation)
     @RequireRoles()
-    @Get('requests')
+    @Get('sent-requests')
     async getFriendRequests(
         @User() user: UserEntity,
-        @Query() params: FriendRequestGetQueryDto,
-    ): Promise<ListApiResponseDto<FriendRequestDto>> {
-        const { requests, total } = await this.friendService.getFriendRequests(
-            user.user_id,
-            params,
-        );
-        return { data: requests.map(ToFriendRequestDto), total };
+        @Query() filters: PaginationQueryDto,
+    ): Promise<ListApiResponseDto<SentFriendRequestDto>> {
+        const { total, friendRequests } =
+            await this.friendService.getFriendRequestsSent(
+                user.userId,
+                filters,
+            );
+        return {
+            total,
+            data: friendRequests.map(friendEntityToSentFriendRequestDto),
+        };
     }
 
-    @ApiOperation(AcceptFriendApiOperationDocumentation)
-    @ApiResponse(AcceptFriendApiResponseDocumentation)
     @RequireRoles()
-    @Patch()
-    async acceptFriend(
+    @Get('received-requests')
+    async getReceivedFriendRequests(
         @User() user: UserEntity,
-        @Body() body: FriendAcceptDto,
+        @Query() filters: PaginationQueryDto,
+    ): Promise<ListApiResponseDto<ReceivedFriendRequestDto>> {
+        const { total, friendRequests } =
+            await this.friendService.getFriendRequestsReceived(
+                user.userId,
+                filters,
+            );
+
+        return {
+            total,
+            data: friendRequests.map(friendEntityToReceivedFriendRequestDto),
+        };
+    }
+
+    @RequireRoles()
+    @Delete('deny-request/:friendId')
+    async denyFriendRequest(
+        @User() user: UserEntity,
+        @Param('friendId') friendId: string,
     ): Promise<void> {
-        await this.friendService.acceptFriend(
-            user.user_id,
-            body.new_friend_user_id,
+        await this.friendService.denyFriendRequest(user.userId, friendId);
+    }
+
+    @RequireRoles()
+    @Patch('accept-request/:friendId')
+    async acceptFriendRequest(
+        @User() user: UserEntity,
+        @Param('friendId') friendRequestId: string,
+    ): Promise<void> {
+        await this.friendService.acceptFriendRequest(
+            user.userId,
+            friendRequestId,
         );
     }
 
-    @ApiOperation(GetFriendsApiOperationDocumentation)
-    @ApiResponse(GetFriendsApiResponseDocumentation)
     @RequireRoles()
     @Get()
     async getFriends(
         @User() user: UserEntity,
-        @Query() params: FriendGetQueryDto,
-    ): Promise<ListApiResponseDto<UserListDto>> {
-        const { friends, total } = await this.friendService.getFriends(
-            user.user_id,
-            params,
+        @Query() filters: FriendGetListQueryDto,
+    ): Promise<ListApiResponseDto<FriendGetListDto>> {
+        const { total, friends } = await this.friendService.getFriends(
+            user.userId,
+            filters,
         );
-        return { total, data: friends.map(toUserListDto) };
-    }
-
-    @ApiOperation(DeleteFriendApiOperationDocumentation)
-    @ApiResponse(DeleteFriendApiResponseDocumentation)
-    @RequireRoles()
-    @Delete()
-    async removeFriend(
-        @User() user: UserEntity,
-        @Body() body: FriendRemoveDto,
-    ): Promise<void> {
-        await this.friendService.removeFriend(
-            user.user_id,
-            body.friend_user_id,
-        );
+        return {
+            total,
+            data: friends.map(friendWithCountsToFriendGetListDto),
+        };
     }
 }

@@ -1,165 +1,206 @@
-import { NotFoundException } from '@common/exceptions';
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { BookEntity } from '@book/models';
-import { Repository } from 'typeorm';
+import { BookEntity, BookEntityWithAvailability } from '@book/models';
+import { FindOptionsWhere, ILike, Repository } from 'typeorm';
 import { UserEntity } from '@user/models';
-import { UserRole } from '@security/enums';
-import { UserService } from '@user/services';
-import { BookListQueryDto, BookOwnedListQueryDto } from '@book/dtos';
-import { executePagination } from '@common/utils/repository.utils';
+import { NotFoundException } from '@common/exceptions';
+import { BookGetListQueryDto } from '@book/dtos';
+import { BookAvailability } from '@book/enums';
+import { LoanEntity } from '@loan/models';
+import { LoanService } from '@loan/services';
+import { executePagination } from '@utils/repository.utils';
 
 @Injectable()
 export class BookService {
     constructor(
         @InjectRepository(BookEntity)
         private readonly bookRepository: Repository<BookEntity>,
-        private readonly userService: UserService,
+
+        @InjectRepository(BookEntity)
+        private readonly loanRepository: Repository<LoanEntity>,
+
+        @Inject(forwardRef(() => LoanService))
+        private readonly loanService: LoanService,
     ) {}
 
-    async create(book: BookEntity): Promise<BookEntity> {
-        return this.bookRepository.save(book);
+    async createBook(
+        owner: UserEntity,
+        book: Partial<BookEntity>,
+    ): Promise<BookEntity> {
+        book.owner = owner;
+        const newBook = await this.bookRepository.save(book);
+        return newBook;
     }
 
-    async delete(id: string): Promise<void> {
-        await this.bookRepository.delete({ book_id: id });
+    async updateBook(
+        owner: UserEntity,
+        book_id: string,
+        book: Partial<BookEntity>,
+    ): Promise<BookEntity> {
+        const existingBook = await this.bookRepository.findOne({
+            where: { bookId: book_id, owner: { userId: owner.userId } },
+        });
+        if (!existingBook) {
+            throw new NotFoundException('book_not_found_exception');
+        }
+        const updatedBook = Object.assign(existingBook, book);
+        return this.bookRepository.save(updatedBook);
     }
 
-    async findAll(
-        filters: BookListQueryDto,
-    ): Promise<{ books: BookEntity[]; total: number }> {
-        // distinc book title and author filter
-        let query = this.bookRepository.createQueryBuilder('book');
+    async getBooks(
+        filters: BookGetListQueryDto,
+    ): Promise<{ total: number; books: BookEntity[] }> {
+        const where = {};
 
         if (filters.title) {
-            query = query.where('book.title ILIKE :title', {
-                title: `%${filters.title}%`,
-            });
+            where['title'] = ILike(filters.title + '%');
         }
 
         if (filters.author) {
-            query = query.andWhere('book.author ILIKE :author', {
-                author: `%${filters.author}%`,
-            });
+            where['author'] = ILike(filters.author + '%');
         }
 
-        const [total, books] = await Promise.all(
-            executePagination<BookEntity>(query, filters),
-        );
+        if (filters.condition) {
+            where['condition'] = filters.condition;
+        }
 
-        return { total, books };
+        // Pagination
+        const skip = filters.page * filters.limit - filters.limit; // because page starts at 1
+        const take = filters.limit;
+
+        const order = {};
+        if (filters.orderBy) {
+            order[filters.orderBy] = filters.orderDirection || 'ASC';
+        }
+
+        const books = await this.bookRepository.find({
+            where,
+            skip,
+            take,
+            order,
+        });
+        const total = await this.bookRepository.count({ where });
+        return Promise.resolve({ total, books });
     }
 
-    async findAllByOwnerId(
-        ownerId: string,
-        filters: BookOwnedListQueryDto,
-    ): Promise<{ books: BookEntity[]; total: number }> {
+    async getBooksOwnedBy(
+        filters: BookGetListQueryDto,
+        owner_id: string,
+    ): Promise<{ total: number; books: BookEntityWithAvailability[] }> {
+        // Initialisation du QueryBuilder
         let query = this.bookRepository
             .createQueryBuilder('book')
-            .where('book.owner_id = :ownerId', { ownerId });
+            .leftJoin('book.owner', 'owner');
 
+        // 1. Jointure du dernier prêt (méthode préférée pour ne pas rompre l'hydratation)
+        const lastLoanSubQuery = this.bookRepository.manager
+            .getRepository(LoanEntity)
+            .createQueryBuilder('loan_sub')
+            .select('loan_sub.*')
+            .distinctOn(['loan_sub.book_id'])
+            .orderBy('loan_sub.book_id', 'ASC')
+            .addOrderBy('loan_sub.created_at', 'DESC');
+
+        // Jointure du dernier prêt comme une table dérivée sous l'alias 'lastLoan'
+        query = query.leftJoin(
+            `(${lastLoanSubQuery.getSql()})`,
+            'lastLoan', // Nouvel alias pour éviter le conflit avec l'alias 'loan' de la sous-requête précédente
+            `book.book_id = "lastLoan"."book_id"`,
+        );
+
+        // 2. Ajouter la colonne calculée d'availability
+        // Laissez TypeORM sélectionner toutes les colonnes de 'book' implicitement.
+        // Utilisez 'addSelect' pour ajouter votre colonne calculée.
+        query = query.addSelect(
+            `CASE
+            WHEN "lastLoan"."loan_id" IS NOT NULL AND "lastLoan"."returned_at" IS NULL AND "lastLoan"."should_be_returned_at" < CURRENT_DATE THEN 'overdue'
+            WHEN "lastLoan"."loan_id" IS NOT NULL AND "lastLoan"."returned_at" IS NULL THEN 'loaned'
+            ELSE 'available'
+        END`,
+            'availability', // L'alias du résultat brut
+        );
+
+        // 3. Condition WHERE principale
+        query = query.where('owner.userId = :ownerId', { ownerId: owner_id });
+
+        // Conditions de filtrage
         if (filters.title) {
+            // Utilisation de la méthode 'andWhere' pour ajouter des conditions
+            // Le filtre ILike('%...') est géré avec un paramètre et le signe %
             query = query.andWhere('book.title ILIKE :title', {
-                title: `%${filters.title}%`,
+                title: `${filters.title}%`,
             });
         }
 
         if (filters.author) {
             query = query.andWhere('book.author ILIKE :author', {
-                author: `%${filters.author}%`,
+                author: `${filters.author}%`,
             });
         }
 
-        if (filters.currentlyLoaned !== undefined) {
-            if (filters.currentlyLoaned) {
-                query = query.andWhere('book.available = false');
-            } else {
-                query = query.andWhere('book.available = true');
+        if (filters.condition) {
+            query = query.andWhere('book.condition = :condition', {
+                condition: filters.condition,
+            });
+        }
+
+        if (filters.availability) {
+            switch (filters.availability) {
+                case BookAvailability.Available:
+                    // Disponibilité: Le dernier prêt est retourné OU il n'y a pas de prêt du tout
+                    query.andWhere(
+                        '("lastLoan"."returned_at" IS NOT NULL OR "lastLoan"."loan_id" IS NULL)',
+                    );
+                    break;
+
+                case BookAvailability.Loaned:
+                    // Prêté: Le dernier prêt n'est pas retourné ET n'est pas en retard
+                    query.andWhere(
+                        '("lastLoan"."returned_at" IS NULL AND "lastLoan"."should_be_returned_at" >= CURRENT_DATE)',
+                    );
+                    break;
+
+                case BookAvailability.Overdue:
+                    // En retard: Le dernier prêt n'est pas retourné ET est en retard
+                    query.andWhere(
+                        '"lastLoan"."returned_at" IS NULL AND "lastLoan"."should_be_returned_at" < CURRENT_DATE',
+                    );
+                    break;
             }
         }
 
-        const [total, books] = await Promise.all(
+        const [total, result] = await Promise.all(
             executePagination<BookEntity>(query, filters),
         );
 
-        return { total, books };
+        console.log(result);
+
+        const bookWithAvailability: BookEntityWithAvailability[] =
+            result.entities.map((b, index) => ({
+                ...b,
+                availability:
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+                    result.raw[index].availability as BookAvailability,
+            }));
+
+        return {
+            total,
+            books: bookWithAvailability,
+        };
     }
 
-    async deleteById(id: string, user: UserEntity): Promise<void> {
-        // find the book by id and owner id
-        const book = await this.bookRepository.findOne({
-            relations: { owner: true },
-            where: { book_id: id },
-        });
-
-        // check if the user is admin or the owner of the book
-        if (user.role !== UserRole.Admin) {
-            if (!book || book.owner.user_id !== user.user_id) {
-                throw new NotFoundException('book_not_found');
-            }
+    async getBookById(bookId: string, userId?: string): Promise<BookEntity> {
+        const where: FindOptionsWhere<BookEntity> = { bookId };
+        if (userId) {
+            where.owner = { userId };
         }
 
-        // delete the book
-        await this.bookRepository.delete({ book_id: id });
-    }
-
-    async findById(id: string, requester_id: string) {
-        const book = await this.bookRepository.findOne({
-            where: { book_id: id },
-            relations: { owner: true },
-        });
+        const book = await this.bookRepository.findOne({ where });
 
         if (!book) {
-            throw new NotFoundException('book_not_found');
-        }
-
-        const requester = await this.userService.findById(requester_id);
-
-        // If the requester is not admin and not the owner, restrict access
-        if (
-            requester.role !== UserRole.Admin &&
-            book.owner.user_id !== requester.user_id
-        ) {
-            throw new NotFoundException('book_not_found');
+            throw new NotFoundException('book_not_found_exception');
         }
 
         return book;
-    }
-
-    async update(
-        id: string,
-        bookData: Partial<BookEntity>,
-        user: UserEntity,
-    ): Promise<BookEntity> {
-        const book = await this.bookRepository.findOne({
-            where: { book_id: id },
-            relations: { owner: true },
-        });
-
-        if (!book) {
-            throw new NotFoundException('book_not_found');
-        }
-
-        // If the requester is not admin and not the owner, restrict access
-        if (
-            user.role !== UserRole.Admin &&
-            book.owner.user_id !== user.user_id
-        ) {
-            throw new NotFoundException('book_not_found');
-        }
-
-        const updatedBook: BookEntity = {
-            ...book,
-            title: bookData.title ?? book.title,
-            author: bookData.author ?? book.author,
-        };
-
-        if (bookData.loanedTo !== undefined) {
-            updatedBook.loanedTo = bookData.loanedTo;
-        }
-
-        await this.bookRepository.save(updatedBook);
-
-        return updatedBook;
     }
 }

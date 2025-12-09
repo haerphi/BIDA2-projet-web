@@ -3,7 +3,7 @@ import { UserEntity } from '@user/models';
 
 export const toUserListDto = (user: UserEntity): UserListDto => {
     return {
-        user_id: user.user_id,
+        userId: user.userId,
         name: user.name,
         email: user.email,
     };
@@ -13,7 +13,7 @@ export const toUserListWithRoleDto = (
     user: UserEntity,
 ): UserListWithRoleDto => {
     return {
-        user_id: user.user_id,
+        userId: user.userId,
         name: user.name,
         email: user.email,
         role: user.role,

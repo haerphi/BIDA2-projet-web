@@ -1,29 +1,55 @@
 <div class="btn-group mb-3">
-    <button class="btn btn-sm btn-primary">Tous 👥</button>
-    <button class="btn btn-sm btn-outline-secondary">Prêts en cours 📤</button>
-    <button class="btn btn-sm btn-outline-secondary">Jamais emprunté 💤</button>
+    <button class="btn btn-sm btn-primary">Tous 👥 (TODO)</button>
+    <button class="btn btn-sm btn-outline-secondary">
+        Prêts en cours 📤 (TODO)
+    </button>
+    <button class="btn btn-sm btn-outline-secondary">
+        Jamais emprunté 💤 (TODO)
+    </button>
+</div>
+
+<div class="searching-inputs">
+    <div class="input-group mb-3">
+        <span class="input-group-text">name</span>
+        <input
+            type="text"
+            class="form-control"
+            placeholder="Rechercher…"
+            [(ngModel)]="searchNameInput"
+            [ngModelOptions]="{ updateOn: 'blur' }"
+            (ngModelChange)="onSearchChange()"
+            (keydown.enter)="blurInput($event)"
+        />
+    </div>
+
+    <button class="btn btn-light" (click)="onResetFilers()">
+        Reset filtres
+    </button>
 </div>
 
 <ul class="list-group mb-3">
-    <li class="list-group-item">
-        <div class="fw-semibold d-flex justify-content-between">
-            Maxime
-            <span class="chip">📤 2 prêts</span>
-        </div>
-        <small class="text-muted">maxime&#64;example.com</small>
-    </li>
-
-    <li class="list-group-item">
-        <div class="fw-semibold d-flex justify-content-between">
-            Alice
-            <span class="chip chip-warning">1 retard</span>
-        </div>
-    </li>
-
-    <li class="list-group-item">
-        <div class="fw-semibold d-flex justify-content-between">
-            Thomas
-            <span class="chip chip-success">Aucun prêt</span>
-        </div>
-    </li>
+    @for (f of friends(); track f.user.userId) {
+        <li class="list-group-item">
+            <div class="fw-semibold d-flex justify-content-between">
+                {{ f.user.name }}
+                <div class="d-flex gap-2">
+                    @if (f.loanCount) {
+                        <span class="chip chip-warning"
+                            >📤 {{ f.loanCount }} prêts</span
+                        >
+                    }
+                    @if (f.overdueCount) {
+                        <span class="chip chip-danger"
+                            >⏰ {{ f.overdueCount }} retards</span
+                        >
+                    }
+                    @if (!f.loanCount) {
+                        <span class="chip chip-secondary"
+                            >💤 aucun emprunt</span
+                        >
+                    }
+                </div>
+            </div>
+        </li>
+    }
 </ul>

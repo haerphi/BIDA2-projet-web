@@ -1,4 +1,28 @@
-<div class="btn-group mb-3">
+<div>
+    <div class="btn-group mb-3 w-100">
+        <button
+            class="btn btn-sm"
+            [ngClass]="{
+                'btn-primary': displayMode === DisplayMode.Loans,
+                'btn-outline-secondary': displayMode !== DisplayMode.Loans,
+            }"
+            (click)="onDisplayModeChange(DisplayMode.Loans)"
+        >
+            Prêts
+        </button>
+        <button
+            class="btn btn-sm"
+            [ngClass]="{
+                'btn-primary': displayMode === DisplayMode.Borrowed,
+                'btn-outline-secondary': displayMode !== DisplayMode.Borrowed,
+            }"
+            (click)="onDisplayModeChange(DisplayMode.Borrowed)"
+        >
+            Emprunts
+        </button>
+    </div>
+</div>
+<div class="btn-group mb-3 w-100">
     <button class="btn btn-sm btn-primary">En cours</button>
     <button class="btn btn-sm btn-outline-secondary">Terminés</button>
     <button class="btn btn-sm btn-outline-secondary">En retard</button>
@@ -14,21 +38,49 @@
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <td>1984</td>
-            <td>Maxime</td>
-            <td>10/11 → 05/12</td>
-            <td>
-                <span class="chip chip-warning">En cours</span>
-            </td>
-        </tr>
-        <tr>
-            <td>Dune</td>
-            <td>Alice</td>
-            <td>15/10 → 01/11</td>
-            <td>
-                <span class="chip chip-danger">Retard</span>
-            </td>
-        </tr>
+        @for (
+            l of displayMode === DisplayMode.Loans ? loans() : borrowed();
+            track l.loanId
+        ) {
+            <tr>
+                <td>{{ l.book.title }}</td>
+                <td>
+                    @if (displayMode === DisplayMode.Loans) {
+                        {{ $any(l).borrower.name }}
+                    } @else {
+                        {{ $any(l).owner.name }}
+                    }
+                </td>
+                <td>
+                    {{ l.createdAt | date: 'mediumDate' }} →
+                    {{ l.shouldBeReturnedAt | date: 'mediumDate' }}
+                </td>
+                <td>
+                    @if (l.returnedAt) {
+                        <span
+                            class="chip"
+                            [ngClass]="{
+                                'chip-success':
+                                    !l.shouldBeReturnedAt ||
+                                    l.shouldBeReturnedAt <= l.returnedAt,
+                                'chip-dark':
+                                    l.shouldBeReturnedAt &&
+                                    l.shouldBeReturnedAt > l.returnedAt,
+                            }"
+                            >Rendu</span
+                        >
+                    } @else {
+                        @if (
+                            !l.shouldBeReturnedAt ||
+                            l.shouldBeReturnedAt.getTime() > Date.now()
+                        ) {
+                            <span class="chip chip-warning">En cours</span>
+                        } @else {
+                            <span class="chip chip-danger">En retard</span>
+                        }
+                    }
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

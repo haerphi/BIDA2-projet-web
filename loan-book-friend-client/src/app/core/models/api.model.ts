@@ -18,3 +18,10 @@ export interface ApiListResponse<T> {
     data: T[];
     total: number;
 }
+
+export interface ApiPaginationQueryParams {
+    page?: number;
+    limit?: number;
+    orderBy?: string;
+    orderDirection?: 'ASC' | 'DESC';
+}

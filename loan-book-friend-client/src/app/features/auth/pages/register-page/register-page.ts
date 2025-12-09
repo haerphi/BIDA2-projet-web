@@ -1,22 +1,18 @@
 import { Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { FormInputDisplayError } from '@components/commons/form/display-error/display-error';
 import { ApiErrorResponse } from '@core/models';
 import { AuthService } from '@core/services';
-import { fromValidationFieldError } from '@core/utils/validator.utils';
-import { hasSameAsError, isRequired } from '@core/validators';
 import { AuthFormFactoryService } from '@features/auth/services/auth-form-factory.service';
 
 @Component({
     selector: 'app-register-page',
-    imports: [ReactiveFormsModule, FormsModule],
+    imports: [ReactiveFormsModule, FormsModule, FormInputDisplayError],
     templateUrl: './register-page.html',
     styleUrl: './register-page.scss',
 })
 export class RegisterPage {
-    protected readonly isRequired = isRequired;
-    protected readonly hasSameAsError = hasSameAsError;
-
     private readonly _authFormFactory = inject(AuthFormFactoryService);
     private readonly _authService = inject(AuthService);
     private readonly _router = inject(Router);
@@ -28,14 +24,6 @@ export class RegisterPage {
 
     formErrorCode: string | null = null;
     formErrorFields: unknown[] | null | undefined = null;
-
-    checkFormFieldError(key: string): unknown[] {
-        if (!this.formErrorFields) {
-            return [];
-        }
-
-        return fromValidationFieldError(this.formErrorFields, key);
-    }
 
     async onSubmit(): Promise<void> {
         this.registerForm.markAllAsTouched();

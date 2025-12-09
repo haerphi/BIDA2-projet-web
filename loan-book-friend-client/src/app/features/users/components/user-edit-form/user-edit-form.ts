@@ -57,7 +57,7 @@ export class UserEditForm implements OnInit {
             try {
                 await this._userService.updateUser(
                     this.userEditForm.value,
-                    this.self() ? null : this.data().user_id,
+                    this.self() ? null : this.data().userId,
                 );
                 this.profileUpdated.emit();
             } catch (err) {

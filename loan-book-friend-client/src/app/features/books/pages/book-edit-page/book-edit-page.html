@@ -1,5 +1,5 @@
 <h2>Editing book</h2>
-<a routerLink="/books/{{ bookDetails?.book_id }}">Back to the book details</a>
+<a routerLink="/books/{{ bookDetails?.bookId }}">Back to the book details</a>
 @if (!bookError) {
     <app-book-edit-form [data]="bookDetails" (bookUpdated)="onBookUpdated()" />
 } @else {
