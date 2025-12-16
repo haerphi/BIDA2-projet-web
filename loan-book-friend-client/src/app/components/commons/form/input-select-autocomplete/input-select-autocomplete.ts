@@ -14,7 +14,7 @@ import {
 import { InputSelectAutocompleteOption } from './models/input-select-auto-complete-option.model';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Subject, debounceTime, takeUntil } from 'rxjs';
-import { NgClass, NgStyle } from '@angular/common';
+import { NgClass } from '@angular/common';
 
 type OnChangeFn = (value: string) => void;
 type OnTouchedFn = () => void;
@@ -30,7 +30,7 @@ type OnTouchedFn = () => void;
             multi: true,
         },
     ],
-    imports: [NgStyle, NgClass],
+    imports: [NgClass],
 })
 export class InputSelectAutocomplete
     implements ControlValueAccessor, OnInit, OnDestroy

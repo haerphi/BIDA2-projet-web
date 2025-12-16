@@ -8,9 +8,6 @@
                     class="form-control"
                     placeholder="Rechercher…"
                     [(ngModel)]="searchTitleInput"
-                    [ngModelOptions]="{ updateOn: 'blur' }"
-                    (ngModelChange)="onSearchChange()"
-                    (keydown.enter)="blurInput($event)"
                 />
             </div>
 
@@ -21,9 +18,6 @@
                     class="form-control"
                     placeholder="Rechercher…"
                     [(ngModel)]="searchAuthorInput"
-                    [ngModelOptions]="{ updateOn: 'blur' }"
-                    (ngModelChange)="onSearchChange()"
-                    (keydown.enter)="blurInput($event)"
                 />
             </div>
 
@@ -32,11 +26,10 @@
                 <select
                     class="form-select"
                     [(ngModel)]="searchConditionInput"
-                    (ngModelChange)="onSearchChange()"
                 >
-                    <option value="new">🆕 Neuf</option>
-                    <option value="good">👍 Bon état</option>
-                    <option value="poor">📖 Usagé</option>
+                    <option [value]="BookCondition.New">🆕 Neuf</option>
+                    <option [value]="BookCondition.Good">👍 Bon état</option>
+                    <option [value]="BookCondition.Poor">📖 Usagé</option>
                 </select>
             </div>
 
@@ -45,11 +38,10 @@
                 <select
                     class="form-select"
                     [(ngModel)]="searchAvailabilityInput"
-                    (ngModelChange)="onSearchChange()"
                 >
-                    <option value="new">Disponible</option>
-                    <option value="good">Prêté</option>
-                    <option value="poor">En retard</option>
+                    <option [value]="BookAvailability.Available">Disponible</option>
+                    <option [value]="BookAvailability.Loaned">Prêté</option>
+                    <option [value]="BookAvailability.Overdue">En retard</option>
                 </select>
             </div>
             <button class="btn btn-light" (click)="onResetFilers()">

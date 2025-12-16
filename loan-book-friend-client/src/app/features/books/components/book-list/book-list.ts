@@ -1,10 +1,11 @@
-import { Component, input, output } from '@angular/core';
+import { Component, effect, input, output, signal } from '@angular/core';
 import { Spinner } from '@components/commons/loadings/spinner/spinner';
 import { BookAvailability } from '@core/constants';
 import { BookListOwned, BookListOwnedQueryParams } from '@core/models';
 import { Spoil } from '@components/commons/spoil/spoil';
 import { FormsModule } from '@angular/forms';
 import { BookCondition } from '@core/constants/book-condition.enum';
+import { debounceSignal } from '@core/utils/signal.utils';
 
 @Component({
     selector: 'app-book-list',
@@ -13,47 +14,66 @@ import { BookCondition } from '@core/constants/book-condition.enum';
     styleUrl: './book-list.scss',
 })
 export class BookList {
+    protected readonly BookCondition = BookCondition;
     protected readonly BookAvailability = BookAvailability;
 
     books = input.required<BookListOwned[]>();
     loading = input<boolean>(false);
 
+    searchTitleInput = signal<string>('');
+    searchTitleDebounced = debounceSignal(this.searchTitleInput, 400, '');
+    searchAuthorInput = signal<string>('');
+    searchAuthorDebounced = debounceSignal(this.searchAuthorInput, 400, '');
+    searchConditionInput = signal<BookCondition | undefined>(undefined);
+    searchAvailabilityInput = signal<BookAvailability | undefined>(undefined);
+
     filterBooks = output<BookListOwnedQueryParams>();
 
-    searchTitleInput = '';
-    searchAuthorInput = '';
-    searchConditionInput: BookCondition | undefined = undefined;
-    searchAvailabilityInput: BookAvailability | undefined = undefined;
+    constructor() {
+        effect(() => {
+            const filters: BookListOwnedQueryParams = {};
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    blurInput(event: any): void {
-        console.log(event.currentTarget.blur());
+            if (this.searchTitleDebounced()) {
+                filters.title = this.searchTitleDebounced();
+            }
+
+            if (this.searchAuthorDebounced()) {
+                filters.author = this.searchAuthorDebounced();
+            }
+
+            if (this.searchConditionInput()) {
+                filters.condition = this.searchConditionInput()!;
+            }
+
+            if (this.searchAvailabilityInput()) {
+                filters.availability = this.searchAvailabilityInput()!;
+            }
+
+            this.onSearchChange(filters);
+        });
     }
 
-    onSearchChange(): void {
-        const filters: BookListOwnedQueryParams = {};
+    onSearchChange(filters: BookListOwnedQueryParams): void {
+        if (filters.title && filters.title.trim()) {
+            filters.title = filters.title.trim();
+        } else {
+            delete filters.title;
+        }
 
-        if (this.searchTitleInput.trim()) {
-            filters.title = this.searchTitleInput.trim();
-        }
-        if (this.searchAuthorInput.trim()) {
-            filters.author = this.searchAuthorInput.trim();
-        }
-        if (this.searchConditionInput) {
-            filters.condition = this.searchConditionInput;
-        }
-        if (this.searchAvailabilityInput) {
-            filters.availability = this.searchAvailabilityInput;
+        if (filters.author && filters.author.trim()) {
+            filters.author = filters.author.trim();
+        } else {
+            delete filters.author;
         }
 
         this.filterBooks.emit(filters);
     }
 
     onResetFilers(): void {
-        this.searchTitleInput = '';
-        this.searchAuthorInput = '';
-        this.searchConditionInput = undefined;
-        this.searchAvailabilityInput = undefined;
+        this.searchTitleInput.set('');
+        this.searchAuthorInput.set('');
+        this.searchConditionInput.set(undefined);
+        this.searchAvailabilityInput.set(undefined);
 
         this.filterBooks.emit({});
     }
