@@ -1,5 +1,5 @@
 <button class="btn btn-light" (click)="onDisplayBtn()">
-    {{ buttonText() }}
+    {{ display ? buttonTextHide() : buttonText() }}
 </button>
 @if (display) {
     <ng-content></ng-content>
