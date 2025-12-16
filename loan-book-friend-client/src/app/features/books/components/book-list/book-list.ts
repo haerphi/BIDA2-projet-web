@@ -54,16 +54,21 @@ export class BookList {
     }
 
     onSearchChange(filters: BookListOwnedQueryParams): void {
+        const validFilters: BookListOwnedQueryParams = {};
         if (filters.title && filters.title.trim()) {
-            filters.title = filters.title.trim();
-        } else {
-            delete filters.title;
+            validFilters.title = filters.title.trim();
         }
 
         if (filters.author && filters.author.trim()) {
-            filters.author = filters.author.trim();
-        } else {
-            delete filters.author;
+            validFilters.author = filters.author.trim();
+        }
+
+        if (filters.condition) {
+            validFilters.condition = filters.condition;
+        }
+
+        if (filters.availability) {
+            validFilters.availability = filters.availability;
         }
 
         this.filterBooks.emit(filters);

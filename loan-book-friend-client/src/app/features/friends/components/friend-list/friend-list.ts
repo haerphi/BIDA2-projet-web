@@ -1,6 +1,7 @@
-import { Component, input, output } from '@angular/core';
+import { Component, effect, input, output, signal } from '@angular/core';
 import { FriendGetListDto, FriendGetListQueryDto } from '@core/models';
 import { FormsModule } from '@angular/forms';
+import { debounceSignal } from '@core/utils/signal.utils';
 
 @Component({
     selector: 'app-friend-list',
@@ -14,25 +15,33 @@ export class FriendList {
 
     filterFriends = output<FriendGetListQueryDto>();
 
-    searchNameInput = '';
+    searchNameInput = signal<string>('');
+    searchNameDebounced = debounceSignal(this.searchNameInput, 400, '');
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    blurInput(event: any): void {
-        console.log(event.currentTarget.blur());
+    constructor() {
+        effect(() => {
+            const filters: FriendGetListQueryDto = {};
+
+            if (this.searchNameDebounced()) {
+                filters.name = this.searchNameDebounced();
+            }
+
+            this.onSearchChange(filters);
+        });
     }
 
-    onSearchChange(): void {
-        const filters: FriendGetListQueryDto = {};
+    onSearchChange(filters: FriendGetListQueryDto): void {
+        const validFilters: FriendGetListQueryDto = {};
 
-        if (this.searchNameInput.trim()) {
-            filters.name = this.searchNameInput.trim();
+        if (filters.name && filters.name.trim()) {
+            validFilters.name = filters.name.trim();
         }
 
-        this.filterFriends.emit(filters);
+        this.filterFriends.emit(validFilters);
     }
 
     onResetFilers(): void {
-        this.searchNameInput = '';
+        this.searchNameInput.set('');
 
         this.filterFriends.emit({});
     }

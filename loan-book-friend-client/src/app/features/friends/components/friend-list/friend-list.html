@@ -16,9 +16,6 @@
             class="form-control"
             placeholder="Rechercher…"
             [(ngModel)]="searchNameInput"
-            [ngModelOptions]="{ updateOn: 'blur' }"
-            (ngModelChange)="onSearchChange()"
-            (keydown.enter)="blurInput($event)"
         />
     </div>
 

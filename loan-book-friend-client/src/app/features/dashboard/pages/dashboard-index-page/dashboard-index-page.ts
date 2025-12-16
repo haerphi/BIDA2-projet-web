@@ -16,6 +16,7 @@ import {
     BorrowedGetListDto,
     CreateLoanForm,
     FriendGetListDto,
+    FriendGetListQueryDto,
     LoanGetListDto,
     LoanGetListQueryDto,
     ReceivedFriendRequestDto,
@@ -190,19 +191,32 @@ export class DashboardIndexPage implements OnInit {
             });
     }
 
+    onFilterFriends(filters: FriendGetListQueryDto): void {
+        this._friendService
+            .getFriends(filters)
+            .then((response) => {
+                this.friends = response.data;
+            })
+            .catch((error) => {
+                this.friendsFetchError = error.message;
+            })
+            .finally(() => {
+                this.friendsLoading = false;
+            });
+    }
+
     // LOANS
-    fetchLoans(filter?: LoanGetListQueryDto): void {
+    fetchLoans(): void {
         this.loansLoading = true;
         Promise.all([
-            this._loanService.getLoans(filter),
-            this._loanService.getBorrowedBooks(filter),
+            this._loanService.getLoans(),
+            this._loanService.getBorrowedBooks(),
         ])
             .then(([loanedResponse, borrowedResponse]) => {
-                if (!filter || !Object.keys(filter)) {
-                    // update the total counts only if no filter is applied
-                    this.loansCount = loanedResponse.total;
-                    this.boorrowedCount = borrowedResponse.total;
-                }
+                // update the total counts only if no filter is applied
+                this.loansCount = loanedResponse.total;
+                this.boorrowedCount = borrowedResponse.total;
+
                 this.loanedBooks = loanedResponse.data;
                 this.borrowedBooks = borrowedResponse.data;
             })
@@ -223,10 +237,27 @@ export class DashboardIndexPage implements OnInit {
     }
 
     onFilterLoans(status: LoanStatusEnum | null) {
-        const filter: LoanGetListQueryDto = {};
-        if (status !== null) {
-            filter.status = status;
+        const loanFilters: LoanGetListQueryDto = {};
+        const borrowedFilters: LoanGetListQueryDto = {};
+
+        if (status) {
+            loanFilters.status = status;
+            borrowedFilters.status = status;
         }
-        this.fetchLoans(filter);
+
+        Promise.all([
+            this._loanService.getLoans(loanFilters),
+            this._loanService.getBorrowedBooks(borrowedFilters),
+        ])
+            .then(([loanedResponse, borrowedResponse]) => {
+                this.loanedBooks = loanedResponse.data;
+                this.borrowedBooks = borrowedResponse.data;
+            })
+            .catch((error) => {
+                this.loansFetchError = error.message;
+            })
+            .finally(() => {
+                this.loansLoading = false;
+            });
     }
 }
