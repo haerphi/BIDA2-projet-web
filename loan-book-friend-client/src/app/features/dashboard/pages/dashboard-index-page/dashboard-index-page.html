@@ -44,7 +44,10 @@
             <div class="card-body">
                 <div class="section-title">📚 Mes livres</div>
                 <p class="section-subtitle">Gérer votre bibliothèque</p>
-                <app-spoil buttonText="➕ Nouveau livre" buttonTextHide="➖ Nouveau livre">
+                <app-spoil
+                    buttonText="➕ Nouveau livre"
+                    buttonTextHide="➖ Nouveau livre"
+                >
                     <app-book-create (bookCreated)="onBookCreated()" />
                 </app-spoil>
                 <hr />
@@ -64,7 +67,10 @@
             <div class="card-body">
                 <div class="section-title">👥 Mes amis</div>
                 <p class="section-subtitle">Contacts</p>
-                <app-spoil buttonText="➕ Nouvel ami" buttonTextHide="➖ Nouvel ami">
+                <app-spoil
+                    buttonText="➕ Nouvel ami"
+                    buttonTextHide="➖ Nouvel ami"
+                >
                     <app-friend-send-request
                         (sendFriendRequest)="onSendFriendRequest($event)"
                 /></app-spoil>
@@ -80,12 +86,12 @@
                                 ? ` (${receivedFriendRequestsCount})`
                                 : '')
                         "
-
-                        [buttonTextHide]="`➖ Voir les demandes d'amis` +
+                        [buttonTextHide]="
+                            `➖ Voir les demandes d'amis` +
                             (receivedFriendRequestsCount
-                            ? ` (${receivedFriendRequestsCount})`
-                            : '')
-                            "
+                                ? ` (${receivedFriendRequestsCount})`
+                                : '')
+                        "
                     >
                         <app-friend-requests
                             [requestsSent]="sentFriendRequests"
@@ -113,7 +119,10 @@
                 <div class="section-title">📤 Prêts & 📥 emprunts</div>
                 <p class="section-subtitle">Suivi des emprunts</p>
 
-                <app-spoil buttonText="➕ Nouveau prêt" buttonTextHide="➖ Nouveau prêt">
+                <app-spoil
+                    buttonText="➕ Nouveau prêt"
+                    buttonTextHide="➖ Nouveau prêt"
+                >
                     <app-loan-create (createLoan)="onCreateLoan($event)" />
                 </app-spoil>
                 <hr />

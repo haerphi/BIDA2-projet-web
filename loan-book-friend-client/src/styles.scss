@@ -34,9 +34,13 @@ body {
     margin: 15px 0;
 }
 
+.list-group-item:hover {
+    background-color: #f8f9fa;
+}
+
 /* MODAL STYLES */
 .backdrop {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
@@ -45,6 +49,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 9999;
 }
 .modal-container {
     position: absolute;

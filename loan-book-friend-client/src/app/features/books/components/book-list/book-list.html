@@ -1,5 +1,8 @@
 <div class="searching-inputs-spoil">
-    <app-spoil buttonText="🔍 Critère de recherche" buttonTextHide="❌ Critère de recherche">
+    <app-spoil
+        buttonText="🔍 Critère de recherche"
+        buttonTextHide="❌ Critère de recherche"
+    >
         <div class="searching-inputs">
             <div class="input-group mb-3">
                 <span class="input-group-text">Titre</span>
@@ -23,10 +26,7 @@
 
             <div class="input-group mb-3">
                 <span class="input-group-text">Condition</span>
-                <select
-                    class="form-select"
-                    [(ngModel)]="searchConditionInput"
-                >
+                <select class="form-select" [(ngModel)]="searchConditionInput">
                     <option [value]="BookCondition.New">🆕 Neuf</option>
                     <option [value]="BookCondition.Good">👍 Bon état</option>
                     <option [value]="BookCondition.Poor">📖 Usagé</option>
@@ -39,9 +39,13 @@
                     class="form-select"
                     [(ngModel)]="searchAvailabilityInput"
                 >
-                    <option [value]="BookAvailability.Available">Disponible</option>
+                    <option [value]="BookAvailability.Available">
+                        Disponible
+                    </option>
                     <option [value]="BookAvailability.Loaned">Prêté</option>
-                    <option [value]="BookAvailability.Overdue">En retard</option>
+                    <option [value]="BookAvailability.Overdue">
+                        En retard
+                    </option>
                 </select>
             </div>
             <button class="btn btn-light" (click)="onResetFilers()">
@@ -56,7 +60,8 @@
 } @else {
     <ul class="list-group mb-3">
         @for (book of books(); track book.bookId) {
-            <li class="list-group-item">
+            <a routerLink="/book/{{ book.bookId }}">
+            <li class="list-group-item m-1">
                 <div class="fw-semibold">{{ book.title }}</div>
                 <div class="d-flex justify-content-between">
                     <small class="text-muted"
@@ -81,6 +86,7 @@
                     }
                 </div>
             </li>
+            </a>
         }
     </ul>
 }

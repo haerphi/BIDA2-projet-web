@@ -6,10 +6,11 @@ import { Spoil } from '@components/commons/spoil/spoil';
 import { FormsModule } from '@angular/forms';
 import { BookCondition } from '@core/constants/book-condition.enum';
 import { debounceSignal } from '@core/utils/signal.utils';
+import { RouterLink } from '@angular/router';
 
 @Component({
     selector: 'app-book-list',
-    imports: [Spinner, Spoil, FormsModule],
+    imports: [Spinner, Spoil, FormsModule, RouterLink],
     templateUrl: './book-list.html',
     styleUrl: './book-list.scss',
 })

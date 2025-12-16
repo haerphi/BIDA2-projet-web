@@ -10,6 +10,7 @@ import { ConfirmModal } from '../modals/confirm-modal/confirm-modal';
 export class ConfirmationButton {
     buttonText = input<string>('Confirm');
 
+    btnClassName = input<string>('');
     questionText = input<string>('Are you sure you want to proceed?');
     confirmButtonText = input<string>('Yes'); // not used in this simple implementation
     cancelButtonText = input<string>('No'); // not used in this simple implementation

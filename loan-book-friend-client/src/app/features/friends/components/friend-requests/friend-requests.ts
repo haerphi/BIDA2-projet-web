@@ -1,9 +1,10 @@
 import { Component, input, output } from '@angular/core';
 import { ReceivedFriendRequestDto, SentFriendRequestDto } from '@core/models';
+import { ConfirmationButton } from '@components/commons';
 
 @Component({
     selector: 'app-friend-requests',
-    imports: [],
+    imports: [ConfirmationButton],
     templateUrl: './friend-requests.html',
     styleUrl: './friend-requests.scss',
 })

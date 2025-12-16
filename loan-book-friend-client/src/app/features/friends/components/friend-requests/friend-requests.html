@@ -17,12 +17,19 @@
                         >
                             Accepter
                         </button>
-                        <button
-                            class="btn btn-danger"
-                            (click)="onDeclineRequest(request.sender.userId)"
-                        >
-                            Refuser
-                        </button>
+
+                        <app-confirmation-button
+                            btnClassName="btn btn-danger"
+                            buttonText="Refuser"
+                            questionText="Êtes-vous sûr de vouloir refuser la demande d'ami de {{
+                                request.sender.name
+                            }} ?"
+                            confirmButtonText="Oui, je refuse"
+                            cancelButtonText="Annuler"
+                            (confirmed)="
+                                onDeclineRequest(request.sender.userId)
+                            "
+                        />
                     </div>
                 </li>
             }
