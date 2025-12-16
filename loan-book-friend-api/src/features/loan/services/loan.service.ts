@@ -253,6 +253,32 @@ export class LoanService {
             });
         }
 
+        if (filters.status) {
+            switch (filters.status) {
+                case LoanStatusEnum.InProgress:
+                    Object.assign(where, {
+                        returnedAt: IsNull(),
+                    });
+                    break;
+                case LoanStatusEnum.Returned:
+                    Object.assign(where, {
+                        returnedAt: Not(IsNull()),
+                    });
+                    break;
+                case LoanStatusEnum.Overdue:
+                    Object.assign(where, {
+                        returnedAt: IsNull(),
+                        shouldBeReturnedAt: And(
+                            LessThan(new Date()),
+                            Not(IsNull()),
+                        ),
+                    });
+                    break;
+                default:
+                    break;
+            }
+        }
+
         // Pagination
         const skip = filters.page * filters.limit - filters.limit; // because page starts at 1
         const take = filters.limit;
