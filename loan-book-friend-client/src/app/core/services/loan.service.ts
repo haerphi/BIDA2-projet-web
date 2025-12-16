@@ -5,8 +5,10 @@ import { firstValueFrom, map } from 'rxjs';
 import {
     ApiListResponse,
     BorrowedGetListDto,
+    BorrowGetListQueryDto,
     CreateLoanForm,
     LoanGetListDto,
+    LoanGetListQueryDto,
 } from '@core/models';
 
 interface LoanWithDates {
@@ -22,12 +24,17 @@ export class LoanService {
     private readonly _httpClient = inject(HttpClient);
     private readonly _baseUrl = environment.apiUrl;
 
-    getLoans(): Promise<ApiListResponse<LoanGetListDto>> {
+    getLoans(
+        query?: LoanGetListQueryDto,
+    ): Promise<ApiListResponse<LoanGetListDto>> {
         return firstValueFrom(
             this._httpClient
-                .get<
-                    ApiListResponse<LoanGetListDto>
-                >(`${this._baseUrl}loan/loaned-books`)
+                .get<ApiListResponse<LoanGetListDto>>(
+                    `${this._baseUrl}loan/loaned-books`,
+                    {
+                        params: { ...query },
+                    },
+                )
                 .pipe(
                     map((response) => {
                         response.data = response.data.map(convertLoanDates);
@@ -37,12 +44,17 @@ export class LoanService {
         );
     }
 
-    getBorrowedBooks(): Promise<ApiListResponse<BorrowedGetListDto>> {
+    getBorrowedBooks(
+        query?: BorrowGetListQueryDto,
+    ): Promise<ApiListResponse<BorrowedGetListDto>> {
         return firstValueFrom(
             this._httpClient
-                .get<
-                    ApiListResponse<BorrowedGetListDto>
-                >(`${this._baseUrl}loan/borrowed-books`)
+                .get<ApiListResponse<BorrowedGetListDto>>(
+                    `${this._baseUrl}loan/borrowed-books`,
+                    {
+                        params: { ...query },
+                    },
+                )
                 .pipe(
                     map((response) => {
                         response.data = response.data.map(convertLoanDates);

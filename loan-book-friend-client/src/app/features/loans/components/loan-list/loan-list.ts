@@ -17,16 +17,27 @@ enum DisplayMode {
 export class LoanList {
     protected readonly DisplayMode = DisplayMode;
     protected readonly Date = Date;
+    protected readonly LoanStatusEnum = LoanStatusEnum;
 
     loans = input.required<LoanGetListDto[]>();
     borrowed = input.required<BorrowedGetListDto[]>();
     loading = input<boolean>(false);
 
-    filterLoans = output<LoanStatusEnum>();
+    filterLoans = output<LoanStatusEnum | null>();
 
     displayMode: DisplayMode = DisplayMode.Loans;
+    filterLoan: LoanStatusEnum | null = null;
 
     onDisplayModeChange(mode: DisplayMode) {
         this.displayMode = mode;
+    }
+
+    onFilterLoanChange(status: LoanStatusEnum | null) {
+        if (this.filterLoan === status) {
+            this.filterLoan = null;
+        } else {
+            this.filterLoan = status;
+        }
+        this.filterLoans.emit(this.filterLoan);
     }
 }

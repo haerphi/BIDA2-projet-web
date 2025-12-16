@@ -23,9 +23,36 @@
     </div>
 </div>
 <div class="btn-group mb-3 w-100">
-    <button class="btn btn-sm btn-primary">En cours</button>
-    <button class="btn btn-sm btn-outline-secondary">Terminés</button>
-    <button class="btn btn-sm btn-outline-secondary">En retard</button>
+    <button
+        class="btn btn-sm"
+        [ngClass]="{
+            'btn-primary': filterLoan === LoanStatusEnum.InProgress,
+            'btn-outline-secondary': filterLoan !== LoanStatusEnum.InProgress,
+        }"
+        (click)="onFilterLoanChange(LoanStatusEnum.InProgress)"
+    >
+        En cours
+    </button>
+    <button
+        class="btn btn-sm"
+        [ngClass]="{
+            'btn-primary': filterLoan === LoanStatusEnum.Returned,
+            'btn-outline-secondary': filterLoan !== LoanStatusEnum.Returned,
+        }"
+        (click)="onFilterLoanChange(LoanStatusEnum.Returned)"
+    >
+        Terminés
+    </button>
+    <button
+        class="btn btn-sm"
+        [ngClass]="{
+            'btn-primary': filterLoan === LoanStatusEnum.Overdue,
+            'btn-outline-secondary': filterLoan !== LoanStatusEnum.Overdue,
+        }"
+        (click)="onFilterLoanChange(LoanStatusEnum.Overdue)"
+    >
+        En retard
+    </button>
 </div>
 
 <table class="table table-striped">

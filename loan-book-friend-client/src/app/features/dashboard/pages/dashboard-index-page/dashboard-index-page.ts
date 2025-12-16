@@ -17,6 +17,7 @@ import {
     CreateLoanForm,
     FriendGetListDto,
     LoanGetListDto,
+    LoanGetListQueryDto,
     ReceivedFriendRequestDto,
     SendFriendRequestFormDto,
     SentFriendRequestDto,
@@ -24,6 +25,7 @@ import {
 import { FriendService } from '@core/services/friend.service';
 import { Spinner } from '@components/commons/loadings/spinner/spinner';
 import { LoanService } from '@core/services/loan.service';
+import { LoanStatusEnum } from '@core/constants';
 
 @Component({
     selector: 'app-dashboard-index-page',
@@ -189,15 +191,18 @@ export class DashboardIndexPage implements OnInit {
     }
 
     // LOANS
-    fetchLoans(): void {
+    fetchLoans(filter?: LoanGetListQueryDto): void {
         this.loansLoading = true;
         Promise.all([
-            this._loanService.getLoans(),
-            this._loanService.getBorrowedBooks(),
+            this._loanService.getLoans(filter),
+            this._loanService.getBorrowedBooks(filter),
         ])
             .then(([loanedResponse, borrowedResponse]) => {
-                this.loansCount = loanedResponse.total;
-                this.boorrowedCount = borrowedResponse.total;
+                if (!filter || !Object.keys(filter)) {
+                    // update the total counts only if no filter is applied
+                    this.loansCount = loanedResponse.total;
+                    this.boorrowedCount = borrowedResponse.total;
+                }
                 this.loanedBooks = loanedResponse.data;
                 this.borrowedBooks = borrowedResponse.data;
             })
@@ -215,5 +220,13 @@ export class DashboardIndexPage implements OnInit {
             this.fetchBooks();
             this.fetchFriends();
         });
+    }
+
+    onFilterLoans(status: LoanStatusEnum | null) {
+        const filter: LoanGetListQueryDto = {};
+        if (status !== null) {
+            filter.status = status;
+        }
+        this.fetchLoans(filter);
     }
 }

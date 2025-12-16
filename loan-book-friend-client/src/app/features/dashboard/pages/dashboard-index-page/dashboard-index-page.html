@@ -114,6 +114,7 @@
                     [loans]="loanedBooks"
                     [borrowed]="borrowedBooks"
                     [loading]="loansLoading"
+                    (filterLoans)="onFilterLoans($event)"
                 />
             </div>
         </div>

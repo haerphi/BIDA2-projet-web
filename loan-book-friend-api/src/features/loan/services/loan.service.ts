@@ -1,7 +1,7 @@
 import { LoanEntity } from '@loan/models';
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IsNull, Repository } from 'typeorm';
+import { And, IsNull, LessThan, Not, Repository } from 'typeorm';
 import { BookService } from '@book/services';
 import { UserService } from '@user/services';
 import {
@@ -12,6 +12,7 @@ import {
 import { FriendService } from '@friend/services';
 import { LoanGetListQueryDto } from '@loan/dtos/loan-get-list-query.dto';
 import { BorrowGetListQueryDto } from '@loan/dtos/borrow-get-list-query.dto';
+import { LoanStatusEnum } from '@loan/enums';
 
 @Injectable()
 export class LoanService {
@@ -168,6 +169,32 @@ export class LoanService {
                     userId: filters.borrowerId,
                 },
             });
+        }
+
+        if (filters.status) {
+            switch (filters.status) {
+                case LoanStatusEnum.InProgress:
+                    Object.assign(where, {
+                        returnedAt: IsNull(),
+                    });
+                    break;
+                case LoanStatusEnum.Returned:
+                    Object.assign(where, {
+                        returnedAt: Not(IsNull()),
+                    });
+                    break;
+                case LoanStatusEnum.Overdue:
+                    Object.assign(where, {
+                        returnedAt: IsNull(),
+                        shouldBeReturnedAt: And(
+                            LessThan(new Date()),
+                            Not(IsNull()),
+                        ),
+                    });
+                    break;
+                default:
+                    break;
+            }
         }
 
         // Pagination
