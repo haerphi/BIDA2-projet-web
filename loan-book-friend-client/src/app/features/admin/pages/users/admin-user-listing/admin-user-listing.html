@@ -14,12 +14,12 @@
         <tbody>
             @for (user of users; track $index) {
                 <tr>
-                    <td>{{ user.user_id }}</td>
+                    <td>{{ user.userId }}</td>
                     <td>{{ user.name }}</td>
                     <td>{{ user.email }}</td>
                     <td>{{ user.role }}</td>
                     <td>
-                        <a [routerLink]="['/admin', 'users', user.user_id]"
+                        <a [routerLink]="['/admin', 'users', user.userId]"
                             >🔎</a
                         >
                     </td>

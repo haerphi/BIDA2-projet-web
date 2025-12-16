@@ -1,12 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FriendEntity } from '@friend/models';
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, ILike, IsNull, Not, Repository } from 'typeorm';
 import { UserEntity } from '@user/models';
 import { NotFoundException } from '@common/exceptions';
-import { FriendRequest } from '@friend/models/friend-request.model';
-import { executePagination } from '@common/utils/repository.utils';
-import { FriendGetQueryDto, FriendRequestGetQueryDto } from '@friend/dtos';
+import { Builder } from 'builder-pattern';
+import { PaginationQueryDto } from '@common/dtos';
+import { FriendGetListQueryDto } from '@friend/dtos';
+import { FriendWithCounts } from '@friend/models/friend-with-counts.model';
+import { LoanService } from '@loan/services';
+import { LoanEntity } from '@loan/models';
 
 @Injectable()
 export class FriendService {
@@ -15,208 +18,284 @@ export class FriendService {
         private readonly friendRepository: Repository<FriendEntity>,
         @InjectRepository(UserEntity)
         private readonly userRepository: Repository<UserEntity>,
+        @Inject(forwardRef(() => LoanService))
+        private readonly loanService: LoanService,
     ) {}
 
-    async addFriendByEmail(
+    async sendFriendRequest(
         requesterId: string,
-        friendEmail: string,
+        name: string,
+        email: string,
     ): Promise<FriendEntity> {
-        const friend = await this.userRepository.findOne({
-            where: { email: friendEmail },
+        // check if the requsterId exists
+        const requester = await this.userRepository.findOne({
+            where: { userId: requesterId },
         });
-
-        if (!friend) {
-            throw new NotFoundException('user_not_found');
+        if (!requester) {
+            throw new NotFoundException();
         }
 
-        const friendship = this.friendRepository.create({
-            userA: { user_id: requesterId },
-            userB: friend,
-        });
+        // check if the user with the provided name or email exists
+        let recipient: UserEntity | null = null;
+        if (email) {
+            recipient = await this.userRepository.findOne({
+                where: { email },
+            });
+        } else if (name) {
+            recipient = await this.userRepository.findOne({
+                where: { name },
+            });
+        }
 
-        return this.friendRepository.save(friendship);
+        if (!recipient) {
+            throw new NotFoundException();
+        }
+
+        // create a new friend request
+        let friendRequest = Builder<FriendEntity>()
+            .userA(requester)
+            .userB(recipient)
+            .build();
+        friendRequest = await this.friendRepository.save(friendRequest);
+        return friendRequest;
     }
 
-    async addFriendByName(
+    async getFriendRequestsSent(
         requesterId: string,
-        friendName: string,
-    ): Promise<FriendEntity> {
-        const friend = await this.userRepository.findOne({
-            where: { name: friendName },
-        });
-
-        if (!friend) {
-            throw new NotFoundException('user_not_found');
-        }
-
-        const friendship = this.friendRepository.create({
-            userA: { user_id: requesterId },
-            userB: friend,
-        });
-
-        return this.friendRepository.save(friendship);
-    }
-
-    async acceptFriend(
-        userId: string,
-        friendId: string,
-    ): Promise<FriendEntity> {
-        console.log('=====================');
-
-        const friendship = await this.friendRepository.findOne({
-            where: {
-                userA: { user_id: friendId },
-                userB: { user_id: userId },
-            },
-            relations: ['userA', 'userB'],
-        });
-
-        if (!friendship) {
-            throw new NotFoundException('friendship_not_found');
-        }
-
-        if (friendship.acceptedAt) {
-            return friendship; // already accepted
-        }
-
-        friendship.acceptedAt = new Date();
-        return this.friendRepository.save(friendship);
-    }
-
-    async getFriendRequests(
-        userId: string,
-        filters: FriendRequestGetQueryDto,
-    ): Promise<{ requests: FriendRequest[]; total: number }> {
-        const query = this.friendRepository
-            .createQueryBuilder('friendship')
-            .leftJoinAndSelect('friendship.userA', 'userA')
-            .leftJoinAndSelect('friendship.userB', 'userB')
-            .where('friendship.acceptedAt IS NULL');
-
-        if (filters.fromYou != undefined) {
-            if (filters.fromYou) {
-                query.andWhere('userA.user_id = :userId', { userId });
-            } else {
-                query.andWhere('userB.user_id = :userId', { userId });
-            }
-        } else {
-            query.andWhere(
-                '(userA.user_id = :userId OR userB.user_id = :userId)',
-                { userId },
-            );
-        }
-
-        if (filters.name) {
-            query.andWhere(
-                '(userA.name ILIKE :name OR userB.name ILIKE :name)',
-                { name: `%${filters.name}%` },
-            );
-        }
-
-        if (filters.email) {
-            query.andWhere(
-                '(userA.email ILIKE :email OR userB.email ILIKE :email)',
-                { email: `%${filters.email}%` },
-            );
-        }
-
-        const [total, friendships] = await Promise.all(
-            executePagination<FriendEntity>(query, filters),
-        );
-
-        return {
-            total,
-            requests: friendships.map((friendship) => {
-                return {
-                    fromYou: friendship.userA.user_id === userId,
-                    user:
-                        friendship.userA.user_id === userId
-                            ? friendship.userB
-                            : friendship.userA,
-                };
-            }),
+        filters: PaginationQueryDto,
+    ): Promise<{
+        total: number;
+        friendRequests: FriendEntity[];
+    }> {
+        const where = {
+            userA: { userId: requesterId },
+            acceptedAt: IsNull(),
         };
+
+        // Pagination
+        const skip = filters.page * filters.limit - filters.limit; // because page starts at 1
+        const take = filters.limit;
+
+        const order = {};
+        if (filters.orderBy) {
+            order[filters.orderBy] = filters.orderDirection || 'ASC';
+        }
+
+        const friendRequestsPromise = this.friendRepository.find({
+            where,
+            relations: {
+                userB: true,
+            },
+            skip,
+            take,
+        });
+
+        const totalPromise = this.friendRepository.count({ where });
+
+        const [friendRequests, total] = await Promise.all([
+            friendRequestsPromise,
+            totalPromise,
+        ]);
+
+        return { total, friendRequests };
+    }
+
+    async getFriendRequestsReceived(
+        recipientId: string,
+        filters: PaginationQueryDto,
+    ): Promise<{
+        total: number;
+        friendRequests: FriendEntity[];
+    }> {
+        const where = {
+            userB: { userId: recipientId },
+            acceptedAt: IsNull(),
+        };
+
+        // Pagination
+        const skip = filters.page * filters.limit - filters.limit; // because page starts at 1
+        const take = filters.limit;
+
+        const order = {};
+        if (filters.orderBy) {
+            order[filters.orderBy] = filters.orderDirection || 'ASC';
+        }
+
+        const friendRequestsPromise = this.friendRepository.find({
+            where,
+            relations: {
+                userA: true,
+            },
+            skip,
+            take,
+        });
+
+        const totalPromise = this.friendRepository.count({ where });
+
+        const [friendRequests, total] = await Promise.all([
+            friendRequestsPromise,
+            totalPromise,
+        ]);
+
+        return { total, friendRequests };
+    }
+
+    async denyFriendRequest(
+        requesterId: string,
+        friendId: string,
+    ): Promise<void> {
+        const where: FindOptionsWhere<FriendEntity>[] = [
+            {
+                acceptedAt: IsNull(),
+                userA: { userId: friendId },
+                userB: { userId: requesterId },
+            },
+            {
+                acceptedAt: IsNull(),
+                userA: { userId: requesterId },
+                userB: { userId: friendId },
+            },
+        ];
+
+        const friendRequest = await this.friendRepository.findOne({
+            where,
+        });
+
+        if (!friendRequest) {
+            throw new NotFoundException();
+        }
+
+        await this.friendRepository.remove(friendRequest);
+    }
+
+    async acceptFriendRequest(
+        requesterId: string,
+        senderId: string,
+    ): Promise<void> {
+        const where = {
+            acceptedAt: IsNull(),
+            userA: { userId: senderId },
+            userB: { userId: requesterId },
+        };
+
+        const friendRequest = await this.friendRepository.findOne({
+            where,
+        });
+
+        if (!friendRequest) {
+            throw new NotFoundException();
+        }
+
+        friendRequest.acceptedAt = new Date();
+
+        await this.friendRepository.save(friendRequest);
     }
 
     async getFriends(
         userId: string,
-        filters: FriendGetQueryDto,
-    ): Promise<{ friends: UserEntity[]; total: number }> {
-        const query = this.friendRepository
-            .createQueryBuilder('friendship')
-            .leftJoinAndSelect('friendship.userA', 'userA')
-            .leftJoinAndSelect('friendship.userB', 'userB')
-            .where('(userA.user_id = :userId OR userB.user_id = :userId)', {
-                userId,
-            })
-            .andWhere('friendship.acceptedAt IS NOT NULL');
+        filters: FriendGetListQueryDto,
+    ): Promise<{
+        total: number;
+        friends: FriendWithCounts[];
+    }> {
+        const where: FindOptionsWhere<FriendEntity>[] = [];
+
+        const userAWhere = {
+            userA: { userId },
+            acceptedAt: Not(IsNull()),
+        };
+        const userBWhere = { userB: { userId }, acceptedAt: Not(IsNull()) };
 
         if (filters.name) {
-            query.andWhere(
-                '(userA.name ILIKE :name OR userB.name ILIKE :name)',
-                { name: `%${filters.name}%` },
-            );
+            Object.assign(userAWhere, {
+                userB: { name: ILike(filters.name + '%') },
+            });
+            Object.assign(userBWhere, {
+                userA: { name: ILike(filters.name + '%') },
+            });
         }
 
-        if (filters.email) {
-            query.andWhere(
-                '(userA.email ILIKE :email OR userB.email ILIKE :email)',
-                { email: `%${filters.email}%` },
-            );
+        where.push(userAWhere, userBWhere);
+
+        // Pagination
+        const skip = filters.page * filters.limit - filters.limit; // because page starts at 1
+        const take = filters.limit;
+
+        const order = {};
+        if (filters.orderBy) {
+            order[filters.orderBy] = filters.orderDirection || 'ASC';
         }
 
-        const [total, friendships] = await Promise.all(
-            executePagination<FriendEntity>(query, filters),
+        const friendsPromise = this.friendRepository.find({
+            where,
+            relations: {
+                userA: true,
+                userB: true,
+            },
+            skip,
+            take,
+        });
+
+        const totalPromise = this.friendRepository.count({ where });
+
+        const [friends, total] = await Promise.all([
+            friendsPromise,
+            totalPromise,
+        ]);
+
+        // Find all the loans between the user and each friend to calculate loanCount and overdueCount
+        const promises = friends.map((f): Promise<LoanEntity[]> => {
+            const friendUser = f.userA.userId === userId ? f.userB : f.userA;
+            return this.loanService.getActiveLoansByUser(
+                friendUser.userId,
+                userId,
+            );
+        });
+
+        const loansByFriend = await Promise.all(promises);
+
+        const friendsWithCounts: FriendWithCounts[] = friends.map(
+            (f, index) => {
+                const friendUser =
+                    f.userA.userId === userId ? f.userB : f.userA;
+                const loans = loansByFriend[index];
+
+                const loanCount = loans.length;
+                const overdueCount = loans.filter(
+                    (loan) =>
+                        loan.shouldBeReturnedAt &&
+                        loan.shouldBeReturnedAt < new Date(),
+                ).length;
+
+                return Builder<FriendWithCounts>()
+                    .user(friendUser)
+                    .loanCount(loanCount)
+                    .overdueCount(overdueCount)
+                    .build();
+            },
         );
 
-        const friends = friendships.map((friendship) => {
-            if (friendship.userA.user_id === userId) {
-                return friendship.userB;
-            } else {
-                return friendship.userA;
-            }
-        });
-
-        return { friends, total };
+        return { total, friends: friendsWithCounts };
     }
 
-    async removeFriend(requesterId: string, friendId: string): Promise<void> {
-        const friendship = await this.friendRepository.findOne({
-            where: [
-                {
-                    userA: { user_id: requesterId },
-                    userB: { user_id: friendId },
-                },
-                {
-                    userA: { user_id: friendId },
-                    userB: { user_id: requesterId },
-                },
-            ],
-            relations: ['userA', 'userB'],
+    async areFriends(user1: string, user2: string): Promise<boolean> {
+        const where: FindOptionsWhere<FriendEntity>[] = [
+            {
+                userA: { userId: user1 },
+                userB: { userId: user2 },
+                acceptedAt: Not(IsNull()),
+            },
+            {
+                userA: { userId: user2 },
+                userB: { userId: user1 },
+                acceptedAt: Not(IsNull()),
+            },
+        ];
+
+        const friendRelation = await this.friendRepository.findOne({
+            where,
         });
 
-        if (!friendship) {
-            throw new NotFoundException('friendship_not_found');
-        }
-
-        await this.friendRepository.remove(friendship);
-    }
-
-    async isFriend(userId: string, friendId: string): Promise<boolean> {
-        const friendship = await this.friendRepository.findOne({
-            where: [
-                {
-                    userA: { user_id: userId },
-                    userB: { user_id: friendId },
-                },
-                {
-                    userA: { user_id: friendId },
-                    userB: { user_id: userId },
-                },
-            ],
-            relations: ['userA', 'userB'],
-        });
-
-        return !!friendship && !!friendship.acceptedAt;
+        return !!friendRelation;
     }
 }

@@ -8,14 +8,14 @@ export class PaginationQueryDto {
     })
     @IsNumber()
     @Transform(({ value }) => parseInt(value))
-    page?: number = 1;
+    page: number = 1;
 
     @ApiPropertyOptional({
         default: 10,
     })
     @IsNumber()
     @Transform(({ value }) => parseInt(value))
-    limit?: number = 10;
+    limit: number = 10;
 
     @ApiPropertyOptional()
     orderBy?: string;

@@ -15,9 +15,9 @@ import { LoanModule } from '@loan/loan.module';
         // Other modules can be imported here
         UserModule,
         SecurityModule,
+        LoanModule,
         BookModule,
         FriendModule,
-        LoanModule,
     ],
     controllers: [AppController],
     providers: [AppService],

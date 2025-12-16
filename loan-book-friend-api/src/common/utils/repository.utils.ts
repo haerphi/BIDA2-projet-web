@@ -4,7 +4,7 @@ import { ObjectLiteral, SelectQueryBuilder } from 'typeorm';
 export function executePagination<T extends ObjectLiteral>(
     query: SelectQueryBuilder<T>,
     pagination: PaginationQueryDto,
-): [Promise<number>, Promise<T[]>] {
+): [Promise<number>, Promise<{ entities: T[]; raw: any[] }>] {
     const queryCopy = new SelectQueryBuilder(query);
     const total = queryCopy.getCount();
 
@@ -22,5 +22,5 @@ export function executePagination<T extends ObjectLiteral>(
         );
     }
 
-    return [total, query.getMany()];
+    return [total, query.getRawAndEntities()];
 }

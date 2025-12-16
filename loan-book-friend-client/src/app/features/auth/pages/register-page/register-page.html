@@ -2,39 +2,28 @@
     <div>
         <label for="name">Name</label>
         <input type="text" id="name" formControlName="name" />
-        <ul>
-            @if (isRequired(registerControls.name)) {
-                <li>Name is requried!</li>
-            }
-            @for (error of checkFormFieldError('name'); track $index) {
-                <li>{{ error }}</li>
-            }
-        </ul>
+        <app-form-input-display-error
+            [control]="registerControls.name"
+            name="Name"
+        />
     </div>
     <div>
         <label for="email">Email</label>
         <input type="text" id="email" formControlName="email" />
-        <ul>
-            @if (isRequired(registerControls.email)) {
-                <li>Email is requried!</li>
-            }
-            @for (error of checkFormFieldError('email'); track $index) {
-                <li>{{ error }}</li>
-            }
-        </ul>
+
+        <app-form-input-display-error
+            [control]="registerControls.email"
+            name="email"
+        />
     </div>
 
     <div>
         <label for="password">Password</label>
         <input type="password" id="password" formControlName="password" />
-        <ul>
-            @if (isRequired(registerControls.password)) {
-                <li>Password is requried!</li>
-            }
-            @for (error of checkFormFieldError('password'); track $index) {
-                <li>{{ error }}</li>
-            }
-        </ul>
+        <app-form-input-display-error
+            [control]="registerControls.password"
+            name="Password"
+        />
     </div>
 
     <div>
@@ -44,14 +33,10 @@
             id="confirmPassword"
             formControlName="confirmPassword"
         />
-        <ul>
-            @if (isRequired(registerControls.confirmPassword)) {
-                <li>Confirm password is requried!</li>
-            }
-            @if (hasSameAsError(registerControls.confirmPassword)) {
-                <li>Passwords do not match!</li>
-            }
-        </ul>
+        <app-form-input-display-error
+            [control]="registerControls.confirmPassword"
+            name="Confirm password"
+        />
     </div>
 
     <button type="submit" [disabled]="registerForm.invalid">Register</button>

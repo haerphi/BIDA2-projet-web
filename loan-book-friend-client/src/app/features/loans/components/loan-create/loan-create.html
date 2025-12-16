@@ -1,39 +1,39 @@
-<form class="row g-2">
+<form class="form-group row g-2" [formGroup]="form" (ngSubmit)="onSubmit()">
     <div class="col-12">
-        <label for="" class="form-label">Livre *</label>
-        <select class="form-select">
-            <option>1984</option>
-            <option>Dune</option>
-        </select>
+        <label for="loan-create-friend-input" class="form-label">Ami *</label>
+
+        <app-input-select-autocomplete
+            [formControl]="controls.borrowerId"
+            [options]="friendOptions"
+            (inputChanged)="onFriendNameChange($event)"
+            [debounce]="400"
+        />
     </div>
 
     <div class="col-12">
-        <label for="" class="form-label">Ami *</label>
-        <select class="form-select">
-            <option>Maxime</option>
-            <option>Alice</option>
-        </select>
+        <label for="loan-create-book-input" class="form-label">Livre *</label>
+        <app-input-select-autocomplete
+            [formControl]="controls.bookId"
+            [options]="bookOptions"
+            (inputChanged)="onBookTitleChange($event)"
+            [debounce]="400"
+        />
     </div>
-
-    <div class="col-md-6">
-        <label for="" class="form-label">Début *</label>
-        <input type="date" class="form-control" />
-    </div>
-
-    <div class="col-md-6">
+    <div class="col-12">
         <label for="" class="form-label">Retour prévu</label>
-        <input type="date" class="form-control" />
-    </div>
-
-    <div class="col-12">
-        <label for="" class="form-label">Notes</label>
-        <textarea class="form-control"></textarea>
+        <input
+            type="date"
+            class="form-control"
+            [formControl]="controls.returnDate"
+        />
     </div>
 
     <div class="d-flex justify-content-end gap-2 mt-2">
         <button class="btn btn-sm btn-outline-secondary" type="reset">
             ✖
         </button>
-        <button class="btn btn-sm btn-primary">💾 Enregistrer</button>
+        <button class="btn btn-sm btn-primary" [disabled]="form.invalid">
+            💾 Enregistrer
+        </button>
     </div>
 </form>

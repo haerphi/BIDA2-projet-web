@@ -1,4 +1,6 @@
-<button class="btn" (click)="onDisplayBtn()">{{ buttonText() }}</button>
+<button class="btn btn-light" (click)="onDisplayBtn()">
+    {{ buttonText() }}
+</button>
 @if (display) {
     <ng-content></ng-content>
 }

@@ -21,13 +21,13 @@ export class FriendEntity extends TrackedEntity {
     @ManyToOne(() => UserEntity, (user) => user.friendsA, {
         onDelete: 'CASCADE',
     })
-    @JoinColumn({ name: 'userA_id', referencedColumnName: 'user_id' })
+    @JoinColumn({ name: 'userA_id', referencedColumnName: 'userId' })
     userA: UserEntity;
 
     @ManyToOne(() => UserEntity, (user) => user.friendsB, {
         onDelete: 'CASCADE',
     })
-    @JoinColumn({ name: 'userB_id', referencedColumnName: 'user_id' })
+    @JoinColumn({ name: 'userB_id', referencedColumnName: 'userId' })
     userB: UserEntity;
 
     @Column({
@@ -36,5 +36,5 @@ export class FriendEntity extends TrackedEntity {
         nullable: true,
         default: null,
     })
-    acceptedAt?: Date | null;
+    acceptedAt: Date | null;
 }

@@ -1,5 +1,5 @@
 import { Component, inject, input, OnInit } from '@angular/core';
-import { BookUserList, UserDetails } from '@core/models';
+import { BookListOwned, UserDetails } from '@core/models';
 import { AuthService, BookService } from '@core/services';
 import { UserService } from '@core/services/user.service';
 import { UserDetailsDisplay } from '@features/users/components/user-details-display/user-details-display';
@@ -37,7 +37,7 @@ export class UserDetailsPage implements OnInit {
     userDetailsError: null | string = null;
 
     isBooksLoading = true;
-    userBooks: null | BookUserList[] = null;
+    userBooks: null | BookListOwned[] = null;
     userBooksError: null | string = null;
 
     isPageLoading = false;

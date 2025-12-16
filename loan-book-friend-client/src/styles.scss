@@ -3,13 +3,10 @@ a {
 }
 
 body {
+    min-height: 100vh;
     background: radial-gradient(circle at top left, #e0e7ff, #f9fafb 50%);
 }
-.chip {
-    border-radius: 50px;
-    padding: 0.2rem 0.6rem;
-    font-size: 0.75rem;
-}
+
 .chip-success {
     background: #dcfce7;
     color: #1b7a46;
@@ -30,6 +27,11 @@ body {
     font-size: 0.85rem;
     color: #6c757d;
     margin-bottom: 0.5rem;
+}
+
+.searching-inputs,
+.searching-inputs-spoil {
+    margin: 15px 0;
 }
 
 /* MODAL STYLES */

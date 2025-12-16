@@ -47,6 +47,7 @@ export class BookCreatePage {
                 await this._bookService.create({
                     title: this.bookForm.value.title!,
                     author: this.bookForm.value.author!,
+                    condition: this.bookForm.value.condition!,
                 });
 
                 await this._router.navigate(['/auth']);

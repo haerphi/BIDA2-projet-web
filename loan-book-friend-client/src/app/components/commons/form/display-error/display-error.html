@@ -1,0 +1,11 @@
+<ul>
+    @if (isRequired(control())) {
+        <li>{{ name() }} is requried!</li>
+    }
+    @if (hasSameAsError(control())) {
+        <li>Passwords do not match!</li>
+    }
+    @for (error of checkFormFieldError('name'); track $index) {
+        <li>{{ error }}</li>
+    }
+</ul>

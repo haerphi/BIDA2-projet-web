@@ -130,7 +130,7 @@ export class SecurityController {
         @Body() payload: CredentialChangePasswordDto,
     ) {
         await this.securityService.changePassword(
-            user.user_id,
+            user.userId,
             payload.oldPassword,
             payload.newPassword,
         );

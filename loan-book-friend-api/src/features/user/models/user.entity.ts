@@ -17,7 +17,7 @@ import { LoanEntity } from '@loan/models';
 @Entity({ name: 'users' })
 export class UserEntity extends TrackedEntity {
     @PrimaryGeneratedColumn('uuid', { name: 'user_id' })
-    user_id: string;
+    userId: string;
 
     @Column({ type: 'varchar', length: 255, nullable: false })
     name: string;

@@ -58,7 +58,7 @@ export class BookEditForm implements OnChanges {
             try {
                 await this._bookService.updateBook(
                     this.bookEditForm.value,
-                    this.data() ? this.data()!.book_id : '',
+                    this.data() ? this.data()!.bookId : '',
                 );
                 this.bookUpdated.emit();
             } catch (err) {

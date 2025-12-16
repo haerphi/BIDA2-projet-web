@@ -3,7 +3,7 @@ import { UserRole } from '@security/enums';
 
 export class UserDetailsDto {
     @ApiProperty()
-    user_id: string;
+    userId: string;
 
     @ApiProperty()
     name: string;
@@ -15,8 +15,8 @@ export class UserDetailsDto {
     role: UserRole;
 
     @ApiProperty()
-    created_at: Date;
+    createdAt: Date;
 
     @ApiProperty()
-    updated_at: Date;
+    updatedAt: Date;
 }

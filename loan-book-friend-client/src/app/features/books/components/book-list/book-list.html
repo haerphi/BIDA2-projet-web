@@ -1,22 +1,92 @@
-<div class="input-group mb-3">
-    <span class="input-group-text">🔍</span>
-    <input type="text" class="form-control" placeholder="Rechercher…" />
+<div class="searching-inputs-spoil">
+    <app-spoil buttonText="🔍 Critère de recherche">
+        <div class="searching-inputs">
+            <div class="input-group mb-3">
+                <span class="input-group-text">Titre</span>
+                <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Rechercher…"
+                    [(ngModel)]="searchTitleInput"
+                    [ngModelOptions]="{ updateOn: 'blur' }"
+                    (ngModelChange)="onSearchChange()"
+                    (keydown.enter)="blurInput($event)"
+                />
+            </div>
+
+            <div class="input-group mb-3">
+                <span class="input-group-text">Autheur</span>
+                <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Rechercher…"
+                    [(ngModel)]="searchAuthorInput"
+                    [ngModelOptions]="{ updateOn: 'blur' }"
+                    (ngModelChange)="onSearchChange()"
+                    (keydown.enter)="blurInput($event)"
+                />
+            </div>
+
+            <div class="input-group mb-3">
+                <span class="input-group-text">Condition</span>
+                <select
+                    class="form-select"
+                    [(ngModel)]="searchConditionInput"
+                    (ngModelChange)="onSearchChange()"
+                >
+                    <option value="new">🆕 Neuf</option>
+                    <option value="good">👍 Bon état</option>
+                    <option value="poor">📖 Usagé</option>
+                </select>
+            </div>
+
+            <div class="input-group mb-3">
+                <span class="input-group-text">Disponibilité</span>
+                <select
+                    class="form-select"
+                    [(ngModel)]="searchAvailabilityInput"
+                    (ngModelChange)="onSearchChange()"
+                >
+                    <option value="new">Disponible</option>
+                    <option value="good">Prêté</option>
+                    <option value="poor">En retard</option>
+                </select>
+            </div>
+            <button class="btn btn-light" (click)="onResetFilers()">
+                Reset filtres
+            </button>
+        </div>
+    </app-spoil>
 </div>
 
 @if (loading()) {
     <app-spinner />
 } @else {
     <ul class="list-group mb-3">
-        @for (book of books(); track book.book_id) {
+        @for (book of books(); track book.bookId) {
             <li class="list-group-item">
                 <div class="fw-semibold">{{ book.title }}</div>
                 <div class="d-flex justify-content-between">
                     <small class="text-muted"
-                        >{{ book.author }} • 12/03/2024(TODO)</small
+                        >{{ book.author }} • {{ book.condition }}</small
                     >
-                    <span class="chip chip-success">Disponible(TODO)</span>
-                    <span class="chip chip-warning">Prêté</span>
-                    <span class="chip chip-danger">En retard</span>
+                    @switch (book.availability) {
+                        @case (BookAvailability.Available) {
+                            <span class="text-wrap badge chip-success"
+                                >Disponible</span
+                            >
+                        }
+                        @case (BookAvailability.Loaned) {
+                            <span class="text-wrap badge chip-warning"
+                                >Prêté</span
+                            >
+                        }
+                        @case (BookAvailability.Overdue) {
+                            <span class="text-wrap badge chip-danger"
+                                >En retard</span
+                            >
+                        }
+                    }
                 </div>
             </li>
         }

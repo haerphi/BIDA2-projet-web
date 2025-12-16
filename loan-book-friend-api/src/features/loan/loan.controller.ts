@@ -1,83 +1,73 @@
 import { Body, Controller, Get, Patch, Post, Query } from '@nestjs/common';
 import { LoanService } from '@loan/services';
-import {
-    LoanCreateDto,
-    LoanListDto,
-    LoanDetailsDto,
-    LoanGetQueryDto,
-    LoanReturnDto,
-} from '@loan/dtos';
+
+import { ApiCookieAuth } from '@nestjs/swagger';
 import { RequireRoles } from '@security/guards';
+import {
+    LoanCreateForm,
+    LoanGetListDto,
+    LoanGetListQueryDto,
+} from '@loan/dtos';
 import { UserEntity } from '@user/models';
 import { User } from '@security/metadata';
-
-import { toLoanDetailsDto, toLoanListDto } from '@loan/mappers';
-import {
-    ApiCookieAuth,
-    ApiExtraModels,
-    ApiOperation,
-    ApiResponse,
-} from '@nestjs/swagger';
-import {
-    CreateLoanApiOperationDocumentation,
-    CreateLoanApiResponseDocumentation,
-    GetLoansApiOperationDocumentation,
-    GetLoansApiResponseDocumentation,
-    ReturnLoanApiOperationDocumentation,
-    ReturnLoanApiResponseDocumentation,
-} from '@loan/loan.swagger';
+import { LoanEntity } from '@loan/models';
 import { ListApiResponseDto } from '@common/dtos';
+import { loanEntityToLoanGetListDto } from '@loan/mappers';
+import { BorrowedGetListDto } from '@loan/dtos/borrowed-get-list.dto';
+import { loanEntityToBorrowedGetListDto } from '@loan/mappers/to-borrowed-get-list.mappers';
+import { BorrowGetListQueryDto } from '@loan/dtos/borrow-get-list-query.dto';
 
 @ApiCookieAuth('access_token')
-@ApiExtraModels(LoanListDto, ListApiResponseDto)
 @Controller('loan')
 export class LoanController {
     constructor(private readonly loanService: LoanService) {}
 
-    @ApiOperation(CreateLoanApiOperationDocumentation)
-    @ApiResponse(CreateLoanApiResponseDocumentation)
     @RequireRoles()
     @Post()
     async createLoan(
-        @User() requester: UserEntity,
-        @Body() createLoanDto: LoanCreateDto,
-    ): Promise<LoanDetailsDto> {
-        const loan = await this.loanService.createLoan(
-            requester.user_id,
-            createLoanDto.bookId,
-            createLoanDto.borrowerId,
+        @User() requesterId: UserEntity,
+        @Body() body: LoanCreateForm,
+    ): Promise<LoanEntity> {
+        return this.loanService.createLoan(
+            body.bookId,
+            requesterId.userId,
+            body.borrowerId,
+            body.returnDate,
         );
-
-        return toLoanDetailsDto(loan, requester.user_id);
     }
 
-    @ApiOperation(GetLoansApiOperationDocumentation)
-    @ApiResponse(GetLoansApiResponseDocumentation)
     @RequireRoles()
-    @Get()
-    async getLoans(
-        @User() requester: UserEntity,
-        @Query() params: LoanGetQueryDto,
-    ): Promise<ListApiResponseDto<LoanListDto>> {
-        const { total, loans } = await this.loanService.getAllLoans(
-            requester.user_id,
-            params,
-        );
-
-        return {
-            total,
-            data: loans.map((l) => toLoanListDto(l, requester.user_id)),
-        };
-    }
-
-    @ApiOperation(ReturnLoanApiOperationDocumentation)
-    @ApiResponse(ReturnLoanApiResponseDocumentation)
-    @RequireRoles()
-    @Patch()
+    @Patch(':loanId/return')
     async returnLoan(
-        @User() requester: UserEntity,
-        @Body() body: LoanReturnDto,
+        @User() requesterId: UserEntity,
+        @Body('loanId') loanId: string,
     ): Promise<void> {
-        await this.loanService.returnLoan(requester.user_id, body.loanId);
+        await this.loanService.returnLoan(loanId, requesterId.userId);
+    }
+
+    @RequireRoles()
+    @Get('loaned-books')
+    async getLoanedBooks(
+        @User() requester: UserEntity,
+        @Query() query: LoanGetListQueryDto,
+    ): Promise<ListApiResponseDto<LoanGetListDto>> {
+        const { total, loans } = await this.loanService.getLoanedBooks(
+            requester.userId,
+            query,
+        );
+        return { total, data: loans.map(loanEntityToLoanGetListDto) };
+    }
+
+    @RequireRoles()
+    @Get('borrowed-books')
+    async getBorrowedBooks(
+        @User() requester: UserEntity,
+        @Query() query: BorrowGetListQueryDto,
+    ): Promise<ListApiResponseDto<BorrowedGetListDto>> {
+        const { total, loans } = await this.loanService.getBorrowedBooks(
+            requester.userId,
+            query,
+        );
+        return { total, data: loans.map(loanEntityToBorrowedGetListDto) };
     }
 }

@@ -32,7 +32,7 @@ export class UserService {
         await this.findById(id);
 
         // delete the user
-        await this.userRepository.delete({ user_id: id });
+        await this.userRepository.delete({ userId: id });
     }
 
     async findByEmail(email: string): Promise<UserEntity | null> {
@@ -44,15 +44,15 @@ export class UserService {
     ): Promise<{ users: UserEntity[]; total: number }> {
         const query = this.userRepository.createQueryBuilder('user');
 
-        const [total, users] = await Promise.all(
+        const [total, result] = await Promise.all(
             executePagination<UserEntity>(query, filters),
         );
 
-        return { total, users };
+        return { total, users: result.entities };
     }
 
     async findById(id: string): Promise<UserEntity> {
-        const user = await this.userRepository.findOneBy({ user_id: id });
+        const user = await this.userRepository.findOneBy({ userId: id });
         if (!user) {
             throw new NotFoundException('user_not_found');
         }

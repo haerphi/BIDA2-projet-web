@@ -82,7 +82,7 @@ export class UserController {
     @RequireRoles()
     @Delete('')
     public async deleteSelf(@User() user: UserEntity): Promise<void> {
-        await this.userService.delete(user.user_id);
+        await this.userService.delete(user.userId);
     }
 
     @ApiOperation(DeleteUserApiOperationDocumentation)
@@ -101,7 +101,7 @@ export class UserController {
         @User() user: UserEntity,
         @Body() data: Partial<UserUpdateDto>,
     ): Promise<void> {
-        await this.userService.update(user.user_id, {
+        await this.userService.update(user.userId, {
             name: data.name,
             email: data.email,
         });

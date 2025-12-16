@@ -3,11 +3,11 @@ import { UserEntity } from '@user/models';
 
 export const toUserDetailsDto = (user: UserEntity): UserDetailsDto => {
     return {
-        user_id: user.user_id,
+        userId: user.userId,
         name: user.name,
         email: user.email,
         role: user.role,
-        created_at: user.created_at,
-        updated_at: user.updated_at,
+        createdAt: user.created_at,
+        updatedAt: user.updated_at,
     };
 };

@@ -1,1 +1,54 @@
-<p>friend-requests works!</p>
+<div class="received-requests">
+    <h3>Demandes d'amis reçues</h3>
+    @if (requestsReceived().length === 0) {
+        <p>Aucune demande d'ami reçue.</p>
+    } @else {
+        <ul class="list-group">
+            @for (request of requestsReceived(); track request.sender.userId) {
+                <li
+                    class="list-group-item d-flex justify-content-between align-items-center"
+                >
+                    <span>{{ request.sender.name }}</span>
+
+                    <div class="d-flex gap-2">
+                        <button
+                            class="btn btn-success"
+                            (click)="onAcceptRequest(request.sender.userId)"
+                        >
+                            Accepter
+                        </button>
+                        <button
+                            class="btn btn-danger"
+                            (click)="onDeclineRequest(request.sender.userId)"
+                        >
+                            Refuser
+                        </button>
+                    </div>
+                </li>
+            }
+        </ul>
+    }
+</div>
+
+<div class="sent-requests mt-4">
+    <h3>Demandes d'amis envoyées</h3>
+    @if (requestsSent().length === 0) {
+        <p>Aucune demande d'ami envoyée.</p>
+    } @else {
+        <ul class="list-group">
+            @for (request of requestsSent(); track request.receiver.userId) {
+                <li
+                    class="list-group-item d-flex justify-content-between align-items-center"
+                >
+                    <span>{{ request.receiver.name }}</span>
+                    <button
+                        class="btn btn-warning"
+                        (click)="onDeclineRequest(request.receiver.userId)"
+                    >
+                        Annuler
+                    </button>
+                </li>
+            }
+        </ul>
+    }
+</div>

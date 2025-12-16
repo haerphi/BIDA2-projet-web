@@ -3,8 +3,7 @@
         <app-stat-element
             title="📚 Total livres"
             [badgeColor]="TextBgStyleEnum.Primary"
-            badgeText="+3 cette semaine"
-            [stat]="27"
+            [stat]="booksCount || 0"
             [loading]="booksLoading"
         />
     </div>
@@ -13,26 +12,26 @@
         <app-stat-element
             title="👥 Amis"
             [badgeColor]="TextBgStyleEnum.Success"
-            badgeText="+3 cette semaine"
-            [stat]="9"
+            [stat]="friendsCount || 0"
+            [loading]="friendsLoading"
         />
     </div>
 
     <div class="col">
         <app-stat-element
-            title="📤 Prêts en cours"
+            title="📤 Vos prêts"
             [badgeColor]="TextBgStyleEnum.Primary"
-            badgeText="2 retours attendus"
-            [stat]="5"
+            [stat]="loansCount || 0"
+            [loading]="loansLoading"
         />
     </div>
 
     <div class="col">
         <app-stat-element
-            title="⏰ Retards"
+            title="📥 Vos emprunts"
             [badgeColor]="TextBgStyleEnum.Danger"
-            badgeText="À relancer"
-            [stat]="2"
+            [stat]="boorrowedCount || 0"
+            [loading]="loansLoading"
         />
     </div>
 </section>
@@ -46,11 +45,15 @@
                 <div class="section-title">📚 Mes livres</div>
                 <p class="section-subtitle">Gérer votre bibliothèque</p>
                 <app-spoil buttonText="➕ Nouveau livre">
-                    <app-book-create />
+                    <app-book-create (bookCreated)="onBookCreated()" />
                 </app-spoil>
                 <hr />
 
-                <app-book-list [books]="books" [loading]="booksLoading" />
+                <app-book-list
+                    [books]="books"
+                    [loading]="booksLoading"
+                    (filterBooks)="onFilterBooks($event)"
+                />
             </div>
         </div>
     </div>
@@ -63,14 +66,35 @@
                 <p class="section-subtitle">Contacts</p>
                 <app-spoil buttonText="➕ Nouvel ami">
                     <app-friend-send-request
+                        (sendFriendRequest)="onSendFriendRequest($event)"
                 /></app-spoil>
                 <hr />
-                <app-spoil buttonText="➕ Voir les demandes d'ami">
-                    <app-friend-requests />
-                    /></app-spoil
-                >
+
+                @if (friendRequestsLoading) {
+                    <app-spinner />
+                } @else {
+                    <app-spoil
+                        [buttonText]="
+                            `➕ Voir les demandes d'amis` +
+                            (receivedFriendRequestsCount
+                                ? ` (${receivedFriendRequestsCount})`
+                                : '')
+                        "
+                    >
+                        <app-friend-requests
+                            [requestsSent]="sentFriendRequests"
+                            [requestsReceived]="receivedFriendRequests"
+                            (acceptRequest)="onAcceptFriendRequest($event)"
+                            (declineRequest)="onDeclineFriendRequest($event)"
+                        />
+                    </app-spoil>
+                }
                 <hr />
-                <app-friend-list />
+
+                <app-friend-list
+                    [friends]="friends"
+                    [loading]="friendsLoading"
+                />
             </div>
         </div>
     </div>
@@ -79,15 +103,19 @@
     <div class="col-lg-4">
         <div class="card shadow-sm">
             <div class="card-body">
-                <div class="section-title">📤 Prêts</div>
+                <div class="section-title">📤 Prêts & 📥 emprunts</div>
                 <p class="section-subtitle">Suivi des emprunts</p>
 
                 <app-spoil buttonText="➕ Nouveau prêt">
-                    <app-loan-create />
-                    /></app-spoil
-                >
+                    <app-loan-create (createLoan)="onCreateLoan($event)" />
+                </app-spoil>
                 <hr />
-                <app-loan-list />
+                <app-loan-list
+                    [loans]="loanedBooks"
+                    [borrowed]="borrowedBooks"
+                    [loading]="loansLoading"
+                    (filterLoans)="onFilterLoans($event)"
+                />
             </div>
         </div>
     </div>

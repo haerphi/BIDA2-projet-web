@@ -12,6 +12,7 @@ import { isInstanceOf } from '@common/utils/array.utils';
 
 import {
     CredentialNotFoundException,
+    NameOrEmailIsRequired,
     NotFoundException as CustomNotFoundException,
     ServerErrorException,
     TokenExpiredException,
@@ -59,6 +60,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
                 WrongCredentialException,
                 EmailAlreadyExistException,
                 NameAlreadyExistException,
+                NameOrEmailIsRequired,
             )
         ) {
             status = HttpStatus.BAD_REQUEST;
@@ -70,7 +72,13 @@ export class HttpExceptionFilter implements ExceptionFilter {
         } else if (isInstanceOf(exception, CustomUnauthorizedException)) {
             status = HttpStatus.UNAUTHORIZED;
             errorResponse.code = exception.message;
-        } else if (isInstanceOf(exception, UnauthorizedException)) {
+        } else if (
+            isInstanceOf(
+                exception,
+                UnauthorizedException,
+                TokenExpiredException,
+            )
+        ) {
             status = HttpStatus.UNAUTHORIZED;
             errorResponse.code = new CustomUnauthorizedException(
                 // @ts-ignore

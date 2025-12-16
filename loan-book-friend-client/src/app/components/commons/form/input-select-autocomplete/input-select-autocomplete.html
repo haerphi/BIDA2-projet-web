@@ -1,0 +1,35 @@
+<div class="position-relative w-100">
+    <input
+        type="text"
+        class="form-control"
+        [disabled]="disabled()"
+        [value]="value()"
+        (input)="handleInput($event)"
+        (focus)="isOpen.set(true)"
+        [placeholder]="placeholder()"
+    />
+
+    @if (isOpen()) {
+        <div
+            class="option-container position-absolute bg-white border w-100 p-2 rounded shadow-sm mt-1"
+            (click)="$event.stopPropagation()"
+        >
+            @if (filteredOptions().length === 0) {
+                <div class="text-muted small">Aucun résultat</div>
+            }
+
+            @for (option of filteredOptions(); track option.value) {
+                <div
+                    class="option-item p-1 rounded"
+                    [ngClass]="{
+                        'option-item-disabled': option.disabled,
+                    }"
+                    (click)="selectOption(option)"
+                    (mousedown)="$event.preventDefault()"
+                >
+                    {{ option.label }}
+                </div>
+            }
+        </div>
+    }
+</div>
