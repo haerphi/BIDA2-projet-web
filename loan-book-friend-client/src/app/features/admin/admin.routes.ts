@@ -14,25 +14,11 @@ export const routes: Routes = [
                     ).then((m) => m.AdminUserListing),
             },
             {
-                path: 'loans',
+                path: 'users/:id',
                 loadComponent: () =>
                     import(
-                        './pages/loans/admin-loan-listing/admin-loan-listing'
-                    ).then((m) => m.AdminLoanListing),
-            },
-            {
-                path: 'loans/:id',
-                loadComponent: () =>
-                    import(
-                        './pages/loans/admin-loan-details/admin-loan-details'
-                    ).then((m) => m.AdminLoanDetails),
-            },
-            {
-                path: 'books/:id/edit',
-                loadComponent: () =>
-                    import(
-                        './pages/books/admin-book-edit/admin-book-edit'
-                    ).then((m) => m.AdminBookEdit),
+                        './pages/users/admin-user-details/admin-user-details'
+                    ).then((m) => m.AdminUserDetails),
             },
         ],
     },

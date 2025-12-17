@@ -9,7 +9,6 @@ export const roleGuard = (useRoles: UserRole) => {
         const router = inject(Router);
 
         const role = authService.role();
-        console.log(!role || role !== useRoles, useRoles !== UserRole.Admin);
 
         if ((!role || role !== useRoles) && role !== UserRole.Admin) {
             router.navigate(['/', 'error', 'not-found']);

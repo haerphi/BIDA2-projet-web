@@ -5,18 +5,6 @@ import {
 } from '@nestjs/swagger';
 import { UserDetailsDto, UserListDto } from './dtos';
 
-// getConsumer
-export const GetConsumerApiOperationDocumentation: ApiOperationOptions = {
-    summary: 'Get the connected user',
-    description: 'This route allows to get details of the connected user',
-};
-
-export const GetConsumerApiResponseDocumentation: ApiResponseOptions = {
-    status: 200,
-    description: 'The connected user details',
-    type: UserDetailsDto,
-};
-
 // getAllUsers
 export const GetAllUsersApiOperationDocumentation: ApiOperationOptions = {
     summary: 'Get all users (admin)',
@@ -55,17 +43,6 @@ export const GetUserByIdApiResponseDocumentation: ApiResponseOptions = {
     type: UserDetailsDto,
 };
 
-// deleteSelf
-export const DeleteSelfApiOperationDocumentation: ApiOperationOptions = {
-    summary: 'Delete the connected user',
-    description:
-        'This route allows the connected user to delete their own account',
-};
-
-export const DeleteSelfApiResponseDocumentation: ApiResponseOptions = {
-    status: 200,
-    description: 'The connected user has been deleted successfully',
-};
 
 // deleteUser
 export const DeleteUserApiOperationDocumentation: ApiOperationOptions = {
@@ -78,17 +55,6 @@ export const DeleteUserApiResponseDocumentation: ApiResponseOptions = {
     description: 'The user has been deleted successfully',
 };
 
-// updateSelf
-export const updateSelfApiOperationDocumentation: ApiOperationOptions = {
-    summary: 'Update the connected user',
-    description:
-        'This route allows the connected user to update their own account',
-};
-
-export const updateSelfApiResponseDocumentation: ApiResponseOptions = {
-    status: 200,
-    description: 'The connected user has been updated successfully',
-};
 
 // updateUser
 export const updateUserApiOperationDocumentation: ApiOperationOptions = {

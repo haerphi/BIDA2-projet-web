@@ -1,1 +1,46 @@
-<p>admin-user-listing works!</p>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="h4 section-title mb-0">Liste des utilisateurs</h2>
+    <span class="badge rounded-pill bg-secondary shadow-sm"
+        >{{ users.length }} inscrits</span
+    >
+</div>
+
+<ul class="list-group shadow-sm border-0 p-0">
+    @for (user of users; track user.userId) {
+        <li
+            class="list-group-item p-0 border-bottom bg-white bg-opacity-75 backdrop-blur overflow-hidden"
+        >
+            <a
+                [routerLink]="['/admin/users', user.userId]"
+                class="list-group-item-action d-flex justify-content-between align-items-center p-3 text-decoration-none"
+            >
+                <div class="d-flex flex-column">
+                    <span class="fw-bold text-dark">{{ user.name }}</span>
+                    <span class="text-muted small">
+                        <i class="bi bi-envelope me-1"></i>{{ user.email }}
+                    </span>
+                </div>
+
+                <div class="d-flex align-items-center gap-3">
+                    <span
+                        class="badge rounded-pill px-3 py-2"
+                        [ngClass]="
+                            user.role === 'Admin'
+                                ? 'chip-danger'
+                                : 'chip-success'
+                        "
+                    >
+                        {{ user.role }}
+                    </span>
+                    <i class="bi bi-chevron-right text-muted"></i>
+                </div>
+            </a>
+        </li>
+    } @empty {
+        <li
+            class="list-group-item text-center p-5 bg-white bg-opacity-50 rounded-3"
+        >
+            <p class="text-muted mb-0">Aucun utilisateur trouvé.</p>
+        </li>
+    }
+</ul>

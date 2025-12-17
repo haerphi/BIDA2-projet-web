@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { UserRole } from '@security/enums';
+import {BookListOwnedDto} from "@book/dtos";
 
 export class UserDetailsDto {
     @ApiProperty()
@@ -16,7 +17,4 @@ export class UserDetailsDto {
 
     @ApiProperty()
     createdAt: Date;
-
-    @ApiProperty()
-    updatedAt: Date;
 }

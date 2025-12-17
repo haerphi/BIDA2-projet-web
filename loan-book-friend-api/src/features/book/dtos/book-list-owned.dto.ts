@@ -1,4 +1,4 @@
-import { BookAvailability } from '@book/enums';
+import {BookAvailability, BookCondition} from '@book/enums';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class BookListOwnedDto {
@@ -12,7 +12,7 @@ export class BookListOwnedDto {
     author: string;
 
     @ApiProperty()
-    condition: 'new' | 'good' | 'poor';
+    condition: BookCondition;
 
     @ApiProperty()
     createdAt: Date;

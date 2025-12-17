@@ -12,7 +12,7 @@ import {
     bookEntityToBookListDto,
     bookEntityToBookListOwnedDto,
 } from './mappers';
-import { BookListOwnedDto } from './dtos/bookt-list-owned.dto';
+import { BookListOwnedDto } from './dtos/book-list-owned.dto';
 import { BookDetailsDto } from '@book/dtos/book-details.dto';
 import { bookEntityToBookDetailsDto } from '@book/mappers/to-book-details-dto.mappers';
 

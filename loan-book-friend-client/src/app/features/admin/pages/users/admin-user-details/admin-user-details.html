@@ -1,0 +1,19 @@
+<h2>Details of User</h2>
+@if (!userDetails && !userError) {
+    <p>Loading user details...</p>
+} @else if (userError) {
+    <p class="text-danger">{{ userError }}</p>
+} @else {
+    <a routerLink="edit" class="btn btn-primary">Edit this user</a>
+
+    <app-user-details [user]="userDetails!" />
+
+    <app-confirmation-button
+        btnClassName="btn btn-danger"
+        buttonText="Delete User"
+        questionText="Are you sure you want to delete this user?"
+        confirmButtonText="Delete User"
+        cancelButtonText="No, keep user"
+        (confirmed)="onDeleteUser()"
+    />
+}
