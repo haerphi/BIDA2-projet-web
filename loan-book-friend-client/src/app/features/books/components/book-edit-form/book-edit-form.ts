@@ -1,25 +1,19 @@
 import { Component, inject, input, OnChanges, output } from '@angular/core';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { ApiErrorResponse, BookDetails } from '@core/models';
 import { BookService } from '@core/services';
-import { fromValidationFieldError } from '@core/utils/validator.utils';
-import { hasSameAsError, isRequired } from '@core/validators';
-import {
-    BookFormFactoryService,
-    EditBookFormControls,
-} from '@features/books/services/book-form-factory.service';
+import { BookFormFactoryService } from '@features/books/services/book-form-factory.service';
+import { FormInputDisplayError } from '@components/commons/form/display-error/display-error';
+import { Spinner } from '@components/commons/loadings/spinner/spinner';
 
 @Component({
     selector: 'app-book-edit-form',
-    imports: [ReactiveFormsModule],
+    imports: [ReactiveFormsModule, FormInputDisplayError, Spinner],
     templateUrl: './book-edit-form.html',
     styleUrl: './book-edit-form.scss',
 })
 export class BookEditForm implements OnChanges {
-    protected readonly isRequired = isRequired;
-    protected readonly hasSameAsError = hasSameAsError;
-
-    private readonly _bookFormFactory = inject(BookFormFactoryService);
+    private readonly _bff = inject(BookFormFactoryService);
     private readonly _bookService = inject(BookService);
 
     data = input<BookDetails | null>(null);
@@ -27,37 +21,27 @@ export class BookEditForm implements OnChanges {
 
     isLoading = false;
 
-    bookEditForm!: FormGroup<EditBookFormControls>;
-    bookEditControls!: EditBookFormControls;
+    form = this._bff.editBookForm();
+    controls = this.form.controls;
 
     formErrorCode: string | null = null;
     formErrorFields: unknown[] | null | undefined = null;
 
-    checkFormFieldError(key: string): unknown[] {
-        if (!this.formErrorFields) {
-            return [];
-        }
-
-        return fromValidationFieldError(this.formErrorFields, key);
-    }
-
     ngOnChanges(): void {
-        this.bookEditForm = this._bookFormFactory.editBookForm(
-            this.data() || {},
-        );
-        this.bookEditControls = this.bookEditForm.controls;
+        this.form = this._bff.editBookForm(this.data() || {});
+        this.controls = this.form.controls;
     }
 
     async onSubmit(): Promise<void> {
-        this.bookEditForm.markAllAsTouched();
+        this.form.markAllAsTouched();
         this.formErrorCode = null;
         this.formErrorFields = null;
 
-        if (this.bookEditForm.valid) {
+        if (this.form.valid) {
             this.isLoading = true;
             try {
                 await this._bookService.updateBook(
-                    this.bookEditForm.value,
+                    this.form.value,
                     this.data() ? this.data()!.bookId : '',
                 );
                 this.bookUpdated.emit();

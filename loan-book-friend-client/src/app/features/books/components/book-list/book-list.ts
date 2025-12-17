@@ -7,10 +7,11 @@ import { FormsModule } from '@angular/forms';
 import { BookCondition } from '@core/constants/book-condition.enum';
 import { debounceSignal } from '@core/utils/signal.utils';
 import { RouterLink } from '@angular/router';
+import { BookAvailabilityBadge } from '@features/books/components/book-availability-badge/book-availability-badge';
 
 @Component({
     selector: 'app-book-list',
-    imports: [Spinner, Spoil, FormsModule, RouterLink],
+    imports: [Spinner, Spoil, FormsModule, RouterLink, BookAvailabilityBadge],
     templateUrl: './book-list.html',
     styleUrl: './book-list.scss',
 })

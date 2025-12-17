@@ -61,31 +61,17 @@
     <ul class="list-group mb-3">
         @for (book of books(); track book.bookId) {
             <a routerLink="/book/{{ book.bookId }}">
-            <li class="list-group-item m-1">
-                <div class="fw-semibold">{{ book.title }}</div>
-                <div class="d-flex justify-content-between">
-                    <small class="text-muted"
-                        >{{ book.author }} • {{ book.condition }}</small
-                    >
-                    @switch (book.availability) {
-                        @case (BookAvailability.Available) {
-                            <span class="text-wrap badge chip-success"
-                                >Disponible</span
-                            >
-                        }
-                        @case (BookAvailability.Loaned) {
-                            <span class="text-wrap badge chip-warning"
-                                >Prêté</span
-                            >
-                        }
-                        @case (BookAvailability.Overdue) {
-                            <span class="text-wrap badge chip-danger"
-                                >En retard</span
-                            >
-                        }
-                    }
-                </div>
-            </li>
+                <li class="list-group-item m-1">
+                    <div class="fw-semibold">{{ book.title }}</div>
+                    <div class="d-flex justify-content-between">
+                        <small class="text-muted"
+                            >{{ book.author }} • {{ book.condition }}</small
+                        >
+                        <app-book-availability-badge
+                            [availability]="book.availability"
+                        />
+                    </div>
+                </li>
             </a>
         }
     </ul>

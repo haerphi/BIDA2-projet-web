@@ -16,9 +16,6 @@ export class BookService {
         @InjectRepository(BookEntity)
         private readonly bookRepository: Repository<BookEntity>,
 
-        @InjectRepository(BookEntity)
-        private readonly loanRepository: Repository<LoanEntity>,
-
         @Inject(forwardRef(() => LoanService))
         private readonly loanService: LoanService,
     ) {}
@@ -173,8 +170,6 @@ export class BookService {
             executePagination<BookEntity>(query, filters),
         );
 
-        console.log(result);
-
         const bookWithAvailability: BookEntityWithAvailability[] =
             result.entities.map((b, index) => ({
                 ...b,
@@ -202,5 +197,50 @@ export class BookService {
         }
 
         return book;
+    }
+
+    async getBookDetailsById(
+        bookId: string,
+        requester?: UserEntity,
+    ): Promise<BookEntityWithAvailability> {
+        // Initialisation du QueryBuilder
+        const book: BookEntity | null = await this.bookRepository.findOne({
+            where: { bookId },
+            relations: {
+                owner: true,
+                loans: {
+                    book: true,
+                    borrower: true,
+                },
+            },
+        });
+
+        if (!book) {
+            throw new NotFoundException('book_not_found_exception');
+        }
+
+        const availability = await this.getBookAvailability(book.bookId);
+
+        return {
+            ...book,
+            availability,
+        };
+    }
+
+    private async getBookAvailability(
+        bookId: string,
+    ): Promise<BookAvailability> {
+        const lastLoan = await this.loanService.getLastLoanForBook(bookId);
+
+        if (!lastLoan || lastLoan.returnedAt) {
+            return BookAvailability.Available;
+        }
+
+        const now = new Date();
+        if (lastLoan.shouldBeReturnedAt && lastLoan.shouldBeReturnedAt < now) {
+            return BookAvailability.Overdue;
+        }
+
+        return BookAvailability.Loaned;
     }
 }

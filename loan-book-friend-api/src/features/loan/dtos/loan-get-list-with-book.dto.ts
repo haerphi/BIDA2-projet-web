@@ -7,7 +7,7 @@ export class LoanGetListDto {
     loanId: string;
 
     @ApiProperty()
-    book: BookListDto;
+    bookId: string;
 
     @ApiProperty()
     borrower: UserListDto;
@@ -20,4 +20,9 @@ export class LoanGetListDto {
 
     @ApiProperty()
     returnedAt: Date | null;
+}
+
+export class LoanGetListWithBookDto extends LoanGetListDto {
+    @ApiProperty()
+    book: BookListDto;
 }

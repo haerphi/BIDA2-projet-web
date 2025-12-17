@@ -1,4 +1,4 @@
-import { BookAvailability } from '@book/enums';
+import { BookAvailability, BookCondition } from '@book/enums';
 import { TrackedEntity } from '@common/models';
 import { LoanEntity } from '@loan/models';
 import { UserEntity } from '@user/models';
@@ -23,7 +23,7 @@ export class BookEntity extends TrackedEntity {
     author: string;
 
     @Column({ type: 'varchar', length: 50, nullable: false })
-    condition: 'new' | 'good' | 'poor';
+    condition: BookCondition;
 
     @ManyToOne(() => UserEntity, (user) => user.books)
     @JoinColumn({ name: 'owner_id' })

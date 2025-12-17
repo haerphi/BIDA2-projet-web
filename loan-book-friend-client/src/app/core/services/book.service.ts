@@ -9,7 +9,8 @@ import {
     BookListOwnedQueryParams,
 } from '@core/models';
 import { environment } from '@env';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, map } from 'rxjs';
+import { convertLoanDates } from '@core/services/loan.service';
 
 @Injectable({
     providedIn: 'root',
@@ -40,29 +41,16 @@ export class BookService {
         );
     }
 
-    getAllBooksByOwner(
-        userId: string,
-    ): Promise<ApiListResponse<BookListOwned>> {
-        return firstValueFrom(
-            this._httpClient.get<ApiListResponse<BookListOwned>>(
-                this._baseUrl + ApiRoutes.book.ownedBy + userId,
-            ),
-        );
-    }
-
-    async deleteBook(bookId: string): Promise<void> {
-        await firstValueFrom(
-            this._httpClient.delete<void>(
-                this._baseUrl + ApiRoutes.book.delete + bookId,
-            ),
-        );
-    }
-
     getBookById(bookId: string): Promise<BookDetails> {
         return firstValueFrom(
-            this._httpClient.get<BookDetails>(
-                this._baseUrl + ApiRoutes.book.byId + bookId,
-            ),
+            this._httpClient
+                .get<BookDetails>(this._baseUrl + ApiRoutes.book.byId + bookId)
+                .pipe(
+                    map((bookDetails) => ({
+                        ...bookDetails,
+                        loans: bookDetails.loans.map(convertLoanDates),
+                    })),
+                ),
         );
     }
 

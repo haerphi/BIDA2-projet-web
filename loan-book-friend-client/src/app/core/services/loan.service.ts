@@ -7,7 +7,7 @@ import {
     BorrowedGetListDto,
     BorrowGetListQueryDto,
     CreateLoanForm,
-    LoanGetListDto,
+    LoanGetListWithBookDto,
     LoanGetListQueryDto,
 } from '@core/models';
 
@@ -26,10 +26,10 @@ export class LoanService {
 
     getLoans(
         query?: LoanGetListQueryDto,
-    ): Promise<ApiListResponse<LoanGetListDto>> {
+    ): Promise<ApiListResponse<LoanGetListWithBookDto>> {
         return firstValueFrom(
             this._httpClient
-                .get<ApiListResponse<LoanGetListDto>>(
+                .get<ApiListResponse<LoanGetListWithBookDto>>(
                     `${this._baseUrl}loan/loaned-books`,
                     {
                         params: { ...query },
@@ -71,7 +71,7 @@ export class LoanService {
     }
 }
 
-const convertLoanDates = <T extends LoanWithDates>(loan: T): T => {
+export const convertLoanDates = <T extends LoanWithDates>(loan: T): T => {
     loan.createdAt = new Date(loan.createdAt as string);
     loan.shouldBeReturnedAt = loan.shouldBeReturnedAt
         ? new Date(loan.shouldBeReturnedAt as string)

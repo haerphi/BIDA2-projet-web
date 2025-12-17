@@ -1,12 +1,108 @@
-<p>Title: {{ bookDetails()?.title || '...' }}</p>
-<p>Author: {{ bookDetails()?.author || '...' }}</p>
-<p>
-    Status:
-    {{
-        bookDetails()
-            ? bookDetails()?.availability
-                ? 'Available'
-                : 'Not available'
-            : '...'
-    }}
-</p>
+<!-- Book header -->
+<h3 class="fw-bold mb-3">
+    {{ bookDetails()?.title || '...' }}
+</h3>
+
+<div class="mb-3 text-muted">
+    <div><strong>Author:</strong> {{ bookDetails()?.author || '...' }}</div>
+    <div>
+        <strong>Condition:</strong> {{ bookDetails()?.condition || '...' }}
+    </div>
+    <div>
+        <strong>Disponibilité:</strong>
+        @if (bookDetails()) {
+            <app-book-availability-badge
+                [availability]="bookDetails()!.availability"
+            />
+        } @else {
+            ...
+        }
+    </div>
+</div>
+
+<!-- Owner -->
+@if (displayOwner()) {
+    <div class="card mb-4 border-0 shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title fw-semibold mb-3">Owner</h5>
+
+            <div class="mb-1">
+                <strong>Username:</strong>
+                {{ bookDetails()?.owner?.name || '...' }}
+            </div>
+            <div>
+                <strong>Email:</strong>
+                {{ bookDetails()?.owner?.email || '...' }}
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Loans -->
+<h5 class="fw-semibold mb-3">Prêts</h5>
+
+<ul class="list-group list-group-flush">
+    @for (loan of bookDetails()?.loans; track $index) {
+        <li class="list-group-item">
+            <div class="fw-semibold">
+                {{ loan?.borrower?.name }}
+            </div>
+
+            <div class="small text-muted">
+                From {{ loan?.createdAt | date: 'mediumDate' }} →
+                {{
+                    loan?.shouldBeReturnedAt
+                        ? (loan?.shouldBeReturnedAt | date: 'mediumDate')
+                        : 'Date non définie'
+                }}
+            </div>
+
+            <div class="mt-1">
+                @if (loan?.returnedAt) {
+                    <p>
+                        Retour:
+                        <span
+                            class="badge"
+                            [ngClass]="{
+                                'bg-success':
+                                    !loan?.shouldBeReturnedAt ||
+                                    loan?.returnedAt! <=
+                                        loan?.shouldBeReturnedAt!,
+                                'bg-warning':
+                                    loan?.shouldBeReturnedAt &&
+                                    loan?.returnedAt! >
+                                        loan?.shouldBeReturnedAt!,
+                            }"
+                        >
+                            {{
+                                loan?.returnedAt
+                                    ? (loan?.returnedAt | date: 'mediumDate')
+                                    : 'Pas encore rendu'
+                            }}
+
+                            @if (
+                                loan?.shouldBeReturnedAt &&
+                                loan?.returnedAt! > loan?.shouldBeReturnedAt!
+                            ) {
+                                (En retard)
+                            }
+                        </span>
+                    </p>
+                } @else {
+                    <p
+                        [ngClass]="{
+                            'text-success':
+                                !loan?.shouldBeReturnedAt ||
+                                Now! <= loan?.shouldBeReturnedAt!.getTime(),
+                            'text-danger':
+                                loan?.shouldBeReturnedAt &&
+                                Now! > loan?.shouldBeReturnedAt!.getTime(),
+                        }"
+                    >
+                        Pas encore rendu
+                    </p>
+                }
+            </div>
+        </li>
+    }
+</ul>

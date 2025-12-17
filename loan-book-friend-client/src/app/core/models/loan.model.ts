@@ -5,11 +5,15 @@ import { LoanStatusEnum } from '@core/constants';
 
 export interface LoanGetListDto {
     loanId: string;
-    book: BookList;
+    bookId: string;
     borrower: UserList;
     createdAt: Date;
     shouldBeReturnedAt: Date | null;
     returnedAt: Date | null;
+}
+
+export interface LoanGetListWithBookDto extends LoanGetListDto {
+    book: BookList;
 }
 
 export interface BorrowedGetListDto {

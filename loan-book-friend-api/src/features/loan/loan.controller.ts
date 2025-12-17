@@ -5,14 +5,14 @@ import { ApiCookieAuth } from '@nestjs/swagger';
 import { RequireRoles } from '@security/guards';
 import {
     LoanCreateForm,
-    LoanGetListDto,
+    LoanGetListWithBookDto,
     LoanGetListQueryDto,
 } from '@loan/dtos';
 import { UserEntity } from '@user/models';
 import { User } from '@security/metadata';
 import { LoanEntity } from '@loan/models';
 import { ListApiResponseDto } from '@common/dtos';
-import { loanEntityToLoanGetListDto } from '@loan/mappers';
+import { loanEntityToLoanGetListWithBookDto } from '@loan/mappers';
 import { BorrowedGetListDto } from '@loan/dtos/borrowed-get-list.dto';
 import { loanEntityToBorrowedGetListDto } from '@loan/mappers/to-borrowed-get-list.mappers';
 import { BorrowGetListQueryDto } from '@loan/dtos/borrow-get-list-query.dto';
@@ -50,12 +50,12 @@ export class LoanController {
     async getLoanedBooks(
         @User() requester: UserEntity,
         @Query() query: LoanGetListQueryDto,
-    ): Promise<ListApiResponseDto<LoanGetListDto>> {
+    ): Promise<ListApiResponseDto<LoanGetListWithBookDto>> {
         const { total, loans } = await this.loanService.getLoanedBooks(
             requester.userId,
             query,
         );
-        return { total, data: loans.map(loanEntityToLoanGetListDto) };
+        return { total, data: loans.map(loanEntityToLoanGetListWithBookDto) };
     }
 
     @RequireRoles()

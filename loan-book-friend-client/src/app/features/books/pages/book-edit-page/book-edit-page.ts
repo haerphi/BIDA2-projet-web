@@ -58,6 +58,6 @@ export class BookEditPage implements OnInit {
     }
 
     onBookUpdated(): void {
-        this._router.navigate(['/books', this.bookId]);
+        this._router.navigate(['/book', this.bookId]);
     }
 }

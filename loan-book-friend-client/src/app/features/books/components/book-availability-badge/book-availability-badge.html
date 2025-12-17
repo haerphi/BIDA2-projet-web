@@ -1,0 +1,11 @@
+@switch (availability()) {
+    @case (BookAvailability.Available) {
+        <span class="text-wrap badge chip-success">Disponible</span>
+    }
+    @case (BookAvailability.Loaned) {
+        <span class="text-wrap badge chip-warning">Prêté</span>
+    }
+    @case (BookAvailability.Overdue) {
+        <span class="text-wrap badge chip-danger">En retard</span>
+    }
+}

@@ -17,7 +17,7 @@ import {
     CreateLoanForm,
     FriendGetListDto,
     FriendGetListQueryDto,
-    LoanGetListDto,
+    LoanGetListWithBookDto,
     LoanGetListQueryDto,
     ReceivedFriendRequestDto,
     SendFriendRequestFormDto,
@@ -74,7 +74,7 @@ export class DashboardIndexPage implements OnInit {
     loansLoading = true;
     loansCount: number | null = null;
     boorrowedCount: number | null = null;
-    loanedBooks: LoanGetListDto[] = [];
+    loanedBooks: LoanGetListWithBookDto[] = [];
     borrowedBooks: BorrowedGetListDto[] = [];
     loansFetchError: string | null = null;
 

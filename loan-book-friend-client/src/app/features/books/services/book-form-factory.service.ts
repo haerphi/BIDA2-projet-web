@@ -6,13 +6,7 @@ import {
     NonNullableFormBuilder,
     Validators,
 } from '@angular/forms';
-import { BookDetails, BookForm } from '@core/models';
-
-export interface EditBookFormControls {
-    title: AbstractControl<any, any, any>;
-    author: AbstractControl<any, any, any>;
-    available: AbstractControl<any, any, any>;
-}
+import { BookForm } from '@core/models';
 
 @Injectable({
     providedIn: 'root',
@@ -28,14 +22,11 @@ export class BookFormFactoryService {
         });
     }
 
-    public editBookForm(
-        data?: Partial<BookDetails>,
-    ): FormGroup<EditBookFormControls> {
-        /* @ts-expect-error: ... is not assignable to type ... */
+    public editBookForm(data?: Partial<BookForm>) {
         return this._fb.group({
             title: [data?.title, [Validators.required]],
             author: [data?.author, [Validators.required]],
-            available: [data?.availability, [Validators.required]],
+            condition: [data?.condition, [Validators.required]],
         });
     }
 }

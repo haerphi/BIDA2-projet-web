@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { BookDetails } from '@core/models';
 import { BookService } from '@core/services';
@@ -11,7 +11,7 @@ import { BookDetailsDisplay } from '@features/books/components/book-details-disp
     templateUrl: './book-details-page.html',
     styleUrl: './book-details-page.scss',
 })
-export class BookDetailsPage implements OnInit {
+export class BookDetailsPage implements OnInit, OnDestroy {
     private readonly _activatedRoute = inject(ActivatedRoute);
     private readonly _bookService = inject(BookService);
 
@@ -25,7 +25,6 @@ export class BookDetailsPage implements OnInit {
             this._activatedRoute.params.subscribe(async (params) => {
                 const bookId = params['id'];
                 this.getBookDetails(bookId);
-                // TODO this.getBookLoanHistory(bookId);
             }),
         );
     }
@@ -45,7 +44,7 @@ export class BookDetailsPage implements OnInit {
             });
     }
 
-    // TODO Implementation for fetching book loan history goes here
-    // private async getBookLoanHistory(bookId: string): Promise<void> {
-    // }
+    ngOnDestroy(): void {
+        this.subscriptions.forEach((sub) => sub.unsubscribe());
+    }
 }

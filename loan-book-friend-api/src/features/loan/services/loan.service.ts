@@ -38,6 +38,23 @@ export class LoanService {
             .getMany();
     }
 
+    async getLastLoanForBook(bookId: string): Promise<LoanEntity | null> {
+        return this.loanRepository.findOne({
+            where: {
+                book: {
+                    bookId,
+                },
+            },
+            order: {
+                shouldBeReturnedAt: 'DESC',
+            },
+            relations: {
+                book: true,
+                borrower: true,
+            },
+        });
+    }
+
     async getActiveLoansByUser(
         userId: string,
         withUserId: string | null = null,

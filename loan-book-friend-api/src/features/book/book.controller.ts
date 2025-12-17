@@ -13,6 +13,8 @@ import {
     bookEntityToBookListOwnedDto,
 } from './mappers';
 import { BookListOwnedDto } from './dtos/bookt-list-owned.dto';
+import { BookDetailsDto } from '@book/dtos/book-details.dto';
+import { bookEntityToBookDetailsDto } from '@book/mappers/to-book-details-dto.mappers';
 
 @ApiCookieAuth('access_token')
 @Controller('book')
@@ -72,5 +74,15 @@ export class BookController {
             total,
             data: books.map(bookEntityToBookListOwnedDto),
         };
+    }
+
+    @RequireRoles()
+    @Get(':id')
+    async getBookById(
+        @User() requester: UserEntity,
+        @Param('id') id: string,
+    ): Promise<BookDetailsDto> {
+        const book = await this.bookService.getBookDetailsById(id, requester);
+        return bookEntityToBookDetailsDto(book);
     }
 }

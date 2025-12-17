@@ -1,5 +1,5 @@
 import { Component, input, output } from '@angular/core';
-import { BorrowedGetListDto, LoanGetListDto } from '@core/models';
+import { BorrowedGetListDto, LoanGetListWithBookDto } from '@core/models';
 import { DatePipe, NgClass } from '@angular/common';
 import { LoanStatusEnum } from '@core/constants';
 
@@ -19,7 +19,7 @@ export class LoanList {
     protected readonly Date = Date;
     protected readonly LoanStatusEnum = LoanStatusEnum;
 
-    loans = input.required<LoanGetListDto[]>();
+    loans = input.required<LoanGetListWithBookDto[]>();
     borrowed = input.required<BorrowedGetListDto[]>();
     loading = input<boolean>(false);
 

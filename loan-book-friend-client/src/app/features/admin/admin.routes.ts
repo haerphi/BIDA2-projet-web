@@ -14,13 +14,6 @@ export const routes: Routes = [
                     ).then((m) => m.AdminUserListing),
             },
             {
-                path: 'users/:id',
-                loadComponent: () =>
-                    import(
-                        './pages/users/admin-user-details/admin-user-details'
-                    ).then((m) => m.AdminUserDetails),
-            },
-            {
                 path: 'loans',
                 loadComponent: () =>
                     import(
