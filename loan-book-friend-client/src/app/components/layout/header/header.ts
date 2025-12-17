@@ -20,6 +20,6 @@ export class Header {
     async onLogoutClick() {
         await this._authService.logout();
 
-        this._router.navigate(['/']);
+        await this._router.navigate(['/auth']);
     }
 }
