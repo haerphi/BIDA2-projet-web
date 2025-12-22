@@ -1,4 +1,4 @@
-import {BookAvailability, BookCondition} from '@book/enums';
+import { BookAvailability, BookCondition } from '@book/enums';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class BookListOwnedDto {

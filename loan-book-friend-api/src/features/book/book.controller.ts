@@ -1,5 +1,10 @@
 import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
-import { ApiCookieAuth } from '@nestjs/swagger';
+import {
+    ApiCookieAuth,
+    ApiOperation,
+    ApiParam,
+    ApiResponse,
+} from '@nestjs/swagger';
 import { BookService } from '@book/services';
 import { User } from '@security/metadata';
 import { UserEntity } from '@user/models';
@@ -15,6 +20,7 @@ import {
 import { BookListOwnedDto } from './dtos/book-list-owned.dto';
 import { BookDetailsDto } from '@book/dtos/book-details.dto';
 import { bookEntityToBookDetailsDto } from '@book/mappers/to-book-details-dto.mappers';
+import * as Doc from './book.swagger';
 
 @ApiCookieAuth('access_token')
 @Controller('book')
@@ -23,6 +29,8 @@ export class BookController {
 
     @RequireRoles()
     @Post()
+    @ApiOperation(Doc.CreateBookOperation)
+    @ApiResponse(Doc.CreateBookResponse)
     async createBook(
         @User() requester: UserEntity,
         @Body() bookDto: BookCreateFormDto,
@@ -35,6 +43,8 @@ export class BookController {
 
     @RequireRoles()
     @Put(':id')
+    @ApiOperation(Doc.UpdateBookOperation)
+    @ApiParam(Doc.UpdateBookParam)
     async updateBook(
         @User() requester: UserEntity,
         @Param('id') id: string,
@@ -48,6 +58,8 @@ export class BookController {
     }
 
     @Get()
+    @ApiOperation(Doc.GetBooksOperation)
+    @ApiResponse(Doc.GetBooksResponse)
     async getBooks(
         @Query() query: BookGetListQueryDto,
     ): Promise<ListApiResponseDto<BookListDto>> {
@@ -61,6 +73,8 @@ export class BookController {
 
     @RequireRoles()
     @Get('owned')
+    @ApiOperation(Doc.GetOwnedBooksOperation)
+    @ApiResponse(Doc.GetOwnedBooksResponse)
     async getOwnedBooks(
         @User() requester: UserEntity,
         @Query() query: BookGetListQueryDto,
@@ -78,6 +92,9 @@ export class BookController {
 
     @RequireRoles()
     @Get(':id')
+    @ApiOperation(Doc.GetBookByIdOperation)
+    @ApiParam(Doc.UpdateBookParam)
+    @ApiResponse(Doc.GetBookByIdResponse)
     async getBookById(
         @User() requester: UserEntity,
         @Param('id') id: string,

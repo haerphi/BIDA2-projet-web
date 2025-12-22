@@ -9,7 +9,12 @@ import {
     Query,
 } from '@nestjs/common';
 import { FriendService } from '@friend/services';
-import { ApiCookieAuth } from '@nestjs/swagger';
+import {
+    ApiCookieAuth,
+    ApiOperation,
+    ApiParam,
+    ApiResponse,
+} from '@nestjs/swagger';
 import { RequireRoles } from '@security/guards';
 import { User } from '@security/metadata';
 import { UserEntity } from '@user/models';
@@ -27,6 +32,7 @@ import {
     friendEntityToSentFriendRequestDto,
     friendWithCountsToFriendGetListDto,
 } from '@friend/mappers';
+import * as Doc from './friend.swagger';
 
 @ApiCookieAuth('access_token')
 @Controller('friend')
@@ -35,6 +41,8 @@ export class FriendController {
 
     @RequireRoles()
     @Post()
+    @ApiOperation(Doc.SendFriendRequestOperation)
+    @ApiResponse(Doc.SendFriendRequestResponse)
     async sendFriendRequest(
         @User() requester: UserEntity,
         @Body() data: SendFriendRequestFormDto,
@@ -52,6 +60,8 @@ export class FriendController {
 
     @RequireRoles()
     @Get('sent-requests')
+    @ApiOperation(Doc.GetSentRequestsOperation)
+    @ApiResponse(Doc.GetSentRequestsResponse)
     async getFriendRequests(
         @User() user: UserEntity,
         @Query() filters: PaginationQueryDto,
@@ -69,6 +79,8 @@ export class FriendController {
 
     @RequireRoles()
     @Get('received-requests')
+    @ApiOperation(Doc.GetReceivedRequestsOperation)
+    @ApiResponse(Doc.GetReceivedRequestsResponse)
     async getReceivedFriendRequests(
         @User() user: UserEntity,
         @Query() filters: PaginationQueryDto,
@@ -87,6 +99,8 @@ export class FriendController {
 
     @RequireRoles()
     @Delete('deny-request/:friendId')
+    @ApiOperation(Doc.DenyFriendRequestOperation)
+    @ApiParam(Doc.FriendIdParam)
     async denyFriendRequest(
         @User() user: UserEntity,
         @Param('friendId') friendId: string,
@@ -96,6 +110,8 @@ export class FriendController {
 
     @RequireRoles()
     @Patch('accept-request/:friendId')
+    @ApiOperation(Doc.AcceptFriendRequestOperation)
+    @ApiParam(Doc.FriendIdParam)
     async acceptFriendRequest(
         @User() user: UserEntity,
         @Param('friendId') friendRequestId: string,
@@ -108,6 +124,8 @@ export class FriendController {
 
     @RequireRoles()
     @Get()
+    @ApiOperation(Doc.GetFriendsOperation)
+    @ApiResponse(Doc.GetFriendsResponse)
     async getFriends(
         @User() user: UserEntity,
         @Query() filters: FriendGetListQueryDto,

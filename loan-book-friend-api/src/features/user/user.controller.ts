@@ -28,10 +28,11 @@ import { UserRole } from '@security/enums';
 import { UserService } from '@user/services';
 import {
     UserDetailsDto,
-    UserListDto, UserListWithRoleDto,
+    UserListDto,
+    UserListWithRoleDto,
     UserUpdateAdminDto,
 } from '@user/dtos';
-import {toUserDetailsDto, toUserListWithRoleDto} from '@user/mappers';
+import { toUserDetailsDto, toUserListWithRoleDto } from '@user/mappers';
 import { ListApiResponseDto, PaginationQueryDto } from '@common/dtos';
 
 @ApiCookieAuth('access_token')

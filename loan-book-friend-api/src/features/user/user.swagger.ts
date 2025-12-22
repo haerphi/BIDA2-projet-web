@@ -43,7 +43,6 @@ export const GetUserByIdApiResponseDocumentation: ApiResponseOptions = {
     type: UserDetailsDto,
 };
 
-
 // deleteUser
 export const DeleteUserApiOperationDocumentation: ApiOperationOptions = {
     summary: 'Delete a user by ID (admin)',
@@ -54,7 +53,6 @@ export const DeleteUserApiResponseDocumentation: ApiResponseOptions = {
     status: 200,
     description: 'The user has been deleted successfully',
 };
-
 
 // updateUser
 export const updateUserApiOperationDocumentation: ApiOperationOptions = {

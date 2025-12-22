@@ -1,6 +1,6 @@
-import {UserDetailsDto} from '@user/dtos';
-import {UserEntity} from '@user/models';
-import {Builder} from "builder-pattern";
+import { UserDetailsDto } from '@user/dtos';
+import { UserEntity } from '@user/models';
+import { Builder } from 'builder-pattern';
 
 export const toUserDetailsDto = (user: UserEntity): UserDetailsDto => {
     return Builder<UserDetailsDto>()

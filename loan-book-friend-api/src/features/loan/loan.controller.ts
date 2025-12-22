@@ -1,7 +1,12 @@
 import { Body, Controller, Get, Patch, Post, Query } from '@nestjs/common';
 import { LoanService } from '@loan/services';
 
-import { ApiCookieAuth } from '@nestjs/swagger';
+import {
+    ApiCookieAuth,
+    ApiOperation,
+    ApiParam,
+    ApiResponse,
+} from '@nestjs/swagger';
 import { RequireRoles } from '@security/guards';
 import {
     LoanCreateForm,
@@ -16,6 +21,7 @@ import { loanEntityToLoanGetListWithBookDto } from '@loan/mappers';
 import { BorrowedGetListDto } from '@loan/dtos/borrowed-get-list.dto';
 import { loanEntityToBorrowedGetListDto } from '@loan/mappers/to-borrowed-get-list.mappers';
 import { BorrowGetListQueryDto } from '@loan/dtos/borrow-get-list-query.dto';
+import * as Doc from './loan.swagger';
 
 @ApiCookieAuth('access_token')
 @Controller('loan')
@@ -24,6 +30,8 @@ export class LoanController {
 
     @RequireRoles()
     @Post()
+    @ApiOperation(Doc.CreateLoanOperation)
+    @ApiResponse(Doc.CreateLoanResponse)
     async createLoan(
         @User() requesterId: UserEntity,
         @Body() body: LoanCreateForm,
@@ -38,6 +46,8 @@ export class LoanController {
 
     @RequireRoles()
     @Patch(':loanId/return')
+    @ApiOperation(Doc.ReturnLoanOperation)
+    @ApiParam(Doc.ReturnLoanParam)
     async returnLoan(
         @User() requesterId: UserEntity,
         @Body('loanId') loanId: string,
@@ -47,6 +57,8 @@ export class LoanController {
 
     @RequireRoles()
     @Get('loaned-books')
+    @ApiOperation(Doc.GetLoanedBooksOperation)
+    @ApiResponse(Doc.GetLoanedBooksResponse)
     async getLoanedBooks(
         @User() requester: UserEntity,
         @Query() query: LoanGetListQueryDto,
@@ -60,6 +72,8 @@ export class LoanController {
 
     @RequireRoles()
     @Get('borrowed-books')
+    @ApiOperation(Doc.GetBorrowedBooksOperation)
+    @ApiResponse(Doc.GetBorrowedBooksResponse)
     async getBorrowedBooks(
         @User() requester: UserEntity,
         @Query() query: BorrowGetListQueryDto,
