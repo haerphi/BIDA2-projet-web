@@ -3,6 +3,7 @@ import { UserService } from '@core/services';
 import { UserListWithRole } from '@core/models';
 import { RouterLink } from '@angular/router';
 import { NgClass } from '@angular/common';
+import { UserRole } from '@core/constants';
 
 @Component({
     selector: 'app-admin-user-listing',
@@ -11,6 +12,8 @@ import { NgClass } from '@angular/common';
     styleUrl: './admin-user-listing.scss',
 })
 export class AdminUserListing {
+    protected readonly UserRole = UserRole;
+
     private readonly _userService = inject(UserService);
 
     loading = true;

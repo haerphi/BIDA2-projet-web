@@ -1,79 +1,29 @@
 # Gestion de prets de livres entre amis
 
-## Entites :
+Cette application permet de gérer les prêts de livres entre amis. Vous pouvez ajouter des livres, enregistrer des prêts et suivre qui a emprunté quel livre.
 
-### User:
+## Prérequis
+- Node.JS (développer sous version 24.10.0)
+- base de données PostgreSQL (disponible via un docker-compose dans le dossier `Docker`)
 
-- id (UUID)
-- name (string)
-- email (string)
-- password (string - hashed)
-- created_at (datetime)
+## Installation
+- Cloner le dépôt: `git clone https://github.com/haerphi/BIDA2-projet-web.git`
+- Aller dans le dossier du projet API: `cd BIDA2-projet-web/loan-book-friend-api`
+- Installer les dépendances de l'API: `npm install`
+- Configurer la base de données dans le fichier `.env` à la racine du projet (voir `.env.example` pour un exemple)
+- Aller dans le dossier Docker: `cd ../Docker`
+- Lancer les conteneurs Docker: `docker-compose up -d`
+- Aller dans le dossier du projet client: `cd ../loan-book-friend-client`
+- Installer les dépendances du client: `npm install`
+- (optionel) insérer des données de test dans la base de données en lançant le script SQL `Inserts.sql` au chemin suivant: `Docs/Inserts.sql`.
 
-### Book:
+## Lancement de l'application
+Avant de démarrer l'application, assurez-vous d'avoir une base de données PostgreSQL en cours d'exécution et que le fichier `.env` soit correctement configuré.
 
-- id (UUID)
-- title (string)
-- author (string)
-- owner_id (UUID)
-- available (boolean)
+Pour lancer l'application, il est nécessaire de lancer à la fois le serveur API et le client via deux terminaux séparés.
+- Dans le premier terminal, aller dans le dossier de l'API: `cd BIDA2-projet-web/loan-book-friend-api` et lancer le serveur: `npm start`
+- Dans le second terminal, aller dans le dossier du client: `cd BIDA2-projet-web/loan-book-friend-client` et lancer le client: `npm start`
 
-### Friend:
+L'API sera accessible à l'adresse `http://localhost:3000` et avec sa documentation Swagger à l'adresse `http://localhost:3000/docs`.
 
-- id (UUID)
-- name (string)
-- email (string)
-
-### Loan:
-
-- id (UUID)
-- book_id (UUID)
-- friend_id (UUID)
-- loan_date (datetime) - return_date (datetime?)
-
-### Review:
-
-- id (UUID)
-- book_id (UUID)
-- rating (int)
-- comment (string) - reviewer_name (string)
-
-## Fonctionnalites et CRUD :
-
-- ✅ Login avec un email et mot de passe (POST vers l'API)
-- ✅ Logout (invalidation du token/session)
-
-- ✅ Creer un user (formulaire, POST vers l'API)
-- ✅ Lire la liste des users (GET, affichage dynamique) - ADMIN
-- ✅ Modifier un user existant (formulaire, PUT/PATCH)
-- ✅ Supprimer un user (avec confirmation) - ADMIN et self
-- ✅ Afficher les details d'un user (fiche individuelle) - ADMIN et self
-
-- ✅ Creer un book (formulaire, POST vers l'API)
-- ✅ Lire la liste des books (GET, affichage dynamique)
-- Modifier un book existant (formulaire, PUT/PATCH)
-- ✅ Supprimer un book (avec confirmation)
-- Afficher les details d'un book (fiche individuelle)
-
-- Creer un friend (formulaire, POST vers l'API)
-- Lire la liste des friends (GET, affichage dynamique)
-- Modifier un friend existant (formulaire, PUT/PATCH)
-- Supprimer un friend (avec confirmation)
-- Afficher les details d'un friend (fiche individuelle)
-
-- Creer un loan (formulaire, POST vers l'API)
-- Lire la liste des loans (GET, affichage dynamique)
-- Modifier un loan existant (formulaire, PUT/PATCH)
-- Supprimer un loan (avec confirmation)
-- Afficher les details d'un loan (fiche individuelle)
-
-- Creer un review (formulaire, POST vers l'API)
-- Lire la liste des reviews (GET, affichage dynamique)
-- Modifier un review existant (formulaire, PUT/PATCH)
-- Supprimer un review (avec confirmation)
-- Afficher les details d'un review (fiche individuelle)
-
-## Todo:
-
-- Ajouter des transactions
-  - lors du signUp (pour créer le `User` et puis le `Credential`)
+Le client sera accessible à l'adresse `http://localhost:4200`.
